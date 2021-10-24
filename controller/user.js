@@ -5,7 +5,8 @@ const multer = require('multer'); //form data 처리를 할수 있는 라이브�
 const multerS3 = require('multer-s3'); // aws s3에 파일을 처리 할수 있는 라이브러리 multer-s3
 const AWS = require('aws-sdk'); //javascript 용 aws 서비스 사용 라이브러리
 const path = require('path'); //경로지정
-import { logger } from '../config/logger';
+const { logger } = require('../config/logger'); //로그
+
 AWS.config.update({
   //보안자격증명 액세스 키 설정해야 s3 bucket 접근이 가능하다.
   accessKeyId: process.env.accessKeyId,
@@ -13,7 +14,7 @@ AWS.config.update({
   region: 'ap-northeast-2', // 한국
 });
 
-export const emailCheck = async (req, res) => {
+emailCheck = async (req, res) => {
     try {
         const { email } = req.body;
         const isemail = await users.findOne({ where: { email : email } });
@@ -31,7 +32,7 @@ export const emailCheck = async (req, res) => {
     }
 }
 
-export const nickNameCheck = async (req, res) => {
+nickNameCheck = async (req, res) => {
     try {
         const { nickName } = req.body;
         const isemail = await users.findOne({ where: { nickName : nickName } });
@@ -52,7 +53,7 @@ export const nickNameCheck = async (req, res) => {
 
 
 //회원가입
-export const signup = async (req, res) => {
+signup = async (req, res) => {
   const { name, nickName, email, password, confirmPassword } = req.body;
 
   if (password !== confirmPassword)
@@ -101,7 +102,7 @@ export const signup = async (req, res) => {
 
 
 //로그인
-export const login = async (req, res) => {
+login = async (req, res) => {
     const { email, password } = req.body;
     try {
         const query =
@@ -117,7 +118,7 @@ export const login = async (req, res) => {
             const salt = users.salt;
             let inpw = crypto.createHash("sha512").update(password + salt).digest("hex");
             if(inpw === users.pw){//,{expiresIn: '2h',} <- 만료시간 아직은 테스트 단계니깐 만료시간을 따로주지는 않음
-                const token = jwt.sign({ email: users.email, Id = users.userId}, process.env.SECRET_KEY);
+                const token = jwt.sign({ id: users["id"] , name: users["email"]}, process.env.SECRET_KEY);
                 logger.info("POST /login");
                 return res
                 .status(200)
@@ -139,3 +140,4 @@ export const login = async (req, res) => {
     }
   };
 
+module.exports = { emailCheck: emailCheck ,nickNameCheck: nickNameCheck ,signup: signup , login: login };

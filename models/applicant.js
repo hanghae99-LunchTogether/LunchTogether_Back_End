@@ -45,5 +45,5 @@ module.exports = (sequelize, DataTypes) => {
 //       onDelete: 'cascade',
 //     });
 //   };
-  return likes;
+  return applicant;
 };

@@ -1,5 +1,5 @@
-import winston from 'winston';
-import winstonDaily from 'winston-daily-rotate-file';
+const winston = require('winston')
+const winstonDaily = require('winston-daily-rotate-file');
 
 const logDir = 'logs';  // logs 디렉토리 하위에 로그 파일 저장
 const { combine, timestamp, printf } = winston.format;
@@ -52,4 +52,4 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
-export { logger };
+module.exports = { logger };
