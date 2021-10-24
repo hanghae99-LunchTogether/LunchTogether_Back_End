@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: true,
       },
+      nickName: {
+        type: DataTypes.STRING,
+        require: true,
+      },
       salt: {
         type: DataTypes.STRING,
         require: true,
