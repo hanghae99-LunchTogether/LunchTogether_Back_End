@@ -14,7 +14,6 @@ module.exports = async (req, res, next) => {
     }
     if (token) {
       const { name } = jwt.verify(token, process.env.SECRET_KEY);
-      console.log(name)
       const query = "select * from users where email = :email";
       const users = await sequelize.query(query, {
         replacements: {
@@ -22,7 +21,6 @@ module.exports = async (req, res, next) => {
         },
         type: sequelize.QueryTypes.SELECT,
       });
-      console.log(users)
       const user = {
         userId: users[0]['userId'],
         email: users[0]['email'],
