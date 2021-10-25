@@ -60,7 +60,7 @@ commentpost = async (req, res) => {
 
 //댓글 삭제
 commentdele = async (req, res) => {
-    const { commentId } = req.params;
+    const { commentid } = req.params;
     const user = res.locals.user;
     try {
       // comments table의 postId 조회
@@ -68,7 +68,7 @@ commentdele = async (req, res) => {
         "delete from comments where commentId = :commentId AND userId = :userId;";
       const comment = await sequelize.query(query, {
         replacements: {
-          comment: commentId,
+          comment: commentid,
           userId : user.userId,
         },
         type: sequelize.QueryTypes.DELETE,
