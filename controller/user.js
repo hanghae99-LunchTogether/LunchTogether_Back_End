@@ -190,18 +190,20 @@ upusers = async (req, res) => {
     });
     let originalUrl;
     let querys = "UPDATE users SET ";
-    if(isuser.email)querys = querys + " email = :email";
-    if(isuser.name)querys = querys + " name = :name";
+    if(isuser.email)querys = querys + " email = :email,";
+    if(isuser.name)querys = querys + " name = :name,";
     if(req.file){
-      querys = querys + " image = :image";
+      querys = querys + " image = :image,";
       originalUrl = req.file.location;
     }
-    if(isuser.mbti)querys = querys + " mbti = :mbti";
+    if(isuser.mbti)querys = querys + " mbti = :mbti,";
     if(isuser.gender)querys = querys + " gender = :gender,";
     if(isuser.introduction)querys = querys + " introduction = :introduction,";
     if(isuser.location)querys = querys + " location = :location,";
     if(isuser.menu)querys = querys + " menu = :menu,";
     if(isuser.company)querys = querys + " company = :company,";
+    querys = querys.slice(0, -1);
+    console.log(querys[querys.length-1])
     querys = querys + " WHERE userId = :userId;";
     console.log("마지막으로 완성된 쿼리문", querys);
     await sequelize.query(querys, {
@@ -225,7 +227,7 @@ upusers = async (req, res) => {
       .send({ result: "success", msg: "유저정보 수정완료"});
   } catch (error) {
     logger.error(error);
-    console.log(error)
+    // console.log(error)
     return res
       .status(401)
       .send({ result: "fail", msg: "유저정보 조회실패" , error: error});
