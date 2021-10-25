@@ -76,9 +76,9 @@
         }
       }
     },
-    "/sinup": {
+    "/signup": {
       "post": {
-        "tags": ["sinup"],
+        "tags": ["signup"],
         "description": "",
         "parameters": [
           {
