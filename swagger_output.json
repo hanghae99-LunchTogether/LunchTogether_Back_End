@@ -74,6 +74,17 @@
             "description": "Bad Request"
           }
         }
+      },
+      "get": {
+        "tags": ["users"],
+        "description": "로그인 했으면 해당 유저의 정보를 줍니다.",
+        "parameters": [],
+        "security": [{ "token": [] }],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
       }
     },
     "/signup": {
@@ -127,19 +138,6 @@
         "description": "",
         "parameters": [],
         "responses": {}
-      }
-    },
-    "/main": {
-      "get": {
-        "tags": ["users"],
-        "description": "로그인 했으면 해당 유저의 정보를 줍니다.",
-        "parameters": [],
-        "security": [{ "token": [] }],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
       }
     },
     "/myProfile": {
