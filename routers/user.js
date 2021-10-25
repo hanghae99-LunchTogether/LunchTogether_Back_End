@@ -9,7 +9,7 @@ router.route('/login').post(controller.login,function(req, res){});
 router.route('/signup').post(controller.signup);
 router.route('/checkemil').post(controller.emailCheck,function(req, res){});
 router.route('/checknickname').post(controller.nickNameCheck,function(req, res){});
-router.route('/main').get(middleware,controller.getuser)
+router.route('/login').get(middleware,controller.getuser)
 router.route('/myProfile').patch(middleware, upload.single("image"),controller.upusers)
 
 

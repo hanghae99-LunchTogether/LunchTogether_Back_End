@@ -127,7 +127,7 @@ login = async (req, res) => {
           { id: users["id"], name: users["email"] },
           process.env.SECRET_KEY
         );
-        const data = {users}
+        const data = {user: users}
         logger.info("POST /login");
         return res
           .status(200)
