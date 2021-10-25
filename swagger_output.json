@@ -87,10 +87,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "username": {
                   "example": "이름 넣어야되요.. 실명"
                 },
-                "nickName": {
+                "nickname": {
                   "example": "닉네임 넣어야되요"
                 },
                 "email": {

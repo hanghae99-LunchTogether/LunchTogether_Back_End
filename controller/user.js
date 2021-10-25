@@ -63,14 +63,14 @@ async function nickNameCheck(nickName){
 
 //회원가입
 signup = async (req, res) => {
-  const { name, nickName, email, password } = req.body;
+  const { username, nickname, email, password } = req.body;
 
   try {
     if (await emailCheck(email)) {
       return res
         .status(400)
         .send({ result: "fail", msg: "이메일이 중복되었습니다." });
-    } else if (await nickNameCheck(nickName)) {
+    } else if (await nickNameCheck(nickname)) {
       return res
         .status(400)
         .send({ result: "fail", msg: "닉네임이 중복되었습니다." });
@@ -80,13 +80,13 @@ signup = async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      console.log(name,nickName, email, hashpw)
+      console.log(username,nickname, email, hashpw)
       const query =
         "insert into users (name, nickName, email, pw, salt) values(:name, :nickName, :email, :pw, :salt);";
       const users = await sequelize.query(query, {
         replacements: {
-          name: name,
-          nickName: nickName,
+          name: username,
+          nickName: nickname,
           email: email,
           pw: hashpw,
           salt: salt,
