@@ -16,20 +16,20 @@ app.use('/api', [Router]);
 
 // app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-// const { sequelize, Sequelize } = require('./models');
+const { sequelize, Sequelize } = require('./models');
 
-// const driver = async () => {
-//   try {
-//     await sequelize.sync();
-//   } catch (err) {
-//     console.error('초기화 실패');
-//     console.error(err);
-//     return;
-//   }
-//   console.log('초기화 완료.');
-// }
+const driver = async () => {
+  try {
+    await sequelize.sync();
+  } catch (err) {
+    console.error('초기화 실패');
+    console.error(err);
+    return;
+  }
+  console.log('초기화 완료.');
+}
 
-// driver();
+driver();
 
 
 module.exports = app;

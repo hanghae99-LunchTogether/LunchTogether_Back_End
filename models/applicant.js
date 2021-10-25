@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
+      approval: {
+        require: true,
+        type: DataTypes.BOOLEAN, 
+      }
     },
     {
       sequelize,
@@ -35,15 +39,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-//   likes.associate = function (models) {
-//     models.likes.belongsTo(models.posts, {
-//       foreignKey: 'postId',
-//       onDelete: 'cascade',
-//     });
-//     models.likes.belongsTo(models.users, {
-//       foreignKey: 'userId',
-//       onDelete: 'cascade',
-//     });
-//   };
+  applicant.associate = function (models) {
+    models.applicant.belongsTo(models.posts, {
+      foreignKey: 'postId',
+      onDelete: 'cascade',
+    });
+    models.applicant.belongsTo(models.users, {
+      foreignKey: 'userId',
+      onDelete: 'cascade',
+    });
+  };
   return applicant;
 };

@@ -44,15 +44,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-//   comments.associate = function (models) {
-//     models.comments.belongsTo(models.posts, {
-//       foreignKey: 'postId',
-//       onDelete: 'cascade',
-//     });
-//     models.comments.belongsTo(models.users, {
-//       foreignKey: 'userId',
-//       onDelete: 'cascade',
-//     });
-//   };
+  comments.associate = function (models) {
+    models.comments.belongsTo(models.posts, {
+      foreignKey: 'postId',
+      onDelete: 'cascade',
+    });
+    models.comments.belongsTo(models.users, {
+      foreignKey: 'userId',
+      onDelete: 'cascade',
+    });
+  };
   return comments;
 };

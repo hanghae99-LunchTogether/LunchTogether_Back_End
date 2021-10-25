@@ -45,20 +45,20 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-//   posts.associate = function (models) {
-//     //posts모델 안에 "postsId라는 컬럼 이름"으로 comments모델에 있는 "postId값"을 새로운 컬럼으로 추가한다.
-//     models.posts.hasMany(models.comments, {
-//       foreignKey: 'postId',
-//       sourceKey: 'postId',
-//     });
-//     models.posts.hasMany(models.likes, {
-//       foreignKey: 'postId',
-//       sourceKey: 'postId',
-//     });
-//     models.posts.belongsTo(models.users, {
-//       foreignKey: 'userId',
-//       sourceKey: 'userId',
-//     });
-//   };
+  posts.associate = function (models) {
+    //posts모델 안에 "postsId라는 컬럼 이름"으로 comments모델에 있는 "postId값"을 새로운 컬럼으로 추가한다.
+    models.posts.hasMany(models.comments, {
+      foreignKey: 'postId',
+      sourceKey: 'postId',
+    });
+    models.posts.hasMany(models.applicant, {
+      foreignKey: 'postId',
+      sourceKey: 'postId',
+    });
+    models.posts.belongsTo(models.users, {
+      foreignKey: 'userId',
+      onDelete: 'cascade',
+    });
+  };
   return posts;
 };

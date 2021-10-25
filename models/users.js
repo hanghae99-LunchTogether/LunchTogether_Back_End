@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: {
         type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         required: true,
       },
@@ -79,15 +80,23 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-//   users.associate = function (models) {
-//     models.users.hasMany(models.posts, {
-//       foreignKey: 'userId',
-//       sourceKey: 'userId',
-//     });
-//     models.users.hasMany(models.likes, {
-//       foreignKey: 'userId',
-//       sourceKey: 'userId',
-//     });
-//   };
+  users.associate = function (models) {
+    models.users.hasMany(models.posts, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+    models.users.hasMany(models.applicant, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+    models.users.hasMany(models.comments, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+    models.users.hasMany(models.usersReviews, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+  };
   return users;
 };

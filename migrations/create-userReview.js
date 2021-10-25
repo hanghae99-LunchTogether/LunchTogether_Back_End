@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       userId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'users',
@@ -17,7 +17,7 @@ module.exports = {
           },
       },
       targetUsers: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'users',

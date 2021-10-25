@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
       },
       userId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         require: true,
       },
       targetUsers: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         require: true,
       },
       stars: {
@@ -42,15 +42,11 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-//   users.associate = function (models) {
-//     models.users.hasMany(models.posts, {
-//       foreignKey: 'userId',
-//       sourceKey: 'userId',
-//     });
-//     models.users.hasMany(models.likes, {
-//       foreignKey: 'userId',
-//       sourceKey: 'userId',
-//     });
-//   };
+  usersReviews.associate = function (models) {
+    models.usersReviews.belongsTo(models.users, {
+      foreignKey: 'userId',
+      onDelete: 'cascade',
+    });
+  };
   return usersReviews;
 };

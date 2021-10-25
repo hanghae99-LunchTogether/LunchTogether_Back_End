@@ -24,6 +24,10 @@ module.exports = {
             key: 'userId',
           },
       },
+      approval: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN, 
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {
