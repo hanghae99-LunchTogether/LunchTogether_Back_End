@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const Router = require('./routers');
-app.use('/api', [Router]);
+app.use('/', [Router]);
 
 // app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
@@ -29,7 +29,7 @@ const driver = async () => {
   console.log('초기화 완료.');
 }
 
-driver();
+// driver();
 
 
 module.exports = app;
