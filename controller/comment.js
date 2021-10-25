@@ -10,21 +10,21 @@ commentget = async (req, res) => {
       include: [{ model: users, attributes: ["nickname"] }],
       where: { postId },
     });
-    logger.info('GET /comment/:postId')
+    logger.info("GET /comment/:postId");
     return res.status(200).send({
       result: "success",
       msg: "댓글 불러오기 성공",
       comment: comment,
     });
   } catch (err) {
-    logger.error(err)
+    logger.error(err);
     return res.status(400).send({
-        result: "fail",
-        msg: "댓글 불러오기 실패",
-      });
+      result: "fail",
+      msg: "댓글 불러오기 실패",
+    });
   }
 };
 
 module.exports = {
-    commentget: commentget
-  };
+  commentget: commentget,
+};

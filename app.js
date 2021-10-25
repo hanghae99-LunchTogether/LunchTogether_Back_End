@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 dotenv.config();
 
 const cors = require('cors');
@@ -11,25 +11,24 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const Router = require('./routers');
-app.use('/', [Router]);
+const Router = require("./routers");
+app.use("/", [Router]);
 
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-const { sequelize, Sequelize } = require('./models');
+const { sequelize, Sequelize } = require("./models");
 
 const driver = async () => {
   try {
     await sequelize.sync();
   } catch (err) {
-    console.error('초기화 실패');
+    console.error("초기화 실패");
     console.error(err);
     return;
   }
-  console.log('초기화 완료.');
-}
+  console.log("초기화 완료.");
+};
 
-// driver();
-
+//driver();
 
 module.exports = app;
