@@ -93,7 +93,7 @@ signup = async (req, res) => {
         },
         type: sequelize.QueryTypes.INSERT,
       });
-      logger.info("POST /sinup");
+      logger.info("POST /signup");
       return res.status(200).send({ result: "success", msg: "회원가입 완료." });
     }
   } catch (error) {
@@ -127,10 +127,11 @@ login = async (req, res) => {
           { id: users["id"], name: users["email"] },
           process.env.SECRET_KEY
         );
+        const data = {users}
         logger.info("POST /login");
         return res
           .status(200)
-          .send({ result: "success", msg: "로그인 완료.", token: token });
+          .send({ result: "success", msg: "로그인 완료.", token: token , data : data});
       }
     } else {
       logger.error(error);
