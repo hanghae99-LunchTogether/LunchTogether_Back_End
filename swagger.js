@@ -15,7 +15,7 @@ const doc = {
       description: '로그인',
     },
     {
-      name: 'sinup',
+      name: 'signup',
       description: '회원가입',
     },
     {
