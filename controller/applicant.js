@@ -65,12 +65,12 @@ applicantget = async (req, res) => {
     try {
       // comments table의 postId 조회
       const query =
-        "select * from applicants where postId = :postId;";
+        "select users.nickName, applicants.* from applicants inner join users on users.userId = applicants.userId where postId = :postId;";
       const applicant = await sequelize.query(query, {
         replacements: {
             postId : postid,
         },
-        type: sequelize.QueryTypes.DELETE,
+        type: sequelize.QueryTypes.SELECT,
       });
       const data = {data : applicant}
       logger.info("POST /comment/:postId");
