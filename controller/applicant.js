@@ -7,12 +7,12 @@ applicantpost = async (req, res) => {
   const user = res.locals.user;
   try {
     const query =
-      "insert into applicants set approval = :approval, lunchid = :lunchid, userId = :userId;";
+      "insert into applicants set approval = :approval, lunchid = :lunchid, userid = :userId;";
     const applicant = await sequelize.query(query, {
       replacements: {
         approval: false,
         lunchid: lunchid,
-        userId: user.userId,
+        userid: user.userid,
       },
       type: sequelize.QueryTypes.INSERT,
     });
@@ -36,11 +36,11 @@ applicantdelete = async (req, res) => {
   const user = res.locals.user;
   try {
     const query =
-      "DELETE FROM applicants WHERE lunchid = :lunchid AND userId = :userId;";
+      "DELETE FROM applicants WHERE lunchid = :lunchid AND userid = :userid;";
     const comment = await sequelize.query(query, {
       replacements: {
         lunchid: lunchid,
-        userId: user.userId,
+        userid: user.userid,
       },
       type: sequelize.QueryTypes.DELETE,
     });
@@ -65,7 +65,7 @@ applicantget = async (req, res) => {
   try {
     // comments table의 lunchid 조회
     const query =
-      "select users.nickname, applicants.* from applicants inner join users on users.userId = applicants.userId where lunchid = :lunchid;";
+      "select users.nickname, applicants.* from applicants inner join users on users.userid = applicants.userid where lunchid = :lunchid;";
     const applicant = await sequelize.query(query, {
       replacements: {
         lunchid: lunchid,
