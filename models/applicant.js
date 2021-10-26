@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class applicant extends Model {
     /**
@@ -13,24 +13,24 @@ module.exports = (sequelize, DataTypes) => {
   }
   applicant.init(
     {
-      applicantId: {
+      applicantid: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         required: true,
       },
-      postId: {
+      lunchid: {
         required: true,
         type: DataTypes.INTEGER,
       },
-      userId: {
+      userid: {
         required: true,
         type: DataTypes.INTEGER,
       },
       approval: {
         require: true,
-        type: DataTypes.BOOLEAN, 
-      }
+        type: DataTypes.BOOLEAN,
+      },
     },
     {
       sequelize,
@@ -40,13 +40,13 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   applicant.associate = function (models) {
-    models.applicant.belongsTo(models.posts, {
-      foreignKey: 'postId',
-      onDelete: 'cascade',
+    models.applicant.belongsTo(models.lunchs, {
+      foreignKey: "lunchid",
+      onDelete: "cascade",
     });
     models.applicant.belongsTo(models.users, {
-      foreignKey: 'userId',
-      onDelete: 'cascade',
+      foreignKey: "userid",
+      onDelete: "cascade",
     });
   };
   return applicant;

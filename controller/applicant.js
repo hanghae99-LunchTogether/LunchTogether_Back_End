@@ -1,7 +1,7 @@
 const { sequelize } = require("../models");
 const { logger } = require("../config/logger"); //로그
 
-//댓글 작성
+//점약 신청
 applicantpost = async (req, res) => {
   const { postId } = req.params; // params에 postId 객체
   const user = res.locals.user;
@@ -30,6 +30,7 @@ applicantpost = async (req, res) => {
   }
 };
 
+//신청 삭제
 applicantdelete = async (req, res) => {
   const { postId } = req.params;
   const user = res.locals.user;

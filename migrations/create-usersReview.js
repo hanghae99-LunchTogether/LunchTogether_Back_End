@@ -2,35 +2,34 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("usersReviews", {
-      reviewsId: {
+      reviewid: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userId: {
-        type: DataTypes.INTEGER,
+      userid: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
             model: 'users',
-            key: 'userId',
+            key: 'userid',
           },
       },
-      targetUsers: {
-        type: DataTypes.INTEGER,
+      targetusers: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
             model: 'users',
-            key: 'userId',
+            key: 'userid',
           },
       },
-      stars: {
-        type: DataTypes.STRING,
+      spoon: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       comments: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: Sequelize.STRING,
       },
     });
   },

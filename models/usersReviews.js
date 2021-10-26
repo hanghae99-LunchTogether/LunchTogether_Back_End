@@ -14,20 +14,20 @@ module.exports = (sequelize, DataTypes) => {
   }
   usersReviews.init(
     {
-      reviewsId: {
+      reviewid: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         required: true,
       },
-      userId: {
+      userid: {
         type: DataTypes.INTEGER,
         require: true,
       },
-      targetUsers: {
+      targetusers: {
         type: DataTypes.INTEGER,
         require: true,
       },
-      stars: {
+      spoon: {
         type: DataTypes.STRING,
         require: true,
       },
@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   usersReviews.associate = function (models) {
     models.usersReviews.belongsTo(models.users, {
-      foreignKey: 'userId',
+      foreignKey: 'userid',
       onDelete: 'cascade',
     });
   };

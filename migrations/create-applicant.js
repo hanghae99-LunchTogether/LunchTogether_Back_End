@@ -2,26 +2,26 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("applicant", {
-      applicantId: {
+      applicantid: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      postId: {
+      lunchid: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-            model: 'posts',
-            key: 'postId',
+            model: 'lunchs',
+            key: 'lunchid',
           },
       },
-      userId: {
+      userid: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
             model: 'users',
-            key: 'userId',
+            key: 'userid',
           },
       },
       approval: {

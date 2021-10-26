@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   comments.init(
     {
-      commentId: {
+      commentid: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -24,17 +24,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: true,
       },
-      postId: {
+      lunchid: {
         required: true,
         type: DataTypes.INTEGER,
       },
-      userId: {
+      userid: {
         required: true,
         type: DataTypes.INTEGER,
       },
-      date:{
-          require: true,
-          type: DataTypes.STRING,
+      time:{
+        require: true,
+        type: DataTypes.STRING,
       }
     },
     {
@@ -45,12 +45,12 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   comments.associate = function (models) {
-    models.comments.belongsTo(models.posts, {
-      foreignKey: 'postId',
+    models.comments.belongsTo(models.lunchs, {
+      foreignKey: 'lunchid',
       onDelete: 'cascade',
     });
     models.comments.belongsTo(models.users, {
-      foreignKey: 'userId',
+      foreignKey: 'userid',
       onDelete: 'cascade',
     });
   };

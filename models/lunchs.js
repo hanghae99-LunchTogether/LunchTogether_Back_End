@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class posts extends Model {
+  class lunchs extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,17 +11,21 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  posts.init(
+  lunchs.init(
     {
-      postId: {
+      lunchid: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         required: true,
       },
-      userId: {
+      userid: {
         required: true,
         type: DataTypes.INTEGER,
+      },
+      title: {
+        required: true,
+        type: DataTypes.STRING,
       },
       content: {
         required: true,
@@ -29,36 +33,42 @@ module.exports = (sequelize, DataTypes) => {
       },
       date: {
         type: DataTypes.STRING,
+        required: false,
+      },
+      time:{
+        type: DataTypes.STRING,
+        required: false,
       },
       location: {
         type: DataTypes.STRING,
+        required: false,
       },
-      usersNum: {
+      membernum: {
         type: DataTypes.STRING,
+        required: false,
       },
     },
     {
       sequelize,
-
-      modelName: 'posts',
+      modelName: 'lunchs',
       timestamps: false,
     }
   );
 
-  posts.associate = function (models) {
+  lunchs.associate = function (models) {
     //posts모델 안에 "postsId라는 컬럼 이름"으로 comments모델에 있는 "postId값"을 새로운 컬럼으로 추가한다.
-    models.posts.hasMany(models.comments, {
-      foreignKey: 'postId',
-      sourceKey: 'postId',
+    models.lunchs.hasMany(models.comments, {
+      foreignKey: 'lunchid',
+      sourceKey: 'lunchid',
     });
-    models.posts.hasMany(models.applicant, {
-      foreignKey: 'postId',
-      sourceKey: 'postId',
+    models.lunchs.hasMany(models.applicant, {
+      foreignKey: 'lunchid',
+      sourceKey: 'lunchid',
     });
-    models.posts.belongsTo(models.users, {
-      foreignKey: 'userId',
+    models.lunchs.belongsTo(models.users, {
+      foreignKey: 'userid',
       onDelete: 'cascade',
     });
   };
-  return posts;
+  return lunchs;
 };

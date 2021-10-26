@@ -2,7 +2,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("users", {
-      userId: {
+      userid: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -16,11 +16,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      pw: {
+      password: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      nickName: {
+      nickname: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -30,36 +30,31 @@ module.exports = {
       },
       image: {
         type: Sequelize.STRING,
-
       },
       mbti: {
         type: Sequelize.STRING,
-
       },
       gender: {
         type: Sequelize.STRING,
-
       },
       introduction: {
         type: Sequelize.STRING,
-
       },
       location: {
         type: Sequelize.STRING,
-
       },
       menu: {
         type: Sequelize.STRING,
-
       },
       company: {
         type: Sequelize.STRING,
-
       },
-      mannerStatus: {
+      mannerstatus: {
         type: Sequelize.STRING,
-
       },
+      imageurl :{
+        type: DataTypes.STRING,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {
