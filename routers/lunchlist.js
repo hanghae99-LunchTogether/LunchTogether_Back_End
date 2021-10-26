@@ -8,7 +8,11 @@ const {
 } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-router.route("/").get(getlunchlist).post(authMiddleware, postlunchlist);
-router.route("/:postid").get(detaillunchpost);
+router
+  .route("/")
+  .get(getlunchlist)
+  .post(authMiddleware, postlunchlist)
+  .patch(patchlunchlist);
+router.route("/:lunchid").get(detaillunchpost);
 
 module.exports = router;
