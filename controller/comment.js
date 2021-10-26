@@ -1,4 +1,4 @@
-const { comments, users , sequelize} = require("../models");
+const { comments, users, sequelize } = require("../models");
 const { logger } = require("../config/logger"); //로그
 
 commentget = async (req, res) => {
@@ -24,7 +24,6 @@ commentget = async (req, res) => {
     });
   }
 };
-
 
 //댓글 작성
 commentpost = async (req, res) => {
@@ -60,35 +59,35 @@ commentpost = async (req, res) => {
 
 //댓글 삭제
 commentdele = async (req, res) => {
-    const { commentid } = req.params;
-    const user = res.locals.user;
-    try {
-      // comments table의 postId 조회
-      const query =
-        "delete from comments where commentId = :commentId AND userId = :userId;";
-      const comment = await sequelize.query(query, {
-        replacements: {
-          comment: commentid,
-          userId : user.userId,
-        },
-        type: sequelize.QueryTypes.DELETE,
-      });
-      logger.info("POST /comment/:postId");
-      return res.status(200).send({
-        result: "success",
-        msg: "댓글 삭제 성공",
-      });
-    } catch (err) {
-      logger.error(err);
-      return res.status(400).send({
-        result: "fail",
-        msg: "댓글 삭제 실패",
-      });
-    }
-  };
+  const { commentid } = req.params;
+  const user = res.locals.user;
+  try {
+    // comments table의 postId 조회
+    const query =
+      "delete from comments where commentId = :commentId AND userId = :userId;";
+    const comment = await sequelize.query(query, {
+      replacements: {
+        comment: commentid,
+        userId: user.userId,
+      },
+      type: sequelize.QueryTypes.DELETE,
+    });
+    logger.info("POST /comment/:postId");
+    return res.status(200).send({
+      result: "success",
+      msg: "댓글 삭제 성공",
+    });
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send({
+      result: "fail",
+      msg: "댓글 삭제 실패",
+    });
+  }
+};
 
 module.exports = {
   commentget: commentget,
   commentpost: commentpost,
-  commentdele : commentdele,
+  commentdele: commentdele,
 };
