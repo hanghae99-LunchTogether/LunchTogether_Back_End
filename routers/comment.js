@@ -4,7 +4,7 @@ const middleware = require("../middlewares/authMiddleware");
 const { commentget, commentpost } = require("../controller/comment");
 
 router
-  .route("/:postid")
+  .route("/:lunchid")
   .get(middleware, commentget)
   .post(middleware, commentpost);
 router.route("/:commentid").delete(middleware, commentdele);
