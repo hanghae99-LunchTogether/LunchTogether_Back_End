@@ -67,12 +67,12 @@ postlunchlist = async (req, res) => {
       },
       type: sequelize.QueryTypes.INSERT,
     });
-    const data = { lunch :lunch}
+    const data = { lunch: lunch };
     logger.info("POST /lunchPost");
     return res.status(200).send({
       result: "success",
       msg: "게시글 작성 성공",
-      data : data,
+      data: data,
     });
   } catch (err) {
     logger.error(err);
@@ -113,12 +113,12 @@ updatelunchlist = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const data = {lunch : lunch}
+    const data = { lunch: lunch };
     logger.info("PATCH/lunchPost");
     return res.status(200).send({
       result: "success",
       msg: "약속 수정 성공",
-      data : data,
+      data: data,
     });
   } catch (err) {
     logger.error(err);
