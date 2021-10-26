@@ -125,7 +125,7 @@ login = async (req, res) => {
       if (inpw === users.password) {
         //,{expiresIn: '2h',} <- 만료시간 아직은 테스트 단계니깐 만료시간을 따로주지는 않음
         const token = jwt.sign(
-          { id: users["userid"], name: users["email"] },
+          { id: users["userid"], email: users["email"], nickname: users["nickname"] },
           process.env.SECRET_KEY
         );
         const data = { user: users };

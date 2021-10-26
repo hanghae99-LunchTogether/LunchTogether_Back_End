@@ -13,18 +13,18 @@ module.exports = async (req, res, next) => {
       return;
     }
     if (token) {
-      const { name } = jwt.verify(token, process.env.SECRET_KEY);
+      const {email} = jwt.verify(token, process.env.SECRET_KEY);
       const query = "select * from users where email = :email";
       const users = await sequelize.query(query, {
         replacements: {
-          email: name,
+          email: email,
         },
         type: sequelize.QueryTypes.SELECT,
       });
       const user = {
         userid: users[0]['userid'],
         email: users[0]['email'],
-        nickname: users[0]['nickName'],
+        nickname: users[0]['nickname'],
       };
       res.locals.user = user;
       console.log('로컬 유저는?', res.locals.user);
