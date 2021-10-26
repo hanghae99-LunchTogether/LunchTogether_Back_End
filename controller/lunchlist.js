@@ -45,7 +45,7 @@ detaillunchpost = async (req, res) => {
   }
 }
 
-getlunchposet = async (req, res) => {
+postlunchlist = async (req, res) => {
   const user = res.locals.user;
   const { post } = req.body;
   // const ispost = JSON.parse(post);
@@ -79,5 +79,5 @@ getlunchposet = async (req, res) => {
 module.exports = {
   getlunchlist: getlunchlist,
   detaillunchpost: detaillunchpost,
-  getlunchposet: getlunchposet,
+  postlunchlist: postlunchlist,
 };
