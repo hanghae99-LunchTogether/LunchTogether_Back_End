@@ -1,9 +1,10 @@
 const { comments, users, sequelize } = require("../models");
 const { logger } = require("../config/logger"); //로그
-require('date-utils');
+require("date-utils");
 
 commentget = async (req, res) => {
   const { lunchid } = req.params; // params에 lunchid 객체
+  console.log(req);
   try {
     // comments table의 lunchid 조회
     const comment = await comments.findAll({
@@ -11,6 +12,7 @@ commentget = async (req, res) => {
       include: [{ model: users, attributes: ["nickname"] }],
       where: { lunchid },
     });
+
     logger.info("GET /comment/:lunchid");
     return res.status(200).send({
       result: "success",
@@ -32,7 +34,7 @@ commentpost = async (req, res) => {
   const { comment } = req.body;
   const user = res.locals.user;
   const postDate = new Date();
-  const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+  const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   try {
     // comments table의 lunchid 조회
     const query =
@@ -42,7 +44,7 @@ commentpost = async (req, res) => {
         comment: comment,
         lunchid: lunchid,
         userid: user.userid,
-        time: time
+        time: time,
       },
       type: sequelize.QueryTypes.INSERT,
     });
