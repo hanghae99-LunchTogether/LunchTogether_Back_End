@@ -7,7 +7,7 @@ applicantpost = async (req, res) => {
   const user = res.locals.user;
   try {
     const query =
-      "insert into applicants set approval = :approval, lunchid = :lunchid, userid = :userId;";
+      "insert into applicants set approval = :approval, lunchid = :lunchid, userid = :userid;";
     const applicant = await sequelize.query(query, {
       replacements: {
         approval: false,
@@ -23,6 +23,7 @@ applicantpost = async (req, res) => {
     });
   } catch (err) {
     logger.error(err);
+    console.log(err)
     return res.status(400).send({
       result: "fail",
       msg: "신청 작성 실패",
