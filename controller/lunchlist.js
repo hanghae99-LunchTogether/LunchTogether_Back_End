@@ -1,5 +1,6 @@
 const { lunchs, sequelize, users } = require("../models");
 const { logger } = require("../config/logger"); //로그
+require('date-utils');
 
 getlunchlist = async (req, res) => {
   try {
@@ -47,14 +48,16 @@ detaillunchpost = async (req, res) => {
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { title, content, date, location, time, membernum } = req.body;
+  const { title, content, date, location, membernum } = req.body;
+  const postDate = new Date();
+  const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
 
   try {
     const querys =
       "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
     const lunch = await sequelize.query(querys, {
       replacements: {
-        userId: user.userId,
+        userId: user.userid,
         title: title,
         content: content,
         date: date,
@@ -82,8 +85,9 @@ postlunchlist = async (req, res) => {
 
 updatelunchlist = async (req, res) => {
   const { lunchid } = req.params;
-  const { title, content, date, location, time, membernum } = req.body;
-  // const ispost = JSON.parse(post);
+  const { title, content, date, location, membernum } = req.body;
+  const postDate = new Date();
+  const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
 
   try {
     let querys = "UPDATE lunchs SET";

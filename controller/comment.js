@@ -1,5 +1,6 @@
 const { comments, users, sequelize } = require("../models");
 const { logger } = require("../config/logger"); //로그
+require('date-utils');
 
 commentget = async (req, res) => {
   const { lunchid } = req.params; // params에 lunchid 객체
@@ -30,15 +31,18 @@ commentpost = async (req, res) => {
   const { lunchid } = req.params;
   const { comment } = req.body;
   const user = res.locals.user;
+  const postDate = new Date();
+  const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
   try {
     // comments table의 lunchid 조회
     const query =
-      "insert into comments set comment = :comment, lunchid = :lunchid, userId = :userId;";
+      "insert into comments set comment = :comment, lunchid = :lunchid, userid = :userid time = :time;";
     const comments = await sequelize.query(query, {
       replacements: {
         comment: comment,
         lunchid: lunchid,
-        userId: user.userId,
+        userid: user.userid,
+        time: time
       },
       type: sequelize.QueryTypes.INSERT,
     });
@@ -64,11 +68,11 @@ commentdele = async (req, res) => {
   try {
     // comments table의 lunchid 조회
     const query =
-      "delete from comments where commentId = :commentId AND userId = :userId;";
+      "delete from comments where commentId = :commentId AND userid = :userid;";
     const comment = await sequelize.query(query, {
       replacements: {
         comment: commentid,
-        userId: user.userId,
+        userid: user.userid,
       },
       type: sequelize.QueryTypes.DELETE,
     });
