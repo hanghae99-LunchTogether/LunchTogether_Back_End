@@ -76,6 +76,7 @@ postlunchlist = async (req, res) => {
     });
   } catch (err) {
     logger.error(err);
+    console.log(err);
     return res.status(400).send({
       result: "fail",
       msg: "게시글 작성 실패",
