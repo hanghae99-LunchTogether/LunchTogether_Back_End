@@ -35,7 +35,7 @@ commentpost = async (req, res) => {
     // comments table의 postId 조회
     const query =
       "insert into comments set comment = :comment, postId = :postId, userId = :userId;";
-    const comment = await sequelize.query(query, {
+    const comments = await sequelize.query(query, {
       replacements: {
         comment: comment,
         postId: postId,
