@@ -31,7 +31,9 @@ getlunchlist = async (req, res) => {
 getlunchposet = async (req, res) => {
   const user = res.locals.user;
   const { post } = req.body;
-  const ispost = JSON.parse(post);
+  // const ispost = JSON.parse(post);
+  console.log(post);
+  const ispost = post;
   try {
     const querys = "insert into posts (userId ,content , date, location) value (:userId,:content,:date,:location);";
     await sequelize.query(querys, {
@@ -52,7 +54,7 @@ getlunchposet = async (req, res) => {
     logger.error(err);
     return res.status(400).send({
       result: "fail",
-      msg: "게시글 작성 성공",
+      msg: "게시글 작성 실패",
     });
   }
 };
