@@ -4,6 +4,6 @@ const { getlunchlist, detaillunchpost } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 router.route("/").get(getlunchlist);
-router.route("/:postid").get(authMiddleware, detaillunchpost);
+router.route("/:postid").get(detaillunchpost);
 
 module.exports = router;
