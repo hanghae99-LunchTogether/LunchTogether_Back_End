@@ -28,7 +28,7 @@ detaillunchpost = async (req, res) => {
       include: [{ model: users, attributes: ["nickName"] }],
       where: { postId: postid },
     });
-    const data = { post: postDetail}
+    const data = { post: postDetail };
     logger.info("GET /lunchpost/:postId");
     return res.status(200).send({
       result: "success",
@@ -36,14 +36,14 @@ detaillunchpost = async (req, res) => {
       data: data,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     logger.error(err);
     return res.status(400).send({
       result: "fail",
       msg: "점심약속 상세정보 실패",
     });
   }
-}
+};
 
 getlunchposet = async (req, res) => {
   const user = res.locals.user;
@@ -52,17 +52,18 @@ getlunchposet = async (req, res) => {
   console.log(post);
   const ispost = post;
   try {
-    const querys = "insert into posts (userId ,content , date, location) value (:userId,:content,:date,:location);";
+    const querys =
+      "insert into posts (userId ,content , date, location) value (:userId,:content,:date,:location);";
     await sequelize.query(querys, {
-        replacements: {
-          userId: user.userId,
-          content: ispost.content,
-          date : ispost.date,
-          location : ispost.location
-        },
-        type: sequelize.QueryTypes.INSERT,
+      replacements: {
+        userId: user.userId,
+        content: ispost.content,
+        date: ispost.date,
+        location: ispost.location,
+      },
+      type: sequelize.QueryTypes.INSERT,
     });
-    logger.info('POST /lunchPost');
+    logger.info("POST /lunchPost");
     return res.status(200).send({
       result: "success",
       msg: "게시글 작성 성공",
