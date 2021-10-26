@@ -1,6 +1,6 @@
-'use strict';
-const { truncateSync } = require('fs');
-const { Model } = require('sequelize');
+"use strict";
+const { truncateSync } = require("fs");
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class comments extends Model {
     /**
@@ -32,26 +32,26 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
-      time:{
+      time: {
         require: true,
         type: DataTypes.STRING,
-      }
+      },
     },
     {
       sequelize,
-      modelName: 'comments',
+      modelName: "comments",
       timestamps: false,
     }
   );
 
   comments.associate = function (models) {
-    models.comments.belongsTo(models.lunchs, {
-      foreignKey: 'lunchid',
-      onDelete: 'cascade',
-    });
     models.comments.belongsTo(models.users, {
-      foreignKey: 'userid',
-      onDelete: 'cascade',
+      foreignKey: "userid",
+      onDelete: "cascade",
+    });
+    models.comments.belongsTo(models.lunchs, {
+      foreignKey: "lunchid",
+      onDelete: "cascade",
     });
   };
   return comments;

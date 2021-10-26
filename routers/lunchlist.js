@@ -8,10 +8,7 @@ const {
 } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-router
-  .route("/")
-  .get(getlunchlist)
-  .post(authMiddleware, postlunchlist);
+router.route("/").get(getlunchlist).post(authMiddleware, postlunchlist);
 router.route("/:postid").get(detaillunchpost);
 
 module.exports = router;

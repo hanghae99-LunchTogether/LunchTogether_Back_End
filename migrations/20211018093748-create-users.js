@@ -52,9 +52,9 @@ module.exports = {
       mannerstatus: {
         type: Sequelize.STRING,
       },
-      imageurl :{
+      imageurl: {
         type: DataTypes.STRING,
-      }
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
