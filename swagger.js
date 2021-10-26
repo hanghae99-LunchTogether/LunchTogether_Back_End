@@ -19,7 +19,7 @@ const doc = {
       description: '회원가입',
     },
     {
-      name: 'Post',
+      name: 'lunchPost',
       description: '게시판',
     },
     {

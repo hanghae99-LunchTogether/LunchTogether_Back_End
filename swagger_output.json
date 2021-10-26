@@ -17,27 +17,18 @@
       "description": "회원가입"
     },
     {
-      "name": "users",
-      "description": "유저정보"
-    },
-    {
       "name": "Post",
-      "description": "점심약속"
+      "description": "게시판"
     },
     {
-      "name": "comment",
+      "name": "reply",
       "description": "댓글"
+    },
+    {
+      "name": "Like",
+      "description": "좋아요"
     }
   ],
-  "securityDefinitions": {
-    "token": {
-      "type": "apiKey",
-      "name": "authorization",
-      "in": "header",
-      "description": "로그인 이후 토큰을 여기다가 넣으세요~! Bearer까먹지말구...!"
-    }
-  },
-
   "schemes": [
     "http",
     "https"
@@ -47,7 +38,7 @@
   "paths": {
     "/login": {
       "post": {
-        "tags": ["Login"],
+        "tags": [],
         "description": "",
         "parameters": [
           {
@@ -57,29 +48,21 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "아이디겟죠? Ex) dodo@dodo.com"
+                  "example": "any"
                 },
                 "password": {
-                  "example": "비밀번호 겟죠? Ex) 123123"
+                  "example": "any"
                 }
               }
             }
           }
         ],
-        "responses": {
-          "201": {
-            "description": "토큰이 나옵니다..! 토큰 넣어요"
-          },
-          "401": {
-            "description": "Bad Request"
-          }
-        }
+        "responses": {}
       },
       "get": {
-        "tags": ["users"],
-        "description": "로그인 했으면 해당 유저의 정보를 줍니다.",
+        "tags": [],
+        "description": "",
         "parameters": [],
-        "security": [{ "token": [] }],
         "responses": {
           "401": {
             "description": "Unauthorized"
@@ -89,7 +72,7 @@
     },
     "/signup": {
       "post": {
-        "tags": ["signup"],
+        "tags": [],
         "description": "",
         "parameters": [
           {
@@ -99,16 +82,16 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "이름 넣어야되요.. 실명"
+                  "example": "any"
                 },
                 "nickname": {
-                  "example": "닉네임 넣어야되요"
+                  "example": "any"
                 },
                 "email": {
-                  "example": "Do 이메일"
+                  "example": "any"
                 },
                 "password": {
-                  "example": "페스워드 DB에는 해싱해서 들어갑니다.!"
+                  "example": "any"
                 }
               }
             }
@@ -124,42 +107,22 @@
         }
       }
     },
-    "/checkemil": {
-      "post": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/checknickname": {
-      "post": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
-        "responses": {}
-      }
-    },
     "/myProfile": {
       "patch": {
-        "tags": ["users"],
-        "description": "위에는 json형식으로 user객체 밑에는 유저 프로필이미지파일",
+        "tags": [],
+        "description": "",
         "parameters": [
           {
             "name": "obj",
             "in": "body",
             "schema": {
               "type": "object",
-              "properties": [{
-                
-              }]
+              "properties": {
+                "user": {
+                  "example": "any"
+                }
+              }
             }
-          },
-          {
-            "in": "formData",
-            "name": "image",
-            "required": true,
-            "type": "file"
           }
         ],
         "responses": {
@@ -170,6 +133,205 @@
       }
     },
     "/comment/{postid}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "postid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "postid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/comment/{commentid}": {
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "commentid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/lunchpost/": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "post": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/spoon/": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "targetUserId": {
+                  "example": "any"
+                },
+                "spoon": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/spoon/{userid}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/applicant/{postid}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "postid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "post": {
         "tags": [],
         "description": "",
@@ -187,6 +349,32 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "postid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }

@@ -43,9 +43,41 @@ detaillunchpost = async (req, res) => {
       msg: "점심약속 상세정보 실패",
     });
   }
+}
+
+getlunchposet = async (req, res) => {
+  const user = res.locals.user;
+  const { post } = req.body;
+  // const ispost = JSON.parse(post);
+  console.log(post);
+  const ispost = post;
+  try {
+    const querys = "insert into posts (userId ,content , date, location) value (:userId,:content,:date,:location);";
+    await sequelize.query(querys, {
+        replacements: {
+          userId: user.userId,
+          content: ispost.content,
+          date : ispost.date,
+          location : ispost.location
+        },
+        type: sequelize.QueryTypes.INSERT,
+    });
+    logger.info('POST /lunchPost');
+    return res.status(200).send({
+      result: "success",
+      msg: "게시글 작성 성공",
+    });
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send({
+      result: "fail",
+      msg: "게시글 작성 실패",
+    });
+  }
 };
 
 module.exports = {
   getlunchlist: getlunchlist,
   detaillunchpost: detaillunchpost,
+  getlunchposet: getlunchposet,
 };
