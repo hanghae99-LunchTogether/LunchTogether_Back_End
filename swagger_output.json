@@ -1,0 +1,196 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Lunch Meet",
+    "description": "Description"
+  },
+  "host": "3.35.54.135",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Login",
+      "description": "로그인"
+    },
+    {
+      "name": "signup",
+      "description": "회원가입"
+    },
+    {
+      "name": "users",
+      "description": "유저정보"
+    },
+    {
+      "name": "Post",
+      "description": "점심약속"
+    },
+    {
+      "name": "comment",
+      "description": "댓글"
+    }
+  ],
+  "securityDefinitions": {
+    "token": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header",
+      "description": "로그인 이후 토큰을 여기다가 넣으세요~! Bearer까먹지말구...!"
+    }
+  },
+
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["Login"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "아이디겟죠? Ex) dodo@dodo.com"
+                },
+                "password": {
+                  "example": "비밀번호 겟죠? Ex) 123123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "토큰이 나옵니다..! 토큰 넣어요"
+          },
+          "401": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": ["users"],
+        "description": "로그인 했으면 해당 유저의 정보를 줍니다.",
+        "parameters": [],
+        "security": [{ "token": [] }],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "tags": ["signup"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "이름 넣어야되요.. 실명"
+                },
+                "nickname": {
+                  "example": "닉네임 넣어야되요"
+                },
+                "email": {
+                  "example": "Do 이메일"
+                },
+                "password": {
+                  "example": "페스워드 DB에는 해싱해서 들어갑니다.!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/checkemil": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/checknickname": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/myProfile": {
+      "patch": {
+        "tags": ["users"],
+        "description": "위에는 json형식으로 user객체 밑에는 유저 프로필이미지파일",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": [{
+                
+              }]
+            }
+          },
+          {
+            "in": "formData",
+            "name": "image",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/comment/{postid}": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "postid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}

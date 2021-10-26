@@ -1,4 +1,4 @@
-const { comments, users } = require("../models");
+const { comments, users, sequelize } = require("../models");
 const { logger } = require("../config/logger"); //로그
 
 commentget = async (req, res) => {
@@ -25,35 +25,63 @@ commentget = async (req, res) => {
   }
 };
 
+//댓글 작성
 commentpost = async (req, res) => {
   const { postId } = req.params;
   const { comment } = req.body;
   const user = res.locals.user;
   try {
-    // cooments table에 content,post,user 칼럼 생성
-    await comments.create({
-      comment,
-      postId,
-      userId: user.userId,
+    // comments table의 postId 조회
+    const query =
+      "insert into comments set comment = :comment, postId = :postId, userId = :userId;";
+    const comment = await sequelize.query(query, {
+      replacements: {
+        comment: comment,
+        postId: postId,
+        userId: user.userId,
+      },
+      type: sequelize.QueryTypes.INSERT,
     });
-    // 댓글등록 시, comments table의 조건 조회
-    const createdcomment = await comments.findOne({
-      where: { comment, postId, userId },
-    });
-    console.log(createdcomment);
     logger.info("POST /comment/:postId");
-    // 등록한 댓글의 postId 선택
-    const comment = createdcomment.postId;
     return res.status(200).send({
       result: "success",
-      msg: "댓글 등록 성공",
-      comment: comment,
+      msg: "댓글 작성 성공",
+      test: comment,
     });
   } catch (err) {
     logger.error(err);
     return res.status(400).send({
       result: "fail",
-      msg: "댓글 등록 실패",
+      msg: "댓글 작성 실패",
+    });
+  }
+};
+
+//댓글 삭제
+commentdele = async (req, res) => {
+  const { commentid } = req.params;
+  const user = res.locals.user;
+  try {
+    // comments table의 postId 조회
+    const query =
+      "delete from comments where commentId = :commentId AND userId = :userId;";
+    const comment = await sequelize.query(query, {
+      replacements: {
+        comment: commentid,
+        userId: user.userId,
+      },
+      type: sequelize.QueryTypes.DELETE,
+    });
+    logger.info("POST /comment/:postId");
+    return res.status(200).send({
+      result: "success",
+      msg: "댓글 삭제 성공",
+    });
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send({
+      result: "fail",
+      msg: "댓글 삭제 실패",
     });
   }
 };
@@ -61,4 +89,5 @@ commentpost = async (req, res) => {
 module.exports = {
   commentget: commentget,
   commentpost: commentpost,
+  commentdele: commentdele,
 };

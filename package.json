@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,8 @@
     "nodemon": "^2.0.13",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0",
+    "swagger-autogen": "^2.12.2",
+    "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   }
