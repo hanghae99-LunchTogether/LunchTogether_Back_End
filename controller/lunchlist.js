@@ -47,19 +47,21 @@ detaillunchpost = async (req, res) => {
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { content, date, location } = req.body;
+  const { title, content, date, location, time, membernum } = req.body;
   // const ispost = JSON.parse(post);
   console.log(post);
-  const ispost = post;
   try {
     const querys =
       "insert into posts (userId ,content , date, location) value (:userId,:content,:date,:location);";
     await sequelize.query(querys, {
       replacements: {
         userId: user.userId,
+        title: title,
         content: content,
         date: date,
         location: location,
+        time: time,
+        membernum: membernum,
       },
       type: sequelize.QueryTypes.INSERT,
     });
@@ -77,8 +79,52 @@ postlunchlist = async (req, res) => {
   }
 };
 
+updatelunchlist = async (req, res) => {
+  const { postid } = req.params;
+  const { title, content, date, location, time, membernum } = req.body;
+  // const ispost = JSON.parse(post);
+
+  try {
+    let querys = "UPDATE lunchs SET";
+    if (title) querys = querys + " title = :title,";
+    if (content) querys = querys + " content = :content,";
+    if (date) querys = querys + " date = :date,";
+    if (location) querys = querys + " location = :location,";
+    if (time) querys = querys + " time = :time,";
+    if (membernum) querys = querys + " membernum = :membernum,";
+
+    querys = querys.slice(0, -1);
+
+    querys = querys + " WHERE postid = :postid;";
+    await sequelize.query(querys, {
+      replacements: {
+        postid: postid,
+        title: title,
+        content: content,
+        date: date,
+        location: location,
+        time: time,
+        membernum: membernum,
+      },
+      type: sequelize.QueryTypes.UPDATE,
+    });
+    logger.info("PATCH/lunchPost");
+    return res.status(200).send({
+      result: "success",
+      msg: "약속 수정 성공",
+    });
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send({
+      result: "fail",
+      msg: "약속 수정 실패",
+    });
+  }
+};
+
 module.exports = {
   getlunchlist: getlunchlist,
   detaillunchpost: detaillunchpost,
   postlunchlist: postlunchlist,
+  updatelunchlist: updatelunchlist,
 };

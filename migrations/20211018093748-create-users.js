@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
+      username: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -52,9 +52,9 @@ module.exports = {
       mannerstatus: {
         type: Sequelize.STRING,
       },
-      imageurl :{
+      imageurl: {
         type: DataTypes.STRING,
-      }
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

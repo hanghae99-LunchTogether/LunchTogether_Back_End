@@ -40,12 +40,12 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   applicant.associate = function (models) {
-    models.applicant.belongsTo(models.users, {
-      foreignKey: "userid",
-      onDelete: "cascade",
-    });
     models.applicant.belongsTo(models.lunchs, {
       foreignKey: "lunchid",
+      onDelete: "cascade",
+    });
+    models.applicant.belongsTo(models.users, {
+      foreignKey: "userid",
       onDelete: "cascade",
     });
   };
