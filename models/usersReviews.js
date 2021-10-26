@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       reviewid: {
         type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         required: true,
       },
@@ -28,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         require: true,
       },
       spoon: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         require: true,
       },
       comments:{
