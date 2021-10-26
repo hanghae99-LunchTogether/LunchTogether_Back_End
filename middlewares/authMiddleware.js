@@ -22,7 +22,7 @@ module.exports = async (req, res, next) => {
         type: sequelize.QueryTypes.SELECT,
       });
       const user = {
-        userId: users[0]['userId'],
+        userid: users[0]['userid'],
         email: users[0]['email'],
         nickname: users[0]['nickName'],
       };
