@@ -45,14 +45,14 @@ async function emailCheck(email) {
   }
 }
 
-async function nickNameCheck(nickName) {
+async function nickNameCheck(nickname) {
   try {
-    const isemail = await users.findOne({ where: { nickName: nickName } });
+    const isemail = await users.findOne({ where: { nickname: nickname } });
     if (isemail) {
-      console.log("닉네임 존재함" + nickName);
+      console.log("닉네임 존재함" + nickname);
       return true;
     } else {
-      console.log("닉네임 없음" + nickName);
+      console.log("닉네임 없음" + nickname);
       return false;
     }
   } catch (error) {
@@ -81,13 +81,13 @@ signup = async (req, res) => {
         .digest("hex");
       console.log(username, nickname, email, hashpw);
       const query =
-        "insert into users (name, nickName, email, pw, salt) values(:name, :nickName, :email, :pw, :salt);";
+        "insert into users (username, nickname, email, password, salt) values(:name, :nickname, :email, :password, :salt);";
       const users = await sequelize.query(query, {
         replacements: {
-          name: username,
-          nickName: nickname,
+          username: username,
+          nickname: nickname,
           email: email,
-          pw: hashpw,
+          password: hashpw,
           salt: salt,
         },
         type: sequelize.QueryTypes.INSERT,
@@ -122,10 +122,10 @@ login = async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      if (inpw === users.pw) {
+      if (inpw === users.password) {
         //,{expiresIn: '2h',} <- 만료시간 아직은 테스트 단계니깐 만료시간을 따로주지는 않음
         const token = jwt.sign(
-          { id: users["id"], name: users["email"] },
+          { id: users["userid"], name: users["email"] },
           process.env.SECRET_KEY
         );
         const data = { user: users };
@@ -156,12 +156,11 @@ login = async (req, res) => {
 //유저정보 요청
 getuser = async (req, res) => {
   const user = res.locals.user;
-
   try {
-    const query = "select * from users where userId = :userId";
+    const query = "select * from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
-        userId: user.userId,
+        userid: user.userid,
       },
       type: sequelize.QueryTypes.SELECT,
     });
@@ -182,7 +181,7 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
-  const { user } = req.body;
+  const { username, password, email, nickname, menu ,mbti, gender, location, company, introduction } = req.body;
   const isuser = JSON.parse(user);
 
   if (req.file) {
@@ -198,34 +197,36 @@ upusers = async (req, res) => {
     });
     let originalUrl;
     let querys = "UPDATE users SET ";
-    if (isuser.email) querys = querys + " email = :email,";
-    if (isuser.name) querys = querys + " name = :name,";
+    if (username) querys = querys + " username = :username,";
+    if (nickname) querys = querys + " nickname = :nickname,";
+    if (email) querys = querys + " email = :email,";
     if (req.file) {
       querys = querys + " image = :image,";
       originalUrl = req.file.location;
     }
-    if (isuser.mbti) querys = querys + " mbti = :mbti,";
-    if (isuser.gender) querys = querys + " gender = :gender,";
-    if (isuser.introduction) querys = querys + " introduction = :introduction,";
-    if (isuser.location) querys = querys + " location = :location,";
-    if (isuser.menu) querys = querys + " menu = :menu,";
-    if (isuser.company) querys = querys + " company = :company,";
+    if (mbti) querys = querys + " mbti = :mbti,";
+    if (gender) querys = querys + " gender = :gender,";
+    if (introduction) querys = querys + " introduction = :introduction,";
+    if (location) querys = querys + " location = :location,";
+    if (menu) querys = querys + " menu = :menu,";
+    if (company) querys = querys + " company = :company,";
     querys = querys.slice(0, -1);
     console.log(querys[querys.length - 1]);
-    querys = querys + " WHERE userId = :userId;";
+    querys = querys + " WHERE userid = :userid;";
     console.log("마지막으로 완성된 쿼리문", querys);
     await sequelize.query(querys, {
       replacements: {
-        email: isuser.email,
-        name: isuser.name,
+        username: username,
+        nickname : nickname,
+        email: email,
         image: originalUrl,
-        mbti: isuser.mbti,
-        gender: isuser.gender,
-        introduction: isuser.introduction,
-        location: isuser.location,
-        menu: isuser.menu,
-        company: isuser.company,
-        userId: users[0].userId,
+        mbti: mbti,
+        gender: gender,
+        introduction: introduction,
+        location: location,
+        menu: menu,
+        company: company,
+        userid: users[0].userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });

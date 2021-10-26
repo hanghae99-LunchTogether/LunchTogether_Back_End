@@ -3,16 +3,16 @@ const { logger } = require("../config/logger"); //로그
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
-  const { targetUserId, spoon } = req.body;
+  const { targetuserid, spoon } = req.body;
   const user = res.locals.user;
   try {
     const query =
-      "insert into usersReviews set userId = :userId, targetUsers = :targetUsers, stars = :star, comments = :comment;";
+      "insert into usersReviews set userid = :userid, targetusers = :targetusers, spoon = :spoon, comments = :comment;";
     const comment = await sequelize.query(query, {
       replacements: {
-        userId: user.userId,
-        targetUsers: targetUserId,
-        star: spoon,
+        userid: user.userid,
+        targetusers: targetuserid,
+        spoon: spoon,
         comment: "현재는 테스트",
       },
       type: sequelize.QueryTypes.INSERT,
@@ -36,10 +36,10 @@ spoonget = async (req, res) => {
   const { userid } = req.params;
   try {
     const query =
-      "select users.nickName , usersReviews.* from users inner join usersReviews on users.userId = usersReviews.userId where usersReviews.userId = :userId ;";
+      "select users.nickName , usersReviews.* from users inner join usersReviews on users.userid = usersReviews.userid where usersReviews.userid = :userid ;";
     const userspoon = await sequelize.query(query, {
         replacements: {
-            userId: userid,
+            userid: userid,
           },
       type: sequelize.QueryTypes.SELECT,
     });
@@ -50,7 +50,7 @@ spoonget = async (req, res) => {
     sum = sum/userspoon.length;
     data = {
         spoon : sum,
-        targetuser : userspoon[0].nickName
+        targetuser : userspoon[0].nickname
     }
     logger.info("GET /spoon");
     return res.status(200).send({
