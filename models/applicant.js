@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class applicant extends Model {
     /**
@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       approval: {
         require: true,
-        type: DataTypes.BOOLEAN, 
-      }
+        type: DataTypes.BOOLEAN,
+      },
     },
     {
       sequelize,
@@ -41,12 +41,12 @@ module.exports = (sequelize, DataTypes) => {
 
   applicant.associate = function (models) {
     models.applicant.belongsTo(models.lunchs, {
-      foreignKey: 'lunchid',
-      onDelete: 'cascade',
+      foreignKey: "lunchid",
+      onDelete: "cascade",
     });
     models.applicant.belongsTo(models.users, {
-      foreignKey: 'userid',
-      onDelete: 'cascade',
+      foreignKey: "userid",
+      onDelete: "cascade",
     });
   };
   return applicant;

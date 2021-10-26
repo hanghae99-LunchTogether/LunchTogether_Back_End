@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     /**
@@ -52,64 +52,63 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      introduction:{
+      introduction: {
         type: DataTypes.STRING,
         require: false,
       },
-      location:{
+      location: {
         type: DataTypes.STRING,
         require: false,
       },
-      menu:{
+      menu: {
         type: DataTypes.STRING,
         require: false,
       },
-      company:{
+      company: {
         type: DataTypes.STRING,
         require: false,
       },
-      mannerStatus:{
+      mannerStatus: {
         type: DataTypes.STRING,
         require: false,
       },
-      imageUrl :{
+      imageUrl: {
         type: DataTypes.STRING,
         require: false,
-      }
+      },
     },
 
     {
       sequelize,
-      modelName: 'users',
+      modelName: "users",
       timestamps: false,
     }
   );
   users.associate = function (models) {
     users.hasMany(models.applicant, {
       constraints: false,
-        timestamps: false,
-      foreignKey: 'userid',
-      sourceKey: 'userid',
+      timestamps: false,
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
     users.hasMany(models.comments, {
       constraints: false,
-        timestamps: false,
-      foreignKey: 'userid',
-      sourceKey: 'userid',
+      timestamps: false,
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
     users.hasMany(models.usersReviews, {
       constraints: false,
-        timestamps: false,
-      foreignKey: 'userid',
-      sourceKey: 'userid',
+      timestamps: false,
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
     users.hasMany(models.lunchs, {
       constraints: false,
-        timestamps: false,
-      foreignKey: 'userid',
-      sourceKey: 'userid',
+      timestamps: false,
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
-
   };
   return users;
 };
