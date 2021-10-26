@@ -1,16 +1,16 @@
-const { posts, sequelize, users } = require("../models");
+const { lunchs, sequelize, users } = require("../models");
 const { logger } = require("../config/logger"); //로그
 
 getlunchlist = async (req, res) => {
   try {
-    const post = await posts.findAll({
+    const lunch = await lunchs.findAll({
       order: [["date", "DESC"]],
     });
     logger.info("GET /lunchpost/");
     return res.status(200).send({
       result: "success",
       msg: "리스트 불러오기 성공",
-      posts: post,
+      lunch: lunch,
     });
   } catch (err) {
     logger.error(err);
@@ -22,14 +22,14 @@ getlunchlist = async (req, res) => {
 };
 
 detaillunchpost = async (req, res) => {
-  const { postid } = req.params;
+  const { lunchid } = req.params;
   try {
-    const postDetail = await posts.findOne({
+    const lunchDetail = await lunchs.findOne({
       include: [{ model: users, attributes: ["nickName"] }],
-      where: { postId: postid },
+      where: { lunchid: lunchid },
     });
-    const data = { post: postDetail };
-    logger.info("GET /lunchpost/:postId");
+    const data = { lunch: lunchDetail };
+    logger.info("GET /lunchpost/:lunchId");
     return res.status(200).send({
       result: "success",
       msg: "점심약속 상세정보 성공",
@@ -48,11 +48,10 @@ detaillunchpost = async (req, res) => {
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
   const { title, content, date, location, time, membernum } = req.body;
-  // const ispost = JSON.parse(post);
-  console.log(post);
+
   try {
     const querys =
-      "insert into posts (userId ,content , date, location) value (:userId,:content,:date,:location);";
+      "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
     await sequelize.query(querys, {
       replacements: {
         userId: user.userId,
@@ -80,7 +79,7 @@ postlunchlist = async (req, res) => {
 };
 
 updatelunchlist = async (req, res) => {
-  const { postid } = req.params;
+  const { lunchid } = req.params;
   const { title, content, date, location, time, membernum } = req.body;
   // const ispost = JSON.parse(post);
 
@@ -95,10 +94,10 @@ updatelunchlist = async (req, res) => {
 
     querys = querys.slice(0, -1);
 
-    querys = querys + " WHERE postid = :postid;";
+    querys = querys + " WHERE lunchid = :lunchid;";
     await sequelize.query(querys, {
       replacements: {
-        postid: postid,
+        lunchid: lunchid,
         title: title,
         content: content,
         date: date,
@@ -109,6 +108,7 @@ updatelunchlist = async (req, res) => {
       type: sequelize.QueryTypes.UPDATE,
     });
     logger.info("PATCH/lunchPost");
+
     return res.status(200).send({
       result: "success",
       msg: "약속 수정 성공",
