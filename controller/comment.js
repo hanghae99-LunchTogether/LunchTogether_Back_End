@@ -37,22 +37,17 @@ commentpost = async (req, res) => {
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   try {
     // comments table의 lunchid 조회
-    const query =
-      "insert into comments set comment = :comment, lunchid = :lunchid, userid = :userid time = :time;";
-    const comments = await sequelize.query(query, {
-      replacements: {
-        comment: comment,
-        lunchid: lunchid,
-        userid: user.userid,
-        time: time,
-      },
-      type: sequelize.QueryTypes.INSERT,
+    const createdcomment = await comments.create({
+      comment: comment,
+      lunchid: lunchid,
+      userid: user.userid,
+      time: time,
     });
     logger.info("POST /comment/:lunchid");
     return res.status(200).send({
       result: "success",
       msg: "댓글 작성 성공",
-      test: comment,
+      comment: createdcomment,
     });
   } catch (err) {
     logger.error(err);
