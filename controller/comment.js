@@ -65,15 +65,16 @@ commentdele = async (req, res) => {
   try {
     // comments table의 lunchid 조회
     const query =
-      "delete from comments where commentId = :commentId AND userid = :userid;";
+      "delete from comments where commentid = :commentid AND userid = :userid;";
     const comment = await sequelize.query(query, {
       replacements: {
-        comment: commentid,
+        commentid: commentid,
         userid: user.userid,
       },
       type: sequelize.QueryTypes.DELETE,
     });
-    logger.info("POST /comment/:lunchid");
+
+    logger.info("delete /comment/:commentid");
     return res.status(200).send({
       result: "success",
       msg: "댓글 삭제 성공",
