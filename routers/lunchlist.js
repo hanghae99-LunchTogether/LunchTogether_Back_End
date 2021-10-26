@@ -4,15 +4,15 @@ const {
   getlunchlist,
   detaillunchpost,
   postlunchlist,
-  patchlunchlist,
+  updatelunchlist,
 } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 router
   .route("/")
   .get(getlunchlist)
-  .post(authMiddleware, postlunchlist)
-  .patch(patchlunchlist);
-router.route("/:lunchid").get(detaillunchpost);
+  .post(authMiddleware, postlunchlist);
+  
+router.route("/:lunchid").get(detaillunchpost).patch(updatelunchlist);
 
 module.exports = router;

@@ -52,7 +52,7 @@ postlunchlist = async (req, res) => {
   try {
     const querys =
       "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
-    await sequelize.query(querys, {
+    const lunch = await sequelize.query(querys, {
       replacements: {
         userId: user.userId,
         title: title,
@@ -64,10 +64,12 @@ postlunchlist = async (req, res) => {
       },
       type: sequelize.QueryTypes.INSERT,
     });
+    const data = { lunch :lunch}
     logger.info("POST /lunchPost");
     return res.status(200).send({
       result: "success",
       msg: "게시글 작성 성공",
+      data : data,
     });
   } catch (err) {
     logger.error(err);
@@ -95,7 +97,7 @@ updatelunchlist = async (req, res) => {
     querys = querys.slice(0, -1);
 
     querys = querys + " WHERE lunchid = :lunchid;";
-    await sequelize.query(querys, {
+    const lunch = await sequelize.query(querys, {
       replacements: {
         lunchid: lunchid,
         title: title,
@@ -107,11 +109,12 @@ updatelunchlist = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
+    const data = {lunch : lunch}
     logger.info("PATCH/lunchPost");
-
     return res.status(200).send({
       result: "success",
       msg: "약속 수정 성공",
+      data : data,
     });
   } catch (err) {
     logger.error(err);
