@@ -25,7 +25,7 @@ module.exports = {
           },
       },
       spoon: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       comments: {
