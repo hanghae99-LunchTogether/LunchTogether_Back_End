@@ -2,7 +2,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("comments", {
-      commentId: {
+      commentid: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -12,20 +12,25 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      postId: {
+      lunchid: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        references: {
+          model: 'lunchs',
+          key: 'lunchid',
+        },
+        onDelete: 'cascade',
       },
-      userId: {
+      userid: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
             model: 'users',
-            key: 'userId',
+            key: 'userid',
           },
           onDelete: 'cascade',
       },
-      date: {
+      time: {
         allowNull: false,
         type: Sequelize.STRING,
       },

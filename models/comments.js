@@ -1,6 +1,6 @@
-'use strict';
-const { truncateSync } = require('fs');
-const { Model } = require('sequelize');
+"use strict";
+const { truncateSync } = require("fs");
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class comments extends Model {
     /**
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   comments.init(
     {
-      commentId: {
+      commentid: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -24,34 +24,34 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: true,
       },
-      postId: {
+      lunchid: {
         required: true,
         type: DataTypes.INTEGER,
       },
-      userId: {
+      userid: {
         required: true,
         type: DataTypes.INTEGER,
       },
-      date:{
-          require: true,
-          type: DataTypes.STRING,
-      }
+      time: {
+        require: true,
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
-      modelName: 'comments',
+      modelName: "comments",
       timestamps: false,
     }
   );
 
   comments.associate = function (models) {
-    models.comments.belongsTo(models.posts, {
-      foreignKey: 'postId',
-      onDelete: 'cascade',
-    });
     models.comments.belongsTo(models.users, {
-      foreignKey: 'userId',
-      onDelete: 'cascade',
+      foreignKey: "userid",
+      onDelete: "cascade",
+    });
+    models.comments.belongsTo(models.lunchs, {
+      foreignKey: "lunchid",
+      onDelete: "cascade",
     });
   };
   return comments;

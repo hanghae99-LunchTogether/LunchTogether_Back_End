@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     /**
@@ -28,11 +28,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: true,
       },
-      pw: {
+      password: {
         type: DataTypes.STRING,
         require: true,
       },
-      nickName: {
+      nickname: {
         type: DataTypes.STRING,
         require: true,
       },
@@ -52,50 +52,54 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      introduction:{
+      introduction: {
         type: DataTypes.STRING,
         require: false,
       },
-      location:{
+      location: {
         type: DataTypes.STRING,
         require: false,
       },
-      menu:{
+      menu: {
         type: DataTypes.STRING,
         require: false,
       },
-      company:{
+      company: {
         type: DataTypes.STRING,
         require: false,
       },
-      mannerStatus:{
+      mannerStatus: {
         type: DataTypes.STRING,
         require: false,
-      }
+      },
+      imageUrl: {
+        type: DataTypes.STRING,
+        require: false,
+      },
     },
 
     {
       sequelize,
-      modelName: 'users',
+      modelName: "users",
       timestamps: false,
     }
   );
   users.associate = function (models) {
-    models.users.hasMany(models.posts, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.applicant, {
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
-    models.users.hasMany(models.applicant, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.comments, {
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
-    models.users.hasMany(models.comments, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.usersReviews, {
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
-    models.users.hasMany(models.usersReviews, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.lunchs, {
+      foreignKey: "userid",
+      sourceKey: "userid",
     });
   };
   return users;
