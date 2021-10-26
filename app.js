@@ -29,6 +29,6 @@ const driver = async () => {
   console.log("초기화 완료.");
 };
 
-//driver();
+driver();
 
 module.exports = app;

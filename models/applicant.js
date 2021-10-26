@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
   }
   applicant.init(
     {
-      applicantId: {
+      applicantid: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         required: true,
       },
-      postId: {
+      lunchid: {
         required: true,
         type: DataTypes.INTEGER,
       },
-      userId: {
+      userid: {
         required: true,
         type: DataTypes.INTEGER,
       },
@@ -40,12 +40,12 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   applicant.associate = function (models) {
-    models.applicant.belongsTo(models.posts, {
-      foreignKey: 'postId',
+    models.applicant.belongsTo(models.lunchs, {
+      foreignKey: 'lunchid',
       onDelete: 'cascade',
     });
     models.applicant.belongsTo(models.users, {
-      foreignKey: 'userId',
+      foreignKey: 'userid',
       onDelete: 'cascade',
     });
   };

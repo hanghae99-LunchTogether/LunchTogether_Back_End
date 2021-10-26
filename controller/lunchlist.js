@@ -47,7 +47,7 @@ detaillunchpost = async (req, res) => {
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { post } = req.body;
+  const { content, date, location } = req.body;
   // const ispost = JSON.parse(post);
   console.log(post);
   const ispost = post;
@@ -56,9 +56,9 @@ postlunchlist = async (req, res) => {
     await sequelize.query(querys, {
         replacements: {
           userId: user.userId,
-          content: ispost.content,
-          date : ispost.date,
-          location : ispost.location
+          content: content,
+          date : date,
+          location : location
         },
         type: sequelize.QueryTypes.INSERT,
     });

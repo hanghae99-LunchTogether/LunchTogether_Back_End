@@ -28,11 +28,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: true,
       },
-      pw: {
+      password: {
         type: DataTypes.STRING,
         require: true,
       },
-      nickName: {
+      nickname: {
         type: DataTypes.STRING,
         require: true,
       },
@@ -71,6 +71,10 @@ module.exports = (sequelize, DataTypes) => {
       mannerStatus:{
         type: DataTypes.STRING,
         require: false,
+      },
+      imageUrl :{
+        type: DataTypes.STRING,
+        require: false,
       }
     },
 
@@ -81,22 +85,31 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   users.associate = function (models) {
-    models.users.hasMany(models.posts, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.applicant, {
+      constraints: false,
+        timestamps: false,
+      foreignKey: 'userid',
+      sourceKey: 'userid',
     });
-    models.users.hasMany(models.applicant, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.comments, {
+      constraints: false,
+        timestamps: false,
+      foreignKey: 'userid',
+      sourceKey: 'userid',
     });
-    models.users.hasMany(models.comments, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.usersReviews, {
+      constraints: false,
+        timestamps: false,
+      foreignKey: 'userid',
+      sourceKey: 'userid',
     });
-    models.users.hasMany(models.usersReviews, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
+    users.hasMany(models.lunchs, {
+      constraints: false,
+        timestamps: false,
+      foreignKey: 'userid',
+      sourceKey: 'userid',
     });
+
   };
   return users;
 };

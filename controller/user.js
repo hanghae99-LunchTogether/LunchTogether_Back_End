@@ -64,7 +64,6 @@ async function nickNameCheck(nickName) {
 //회원가입
 signup = async (req, res) => {
   const { username, nickname, email, password } = req.body;
-
   try {
     if (await emailCheck(email)) {
       return res
