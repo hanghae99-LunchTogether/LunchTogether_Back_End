@@ -81,7 +81,7 @@ signup = async (req, res) => {
         .digest("hex");
       console.log(username, nickname, email, hashpw);
       const query =
-        "insert into users (username, nickname, email, password, salt) values(:name, :nickname, :email, :password, :salt);";
+        "insert into users (username, nickname, email, password, salt) values(:username, :nickname, :email, :password, :salt);";
       const users = await sequelize.query(query, {
         replacements: {
           username: username,
@@ -182,7 +182,6 @@ getuser = async (req, res) => {
 upusers = async (req, res) => {
   const userloc = res.locals.user;
   const { username, password, email, nickname, menu ,mbti, gender, location, company, introduction } = req.body;
-  const isuser = JSON.parse(user);
 
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
@@ -214,7 +213,7 @@ upusers = async (req, res) => {
     console.log(querys[querys.length - 1]);
     querys = querys + " WHERE userid = :userid;";
     console.log("마지막으로 완성된 쿼리문", querys);
-    await sequelize.query(querys, {
+    const updateuser = await sequelize.query(querys, {
       replacements: {
         username: username,
         nickname : nickname,
@@ -230,10 +229,11 @@ upusers = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
+    data = { user : updateuser }
     logger.info("patch /myProfile");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 수정완료" });
+      .send({ result: "success", msg: "유저정보 수정완료" , data : data});
   } catch (error) {
     logger.error(error);
     // console.log(error)
