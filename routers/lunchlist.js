@@ -13,6 +13,6 @@ router
   .get(getlunchlist)
   .post(authMiddleware, postlunchlist);
   
-router.route("/:lunchid").get(detaillunchpost).patch(updatelunchlist);
+router.route("/:lunchid").get(detaillunchpost).patch(authMiddleware, updatelunchlist);
 
 module.exports = router;

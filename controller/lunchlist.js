@@ -5,6 +5,7 @@ require('date-utils');
 getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
+      include: [{ model: users, attributes: ["nickName"] }],
       order: [["date", "DESC"]],
     });
     logger.info("GET /lunchpost/");
@@ -53,20 +54,30 @@ postlunchlist = async (req, res) => {
   const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
 
   try {
-    const querys =
-      "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
-    const lunch = await sequelize.query(querys, {
-      replacements: {
-        userId: user.userid,
+    // const querys =
+    //   "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
+    // const lunch = await sequelize.query(querys, {
+    //   replacements: {
+    //     userId: user.userid,
+    //     title: title,
+    //     content: content,
+    //     date: date,
+    //     location: location,
+    //     time: time,
+    //     membernum: membernum,
+    //   },
+    //   type: sequelize.QueryTypes.INSERT,
+    // });
+    let lunch = await lunchs.create({
+      userId: user.userid,
         title: title,
         content: content,
         date: date,
         location: location,
         time: time,
         membernum: membernum,
-      },
-      type: sequelize.QueryTypes.INSERT,
     });
+    lunch.dataValues.nickname = user.nickname;
     const data = { lunch: lunch };
     logger.info("POST /lunchPost");
     return res.status(200).send({
@@ -86,6 +97,7 @@ postlunchlist = async (req, res) => {
 
 updatelunchlist = async (req, res) => {
   const { lunchid } = req.params;
+  const user = res.locals.user;
   const { title, content, date, location, membernum } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
@@ -101,7 +113,7 @@ updatelunchlist = async (req, res) => {
 
     querys = querys.slice(0, -1);
 
-    querys = querys + " WHERE lunchid = :lunchid;";
+    querys = querys + " WHERE lunchid = :lunchid AND userid = :userid;";
     const lunch = await sequelize.query(querys, {
       replacements: {
         lunchid: lunchid,
@@ -111,6 +123,7 @@ updatelunchlist = async (req, res) => {
         location: location,
         time: time,
         membernum: membernum,
+        userid : user.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });

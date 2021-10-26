@@ -25,6 +25,7 @@ module.exports = async (req, res, next) => {
         userid: users[0]['userid'],
         email: users[0]['email'],
         nickname: users[0]['nickname'],
+        userimage : users[0]['image']
       };
       res.locals.user = user;
       console.log('로컬 유저는?', res.locals.user);
