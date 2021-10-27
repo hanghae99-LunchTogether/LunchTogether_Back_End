@@ -4,7 +4,7 @@ const middleware = require('../middlewares/authMiddleware')
 const { spoonget , spoonpost} = require("../controller/userreview");
 
 router.route('/').post(middleware,spoonpost)
-router.route('/:userid').get(middleware, spoonget);
+router.route('/:userid').get(spoonget);
 
 
 module.exports = router;

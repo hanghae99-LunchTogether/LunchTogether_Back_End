@@ -147,43 +147,58 @@
         "parameters": [
           {
             "in": "formData",
-            "name": "file",
-            "type": "file",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "nickname": {
-                  "example": "any"
-                },
-                "menu": {
-                  "example": "any"
-                },
-                "mbti": {
-                  "example": "any"
-                },
-                "gender": {
-                  "example": "any"
-                },
-                "location": {
-                  "example": "any"
-                },
-                "company": {
-                  "example": "any"
-                },
-                "introduction": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "image",
+            "type": "file"
+          },
+          {
+            "in": "formData",
+            "name": "username",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "password",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "nickname",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "menu",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "mbti",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "gender",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "company",
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "introduction",
+            "type": "string"
           }
         ],
         "responses": {
@@ -449,7 +464,6 @@
         "tags": ["Spoon"],
         "description": "",
         "summary": "유저의 평가 보기",
-        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "userid",
