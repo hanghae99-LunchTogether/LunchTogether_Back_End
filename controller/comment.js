@@ -37,12 +37,21 @@ commentpost = async (req, res) => {
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   try {
     // comments table의 lunchid 조회
-    const createdcomment = await comments.create({
+    await comments.create({
       comment: comment,
       lunchid: lunchid,
       userid: user.userid,
       time: time,
     });
+    const createdcomment = await comments.findOne({
+      where: {
+        comment: comment,
+        lunchid: lunchid,
+        userid: user.userid,
+        time: time,
+      },
+    });
+    console.log(createdcomment);
     logger.info("POST /comment/:lunchid");
     return res.status(200).send({
       result: "success",

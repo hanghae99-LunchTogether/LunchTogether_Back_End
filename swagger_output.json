@@ -25,18 +25,19 @@
       "description": "유저정보"
     },
     {
-      "name": "reply",
+      "name": "Comment",
       "description": "댓글"
     },
     {
-      "name": "Like",
-      "description": "좋아요"
+      "name": "Spoon",
+      "description": "유저평가"
+    },
+    {
+      "name": "Applicant",
+      "description": "신청자"
     }
   ],
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": ["http", "https"],
   "securityDefinitions": {
     "token": {
       "type": "apiKey",
@@ -50,9 +51,11 @@
   "paths": {
     "/login": {
       "get": {
-        "tags": [],
+        "tags": ["Login"],
+        "summary": "",
         "description": "",
         "parameters": [],
+        "security": [{ "token": [] }],
         "responses": {
           "401": {
             "description": "Unauthorized"
@@ -60,8 +63,9 @@
         }
       },
       "post": {
-        "tags": [],
+        "tags": ["Login"],
         "description": "",
+        "summary": "로그인 기능",
         "parameters": [
           {
             "name": "obj",
@@ -70,22 +74,27 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "example": "chang@asd.com"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "asd123"
                 }
               }
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/signup": {
       "post": {
-        "tags": [],
+        "tags": ["signup"],
         "description": "",
+        "summary": "회원가입 기능",
         "parameters": [
           {
             "name": "obj",
@@ -94,16 +103,16 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
+                  "example": "창우"
                 },
                 "nickname": {
-                  "example": "any"
+                  "example": "jcw"
                 },
                 "email": {
-                  "example": "any"
+                  "example": "chang@asd.com"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "asd123"
                 }
               }
             }
@@ -120,6 +129,7 @@
       "get": {
         "tags": ["myProfile"],
         "description": "",
+        "summary": "프로필 불러오기",
         "parameters": [],
         "security": [{ "token": [] }],
         "responses": {
@@ -129,12 +139,16 @@
         }
       },
       "patch": {
-        "tags": [],
+        "tags": ["myProfile"],
         "description": "",
+        "summary": "프로필 등록/수정",
+        "consumes": "multipart/form-data",
+        "security": [{ "token": [] }],
         "parameters": [
           {
-            "name": "obj",
-            "in": "body",
+            "in": "formData",
+            "name": "file",
+            "type": "file",
             "schema": {
               "type": "object",
               "properties": {
@@ -181,8 +195,9 @@
     },
     "/comment/{lunchid}": {
       "get": {
-        "tags": [],
+        "tags": ["Comment"],
         "description": "",
+        "summary": "댓글 불러오기",
         "parameters": [
           {
             "name": "lunchid",
@@ -204,8 +219,10 @@
         }
       },
       "post": {
-        "tags": [],
+        "tags": ["Comment"],
         "description": "",
+        "summary": "댓글 작성",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "lunchid",
@@ -241,8 +258,10 @@
     },
     "/comment/{commentid}": {
       "delete": {
-        "tags": [],
+        "tags": ["Comment"],
         "description": "",
+        "summary": "댓글 삭제",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "commentid",
@@ -260,8 +279,9 @@
     },
     "/lunchpost/": {
       "get": {
-        "tags": [],
+        "tags": ["lunchPost"],
         "description": "",
+        "summary": "점약 전체 리스트",
         "parameters": [],
         "responses": {
           "200": {
@@ -273,8 +293,10 @@
         }
       },
       "post": {
-        "tags": [],
+        "tags": ["lunchPost"],
         "description": "",
+        "summary": "점약 등록",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "obj",
@@ -316,8 +338,9 @@
     },
     "/lunchpost/{lunchid}": {
       "get": {
-        "tags": [],
+        "tags": ["lunchPost"],
         "description": "",
+        "summary": "점약 상세정보",
         "parameters": [
           {
             "name": "lunchid",
@@ -336,8 +359,10 @@
         }
       },
       "patch": {
-        "tags": [],
+        "tags": ["lunchPost"],
         "description": "",
+        "summary": "점약 수정",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "lunchid",
@@ -385,8 +410,10 @@
     },
     "/spoon/": {
       "post": {
-        "tags": [],
+        "tags": ["Spoon"],
         "description": "",
+        "summary": "유저의 평가",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "obj",
@@ -419,8 +446,10 @@
     },
     "/spoon/{userid}": {
       "get": {
-        "tags": [],
+        "tags": ["Spoon"],
         "description": "",
+        "summary": "유저의 평가 보기",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "userid",
@@ -444,8 +473,10 @@
     },
     "/applicant/{lunchid}": {
       "get": {
-        "tags": [],
+        "tags": ["Applicant"],
         "description": "",
+        "summary": "특정 점약 불러오기",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "lunchid",
@@ -464,8 +495,10 @@
         }
       },
       "post": {
-        "tags": [],
+        "tags": ["Applicant"],
         "description": "",
+        "summary": "특정 점약 신청",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "lunchid",
@@ -487,8 +520,10 @@
         }
       },
       "delete": {
-        "tags": [],
+        "tags": ["Applicant"],
         "description": "",
+        "summary": "특정 점약 취소",
+        "security": [{ "token": [] }],
         "parameters": [
           {
             "name": "lunchid",

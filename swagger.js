@@ -1,40 +1,44 @@
-const swaggerAutogen = require('swagger-autogen')();
+const swaggerAutogen = require("swagger-autogen")();
 
 const doc = {
   info: {
-    version: '1.0.0',
-    title: 'Lunch Meet',
-    description: 'Description',
+    version: "1.0.0",
+    title: "Lunch Meet",
+    description: "Description",
   },
-  host: '3.35.54.135', //배포 하려고 하는 host에 맞춰줘야 동작함
-  basePath: '/',
-  schemes: ['http', 'https'],
+  host: "3.35.54.135", //배포 하려고 하는 host에 맞춰줘야 동작함
+  basePath: "/",
+  schemes: ["http", "https"],
   tags: [
     {
-      name: 'Login',
-      description: '로그인',
+      name: "Login",
+      description: "로그인",
     },
     {
-      name: 'signup',
-      description: '회원가입',
+      name: "signup",
+      description: "회원가입",
     },
     {
-      name: 'lunchPost',
-      description: '게시판',
+      name: "lunchPost",
+      description: "게시판",
     },
     {
-      name: 'reply',
-      description: '댓글',
+      name: "Comment",
+      description: "댓글",
     },
     {
-      name: 'Like',
-      description: '좋아요',
+      name: "Spoon",
+      description: "유저평가",
+    },
+    {
+      name: "Applicant",
+      description: "신청자",
     },
   ],
 };
 
-const outputFile = './swagger_output.json';
-const endpointsFiles = ['./app.js'];
+const outputFile = "./swagger_output.json";
+const endpointsFiles = ["./app.js"];
 // const endpointsFiles = ['./app.js'];
 
 swaggerAutogen(outputFile, endpointsFiles, doc);
