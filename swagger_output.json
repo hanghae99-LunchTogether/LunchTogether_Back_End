@@ -17,8 +17,12 @@
       "description": "회원가입"
     },
     {
-      "name": "Post",
+      "name": "lunchPost",
       "description": "게시판"
+    },
+    {
+      "name": "myProfile",
+      "description": "유저정보"
     },
     {
       "name": "reply",
@@ -33,10 +37,28 @@
     "http",
     "https"
   ],
+  "securityDefinitions": {
+    "token": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header",
+      "description": "로그인 이후 토큰을 여기다가 넣으세요~! Bearer 빠트리지 말구요 !"
+    }
+  },
   "consumes": [],
   "produces": [],
   "paths": {
     "/login": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
       "post": {
         "tags": [],
         "description": "",
@@ -58,16 +80,6 @@
           }
         ],
         "responses": {}
-      },
-      "get": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
       }
     },
     "/signup": {
@@ -100,14 +112,22 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           }
         }
       }
     },
     "/myProfile": {
+      "get": {
+        "tags": ["myProfile"],
+        "description": "",
+        "parameters": [],
+        "security": [{ "token": [] }],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
       "patch": {
         "tags": [],
         "description": "",
@@ -118,7 +138,34 @@
             "schema": {
               "type": "object",
               "properties": {
-                "user": {
+                "username": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "nickname": {
+                  "example": "any"
+                },
+                "menu": {
+                  "example": "any"
+                },
+                "mbti": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                },
+                "location": {
+                  "example": "any"
+                },
+                "company": {
+                  "example": "any"
+                },
+                "introduction": {
                   "example": "any"
                 }
               }
@@ -132,13 +179,13 @@
         }
       }
     },
-    "/comment/{postid}": {
+    "/comment/{lunchid}": {
       "get": {
         "tags": [],
         "description": "",
         "parameters": [
           {
-            "name": "postid",
+            "name": "lunchid",
             "in": "path",
             "required": true,
             "type": "string"
@@ -161,7 +208,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "postid",
+            "name": "lunchid",
             "in": "path",
             "required": true,
             "type": "string"
@@ -235,7 +282,88 @@
             "schema": {
               "type": "object",
               "properties": {
-                "post": {
+                "title": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "location": {
+                  "example": "any"
+                },
+                "membernum": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/lunchpost/{lunchid}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "lunchid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "lunchid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "location": {
+                  "example": "any"
+                },
+                "membernum": {
                   "example": "any"
                 }
               }
@@ -266,7 +394,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "targetUserId": {
+                "targetuserid": {
                   "example": "any"
                 },
                 "spoon": {
@@ -277,6 +405,9 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "400": {
             "description": "Bad Request"
           },
@@ -311,13 +442,13 @@
         }
       }
     },
-    "/applicant/{postid}": {
+    "/applicant/{lunchid}": {
       "get": {
         "tags": [],
         "description": "",
         "parameters": [
           {
-            "name": "postid",
+            "name": "lunchid",
             "in": "path",
             "required": true,
             "type": "string"
@@ -337,7 +468,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "postid",
+            "name": "lunchid",
             "in": "path",
             "required": true,
             "type": "string"
@@ -360,7 +491,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "postid",
+            "name": "lunchid",
             "in": "path",
             "required": true,
             "type": "string"
