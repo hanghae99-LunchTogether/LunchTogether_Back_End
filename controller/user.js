@@ -243,6 +243,38 @@ upusers = async (req, res) => {
   }
 };
 
+
+//다른 유저 정보 조회
+getotheruser = async (req, res) => {
+  const { userid } = req.params;
+  try {
+    const query = "select * from users where userid = :userid";
+    const users = await sequelize.query(query, {
+      replacements: {
+        userid: userid,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    });
+    const data = { user: users };
+    logger.info("GET /myProfile/:userid");
+    return res
+      .status(200)
+      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+    return res
+      .status(401)
+      .send({ result: "fail", msg: "유저정보 조회실패", error: error });
+  }
+};
+
+
+
+
+
+
+
 module.exports = {
   emailCheck: emailCheck,
   nickNameCheck: nickNameCheck,
@@ -250,4 +282,5 @@ module.exports = {
   login: login,
   getuser: getuser,
   upusers: upusers,
+  getotheruser: getotheruser,
 };

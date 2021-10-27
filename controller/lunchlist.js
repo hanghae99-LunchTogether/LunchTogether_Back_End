@@ -143,9 +143,39 @@ updatelunchlist = async (req, res) => {
   }
 };
 
+deletelunchlist = async (req, res) => {
+  const { lunchid } = req.params;
+  const user = res.locals.user;
+  try {
+    const querys = "delete from lunchs where lunchid = :lunchid AND userid = :userid";
+    await sequelize.query(querys, {
+      replacements: {
+        lunchid: lunchid,
+        userid: user.userid
+      },
+      type: sequelize.QueryTypes.DELETE,
+    });
+    logger.info("DELETE /lunchPost");
+    return res.status(200).send({
+      result: "success",
+      msg: "약속 삭제 성공",
+    });
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send({
+      result: "fail",
+      msg: "약속 삭제 실패",
+    });
+  }
+};
+
+
+
+
 module.exports = {
   getlunchlist: getlunchlist,
   detaillunchpost: detaillunchpost,
   postlunchlist: postlunchlist,
   updatelunchlist: updatelunchlist,
+  deletelunchlist: deletelunchlist,
 };
