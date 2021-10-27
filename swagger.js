@@ -34,6 +34,10 @@ const doc = {
       name: "Applicant",
       description: "신청자",
     },
+    {
+      name: "myProfile",
+      description: "유저정보",
+    },
   ],
 };
 

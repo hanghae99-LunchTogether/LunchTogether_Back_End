@@ -208,6 +208,22 @@
         }
       }
     },
+    "/myProfile/{userid}": {
+      "get": {
+        "tags": ["myProfile"],
+        "description": "",
+        "summary": "다른 유저 프로필 보기",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/comment/{lunchid}": {
       "get": {
         "tags": ["Comment"],
@@ -292,7 +308,7 @@
         }
       }
     },
-    "/lunchpost/": {
+    "/lunchpost": {
       "get": {
         "tags": ["lunchPost"],
         "description": "",
@@ -421,9 +437,24 @@
             "description": "Unauthorized"
           }
         }
+      },
+      "delete": {
+        "tags": ["lunchPost"],
+        "description": "",
+        "summary": "점약 삭제",
+        "security": [{ "token": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
       }
     },
-    "/spoon/": {
+    "/spoon": {
       "post": {
         "tags": ["Spoon"],
         "description": "",
