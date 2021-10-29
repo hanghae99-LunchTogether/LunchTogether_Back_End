@@ -20,27 +20,27 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         required: true,
       },
-      addressname: {
+      address_name: {
         type: DataTypes.STRING,
         require: true,
       },
-      roadaddressname: {
+      road_address_name: {
         type: DataTypes.STRING,
         require: true,
       },
-      categoryname: {
+      category_group_name: {
         type: DataTypes.STRING,
         require: true,
       },
-      placename: {
+      place_name: {
         type: DataTypes.STRING,
         require: true,
       },
-      placeurl: {
+      place_url: {
         type: DataTypes.STRING,
         require: true,
       },
-      phonenumber: {
+      phone: {
         type: DataTypes.STRING,
         require: false,
       },
@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
+      lunchreview :{
+        type: DataTypes.STRING,
+        require: false,
+      }
     },
 
     {

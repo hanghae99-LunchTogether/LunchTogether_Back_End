@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         required: false,
       },
       location: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         required: false,
       },
       membernum: {
