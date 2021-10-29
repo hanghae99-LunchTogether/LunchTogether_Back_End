@@ -36,23 +36,26 @@ spoonget = async (req, res) => {
   const { userid } = req.params;
   try {
     const query =
+      // users table의 users.nickname와 usersReviews table의 usersReviews를 선택하고 둘은 관계쿼리.
+      // join 조건은 users.userid와 usersReviews.userid
+      // usersReviews.targetusersrk user.id 조건 검색
       "select users.nickname , usersReviews.* from users inner join usersReviews on users.userid = usersReviews.userid where usersReviews.targetusers = :userid ;";
     const userspoon = await sequelize.query(query, {
-        replacements: {
-            userid: userid,
-          },
+      replacements: {
+        userid: userid,
+      },
       type: sequelize.QueryTypes.SELECT,
     });
     console.log(userspoon);
     let sum = 0;
-    for (a of userspoon ){
-        sum = sum + a.spoon;
+    for (a of userspoon) {
+      sum = sum + a.spoon;
     }
-    sum = sum/userspoon.length;
+    sum = sum / userspoon.length;
     data = {
-        spoon : sum,
-        targetuser : userspoon[0].nickname
-    }
+      spoon: sum,
+      targetuser: userspoon[0].nickname,
+    };
     logger.info("GET /spoon");
     return res.status(200).send({
       result: "success",
