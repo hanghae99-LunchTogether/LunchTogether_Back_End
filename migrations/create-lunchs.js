@@ -31,7 +31,11 @@ module.exports = {
         type: Sequelize.STRING,
       },
       location: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'lunchdata',
+          key: 'id',
+        },
       },
       membernum: {
         type: Sequelize.STRING,

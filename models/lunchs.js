@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class lunchs extends Model {
     /**
@@ -35,12 +35,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: false,
       },
-      time:{
+      time: {
         type: DataTypes.STRING,
         required: false,
       },
       location: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         required: false,
       },
       membernum: {
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'lunchs',
+      modelName: "lunchs",
       timestamps: false,
     }
   );
@@ -58,16 +58,21 @@ module.exports = (sequelize, DataTypes) => {
   lunchs.associate = function (models) {
     //posts모델 안에 "postsId라는 컬럼 이름"으로 comments모델에 있는 "postId값"을 새로운 컬럼으로 추가한다.
     models.lunchs.hasMany(models.comments, {
-      foreignKey: 'lunchid',
-      sourceKey: 'lunchid',
+      foreignKey: "lunchid",
+      sourceKey: "lunchid",
     });
     models.lunchs.hasMany(models.applicant, {
-      foreignKey: 'lunchid',
-      sourceKey: 'lunchid',
+      foreignKey: "lunchid",
+      sourceKey: "lunchid",
+    });
+    models.lunchs.belongsTo(models.lunchdata, {
+      foreignKey: "location",
+      targetKey: "id",
+      onDelete: "cascade",
     });
     models.lunchs.belongsTo(models.users, {
-      foreignKey: 'userid',
-      onDelete: 'cascade',
+      foreignKey: "userid",
+      onDelete: "cascade",
     });
   };
   return lunchs;

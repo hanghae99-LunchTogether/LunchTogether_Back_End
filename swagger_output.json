@@ -125,7 +125,7 @@
         }
       }
     },
-    "/myProfile": {
+    "/myprofile": {
       "get": {
         "tags": ["myProfile"],
         "description": "",
@@ -208,7 +208,7 @@
         }
       }
     },
-    "/myProfile/{userid}": {
+    "/myprofile/{userid}": {
       "get": {
         "tags": ["myProfile"],
         "description": "",
@@ -336,19 +336,19 @@
               "type": "object",
               "properties": {
                 "title": {
-                  "example": "any"
+                  "example": "타이틀"
                 },
                 "content": {
-                  "example": "any"
+                  "example": "설명"
                 },
                 "date": {
-                  "example": "any"
+                  "example": "언제 모일까~요"
                 },
                 "location": {
-                  "example": "any"
+                  "example": "어디서 모일까 식당위치! 식당 더미데이터 -> 118805148 , 380906782 , 695892766, 769942895, 1302473345, 1862783318"
                 },
                 "membernum": {
-                  "example": "any"
+                  "example": "맴버수..!"
                 }
               }
             }

@@ -1,11 +1,12 @@
-const { lunchs, sequelize, users } = require("../models");
+const { lunchs, sequelize, users, lunchdata } = require("../models");
 const { logger } = require("../config/logger"); //로그
 require('date-utils');
 
 getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
-      include: [{ model: users, attributes: ["nickName"] }],
+      include: [{ model: users, attributes: ["nickname"] },
+      { model: lunchdata } ],
       order: [["date", "DESC"]],
     });
     logger.info("GET /lunchpost/");
@@ -27,7 +28,7 @@ detaillunchpost = async (req, res) => {
   const { lunchid } = req.params;
   try {
     const lunchDetail = await lunchs.findOne({
-      include: [{ model: users, attributes: ["nickName"] }],
+      include: [{ model: users, attributes: ["nickname"] },{ model: lunchdata }],
       where: { lunchid: lunchid },
     });
     const data = { lunch: lunchDetail };
