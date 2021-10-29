@@ -12,7 +12,7 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express"); //스웨거 자동생성을 위한 코드
 const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파일 저장 위치
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
@@ -22,10 +22,17 @@ app.use(
     secret: process.env.COOKIE_SECRET,
     cookie: {
       httpOnly: true,
-      //secure: false
+      secure: false,
     },
   })
 );
+
+app.use(function (err, req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+  next();
+});
 
 // routers
 const Router = require("./routers");

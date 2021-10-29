@@ -6,6 +6,17 @@ const middleware = require("../middlewares/authMiddleware");
 const upload = require("../utils/s3");
 const passport = require("passport");
 
+router.get("/", async function (req, res) {
+  console.log(req);
+  res.send({ success: true });
+});
+
+router.get("/loginComplete", async function (req, res) {
+  console.log(req);
+  console.log(req.user);
+  res.send({ success: true, userInfo: req.user });
+});
+
 router
   .route("/login")
   .post(controller.login, function (req, res) {})
@@ -20,12 +31,12 @@ router
 router.route("/myProfile/:userid").get(controller.getotheruser);
 
 // 카카오 controller
-
 router.get("/kakao", passport.authenticate("kakao"));
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
     failureRedirect: "/", // 로그인에 실패했을 경우 해당 라우터로 이동한다
+    successRedirect: "/loginComplete",
   }),
   (req, res) => {
     // 로그인에 성공했을 경우, 다음 라우터가 실행된다
