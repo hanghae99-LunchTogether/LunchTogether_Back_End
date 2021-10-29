@@ -5,7 +5,7 @@ require('date-utils');
 getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
-      include: [{ model: users, attributes: ["nickName"] }],
+      include: [{ model: users, attributes: ["nickname"] }],
       order: [["date", "DESC"]],
     });
     logger.info("GET /lunchpost/");
@@ -27,7 +27,7 @@ detaillunchpost = async (req, res) => {
   const { lunchid } = req.params;
   try {
     const lunchDetail = await lunchs.findOne({
-      include: [{ model: users, attributes: ["nickName"] }],
+      include: [{ model: users, attributes: ["nickname"] }],
       where: { lunchid: lunchid },
     });
     const data = { lunch: lunchDetail };

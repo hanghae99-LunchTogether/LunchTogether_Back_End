@@ -20,6 +20,7 @@
   "homepage": "https://github.com/leubenia/lunchApi#readme",
   "dependencies": {
     "aws-sdk": "^2.1009.0",
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "date-utils": "^1.2.21",
     "dotenv": "^10.0.0",
@@ -32,6 +33,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.2",
     "nodemon": "^2.0.13",
+    "request": "^2.88.2",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0",
     "swagger-autogen": "^2.12.2",
