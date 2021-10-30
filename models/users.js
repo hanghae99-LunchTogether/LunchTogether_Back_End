@@ -76,6 +76,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
+      // provider: {
+      //   type: DataTypes.STRING,
+      //   require: false,
+      //   defaultValue: "kakao",
+      // }, // local vs kakao
+      // snsId: {
+      //   type: DataTypes.STRING,
+      //   allowNull: true,
+      // },
     },
 
     {

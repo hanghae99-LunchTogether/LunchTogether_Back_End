@@ -1,4 +1,4 @@
-// 2
+// 3
 
 const passport = require("passport");
 // const local = require("./localLogin"); // 로컬 로그인
@@ -21,14 +21,14 @@ module.exports = () => {
     const user = await users.findOne({ where: { userid } });
     console.log("user:", user);
     // 매개변수 user는 serializeUser의 done의 인자 userid를 받은 것
-    const nowUserEmailnickname = {
-      userid: user.userid,
-      email: user.email,
-      nickname: user.nickname,
-    };
-    console.log("nowUserEmailnickname: ", nowUserEmailnickname);
+    // const nowUserEmailnickname = {
+    //   userid: user.userid,
+    //   email: user.email,
+    //   nickname: user.nickname,
+    // };
+    // console.log("nowUserEmailnickname: ", nowUserEmailnickname);
     // nowUserEmailnickname가 req.user가 됨
-    done(null, nowUserEmailnickname);
+    done(null, user);
   });
   // local();
   kakao();

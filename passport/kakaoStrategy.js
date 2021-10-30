@@ -23,7 +23,7 @@ module.exports = () => {
           });
           // 카카오 회원가입 한 사용자 인지
           if (exuser) {
-            console.log("이미 로그인중", exuser.dataValues);
+            console.log("이미 로그인중", exuser);
             done(null, exuser);
             // 카카오 회원가입 한 사용자 아니라면 회원가입 진행
           } else {
@@ -31,9 +31,8 @@ module.exports = () => {
             const newuser = await users.create({
               email: profile._json.kakao_account.email,
               nickname: profile.username,
-              // snsid: profile.id
-              // provider: 'kakao'
             });
+            console.log("newuser: ", newuser);
             done(null, newuser);
           }
         } catch (error) {
