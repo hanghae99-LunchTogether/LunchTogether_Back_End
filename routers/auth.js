@@ -30,10 +30,11 @@ router.get(
   "/kakao/callback", // 로그인 성공여부 검사
   passport.authenticate("kakao", {
     failureDirect: "/", // 로그인 실패시
+    successRedirect: "/loginComplete", // 로그인 성공시
   }),
   (req, res) => {
     console.log("카톡!카톡!");
-    res.redirect("/loginComplete"); // 로그인 성공시
+    res.redirect("/");
   }
 );
 
