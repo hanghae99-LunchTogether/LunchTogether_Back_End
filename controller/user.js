@@ -106,7 +106,7 @@ signup = async (req, res) => {
 //로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
   const { email, password, which } = req.body;
-  if (which == 1) {
+  if (!which) {
     try {
       const query = "select * from users where email = :email";
       const isuser = await sequelize.query(query, {
