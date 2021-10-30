@@ -35,29 +35,34 @@ spoonpost = async (req, res) => {
 spoonget = async (req, res) => {
   const { userid } = req.params;
   try {
-    const query =
-      "select users.nickname , usersReviews.* from users inner join usersReviews on users.userid = usersReviews.userid where usersReviews.targetusers = :userid ;";
-    const userspoon = await sequelize.query(query, {
-        replacements: {
-            userid: userid,
-          },
-      type: sequelize.QueryTypes.SELECT,
+    const test = await usersReviews.findAll({
+      include: [{ model: users}],
     });
-    console.log(userspoon);
-    let sum = 0;
-    for (a of userspoon ){
-        sum = sum + a.spoon;
-    }
-    sum = sum/userspoon.length;
-    data = {
-        spoon : sum,
-        targetuser : userspoon[0].nickname
-    }
+    console.log(test);
+    
+    // const query =
+    //   "select users.nickname , usersReviews.* from users inner join usersReviews on users.userid = usersReviews.userid where usersReviews.targetusers = :userid ;";
+    // const userspoon = await sequelize.query(query, {
+    //     replacements: {
+    //         userid: userid,
+    //       },
+    //   type: sequelize.QueryTypes.SELECT,
+    // });
+    // console.log(userspoon);
+    // let sum = 0;
+    // for (a of userspoon ){
+    //     sum = sum + a.spoon;
+    // }
+    // sum = sum/userspoon.length;
+    // data = {
+    //     spoon : sum,
+    //     targetuser : userspoon[0].nickname
+    // }
     logger.info("GET /spoon");
     return res.status(200).send({
       result: "success",
       msg: "유저 리뷰 요청 완료",
-      data: data,
+      // data: data,
     });
   } catch (err) {
     logger.error(err);
