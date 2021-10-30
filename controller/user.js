@@ -167,7 +167,7 @@ login = async (req, res) => {
         try {
           const query =
             "insert into users (username,email,password,nickname,salt,image,gender,imageUrl) select :username,:email,:password,:nickname,:salt,:image,gender,:imageUrl From dual WHERE NOT exists(select * from comments where userid = :userid);";
-          const isuser = await sequelize.query(query, {
+          const isuser = sequelize.query(query, {
             replacements: {
               username: "카카오 유저",
               email: body.kakao_account.email,
