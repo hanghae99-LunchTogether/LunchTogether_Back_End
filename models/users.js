@@ -101,6 +101,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userid",
       sourceKey: "userid",
     });
+    models.users.hasMany(models.usersReviews, {
+      foreignKey: "targetusers",
+      sourceKey: "userid",
+    });
   };
   return users;
 };
