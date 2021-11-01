@@ -1,7 +1,6 @@
 // 3
-
 const passport = require("passport");
-// const local = require("./localLogin"); // 로컬 로그인
+const local = require("./localStrategy"); // 로컬 로그인
 const kakao = require("./kakaoStrategy"); // 카카오 로그인
 const { users } = require("../models");
 
@@ -13,6 +12,7 @@ module.exports = () => {
   passport.serializeUser((user, done) => {
     // 여기의 userid가 deserializeUser의 첫 번째 매개변수로 이동
     done(null, user.userid);
+    // 객체에 userid를 저장
   });
 
   // 이미 로그인 한 유저. 매번 실행
@@ -30,6 +30,6 @@ module.exports = () => {
     // nowUserEmailnickname가 req.user가 됨
     done(null, user);
   });
-  // local();
+  local();
   kakao();
 };

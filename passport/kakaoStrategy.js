@@ -7,6 +7,7 @@ const { users } = require("../models");
 
 module.exports = () => {
   passport.use(
+    "kakao",
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
