@@ -591,5 +591,31 @@
       }
     }
   },
+  "/kakologin": {
+    "get": {
+      "tags": ["Spoon"],
+      "description": "",
+      "summary": "유저의 평가 보기",
+      "parameters": [
+        {
+          "name": "userid",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "OK"
+        },
+        "400": {
+          "description": "Bad Request"
+        },
+        "401": {
+          "description": "Unauthorized"
+        }
+      }
+    }
+  },
   "definitions": {}
 }
