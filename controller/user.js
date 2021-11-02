@@ -105,9 +105,10 @@ signup = async (req, res) => {
 
 //로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
-  const { email, password, which , token} = req.body;
+  const { email, password, which, image, nickname, id } = req.body;
   if (!which) {
     try {
+      console.log("여기에서 오니??");
       const query = "select * from users where email = :email";
       const isuser = await sequelize.query(query, {
         replacements: {
@@ -155,57 +156,46 @@ login = async (req, res) => {
         .send({ result: "failure", msg: "DB 정보 조회 실패", error: error });
     }
   } else if (which == 2) {
-    const location = "authorization";
-    // const authorization = req.headers[location];
-    const authorization = token
-    const heaer = "Bearer " + authorization;
-    request.get(
-      {
-        headers: { Authorization: heaer },
-        url: "https://kapi.kakao.com/v2/user/me",
-      },
-      function (error, response, body) {
-        try {
-          const query =
-            "insert into users (username,email,password,nickname,salt,image,gender,imageUrl) select :username,:email,:password,:nickname,:salt,:image,gender,:imageUrl From dual WHERE NOT exists(select * from comments where userid = :userid);";
-          const isuser = sequelize.query(query, {
-            replacements: {
-              username: "카카오 유저",
-              email: body.kakao_account.email,
-              password: "카카오 로그인 유저",
-              nickname: body.kakao_account.nickname,
-              salt: "카카오테스트",
-              image: body.kakao_account.profile.profile_image_url,
-              gender: body.kakao_account.gender,
-              imageUrl: body.kakao_account.thumbnail_image_url,
-              userid: body.id,
-            },
-            type: sequelize.QueryTypes.INSERT,
-          });
-          const users = {
-            id: body.id,
-            email: body.kakao_account.email,
-            nickname: body.kakao_account.nickname,
-          };
-          const token = jwt.sign(users, process.env.SECRET_KEY);
-          const data = { user: users };
-          logger.info("POST /login");
-          return res.status(200).send({
-            result: "success",
-            msg: "로그인 완료.",
-            token: token,
-            data: data,
-          });
-        } catch (error) {
-          logger.error(error);
-          return res.status(400).send({
-            result: "failure",
-            msg: "DB 정보 조회 실패",
-            error: error,
-          });
-        }
-      }
-    );
+    try {
+      console.log(image, nickname, id);
+      const query =
+        "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from comments where userid = :userid);";
+      const isuser = sequelize.query(query, {
+        replacements: {
+          userid: id,
+          username: "카카오 유저",
+          email: "카카오 이메일",
+          password: "카카오 로그인 유저",
+          nickname: nickname,
+          salt: "카카오 유저",
+          image: image,
+          userid: id,
+        },
+        type: sequelize.QueryTypes.INSERT,
+      });
+      const users = {
+        userid: id,
+        email: email,
+        nickname: nickname,
+      };
+      const token = jwt.sign(users, process.env.SECRET_KEY);
+      const data = { user: users };
+      logger.info("POST /login");
+      return res.status(200).send({
+        result: "success",
+        msg: "로그인 완료.",
+        token: token,
+        data: data,
+      });
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
+      return res.status(400).send({
+        result: "failure",
+        msg: "DB 정보 조회 실패",
+        error: error,
+      });
+    }
   }
 };
 
