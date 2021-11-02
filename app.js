@@ -16,7 +16,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-app.use(cookieParser(process.env.SECRET_KEY));
+// app.use(cookieParser(process.env.SECRET_KEY));
 app.use(session({
     resave: false,
     saveUninitialized: false,
