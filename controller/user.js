@@ -246,10 +246,10 @@ upusers = async (req, res) => {
     console.log("파일은 담기고있는가?", req.file.location);
   }
   try {
-    const query = "select * from users where email = :email";
+    const query = "select * from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
-        email: userloc.email,
+        userid: userloc.userid,
       },
       type: sequelize.QueryTypes.SELECT,
     });
