@@ -241,7 +241,15 @@ upusers = async (req, res) => {
     company,
     introduction,
   } = req.body;
-
+  console.log(username,
+    email,
+    nickname,
+    menu,
+    mbti,
+    gender,
+    location,
+    company,
+    introduction)
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
   }
