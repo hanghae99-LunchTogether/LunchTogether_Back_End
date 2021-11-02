@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
+const session = require('express-session');
 
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express'); //스웨거 자동생성을 위한 코드
