@@ -89,7 +89,7 @@ router.post("/login", async (req, res, next) => {
   //passport는 req객체에 login과 logout 메서드 추가
   passport.authenticate("local", (err, user, info) => {
     if (err || !user) {
-      res.status(400).send({ result: "fail", msg: "로그인 실패" });
+      res.status(400).send({ result: "fail", msg: info.reason });
       return;
     }
     return req.login(user, (err) => {
@@ -98,12 +98,6 @@ router.post("/login", async (req, res, next) => {
         return;
       }
       if (user) {
-        const salt = user.salt;
-        let inpw = crypto
-          .createHash("sha512")
-          .update(password + salt)
-          .digest("hex");
-        if (inpw === user.password) {
           const token = jwt.sign(
             {
               id: users["userid"],
@@ -120,7 +114,6 @@ router.post("/login", async (req, res, next) => {
             token: token,
             data: data,
           });
-        }
       }
     });
   });

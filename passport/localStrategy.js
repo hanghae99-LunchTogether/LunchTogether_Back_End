@@ -31,9 +31,13 @@ module.exports = () => {
             return;
           }
           // 검색된 유저 데이터가 있다면 유저 해쉬된 비밀번호 비교
-          const compareResult = await bcrypt.compare(password, user.password);
+          const salt = user.salt;
+          let inpw = crypto
+            .createHash("sha512")
+            .update(password + salt)
+            .digest("hex");
           // 해쉬된 비밀번호가 같다면 유저 데이터 객체 전송
-          if (compareResult) {
+          if (inpw === user.password) {
             done(null, user);
             return;
           }
