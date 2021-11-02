@@ -9,6 +9,7 @@ const { users } = require("../models");
 
 module.exports = () => {
   // serializeUser는 로그인 시에만 실행
+  console.log("여기가 첫번째네 ps index");
   passport.serializeUser((user, done) => {
     // 여기의 userid가 deserializeUser의 첫 번째 매개변수로 이동
     done(null, user.userid);

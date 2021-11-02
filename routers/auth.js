@@ -1,9 +1,45 @@
 // 2
 const express = require("express");
+const { users, sequelize } = require("../models");
 const passport = require("passport");
 const { info } = require("winston");
-const users = require("../models/users");
+const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
+const { logger } = require("../config/logger");
+
+async function emailCheck(email) {
+  try {
+    // const { email } = req.body;
+    const isemail = await users.findOne({ where: { email: email } });
+    if (isemail) {
+      console.log("이메일 존재함" + email);
+      return true;
+    } else {
+      console.log("이메일 없음" + email);
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return true;
+  }
+}
+
+async function nickNameCheck(nickname) {
+  try {
+    const isemail = await users.findOne({ where: { nickname: nickname } });
+    if (isemail) {
+      console.log("닉네임 존재함" + nickname);
+      return true;
+    } else {
+      console.log("닉네임 없음" + nickname);
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return true;
+  }
+}
 
 // 회원가입
 router.post("/signup", async (req, res) => {
@@ -23,7 +59,7 @@ router.post("/signup", async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      console.log(username, nickname, email, hashpw);
+      console.log("여기:", username, nickname, email, hashpw);
       const query =
         "insert into users (username, nickname, email, password, salt) values(:username, :nickname, :email, :password, :salt);";
       const users = await sequelize.query(query, {
@@ -48,52 +84,47 @@ router.post("/signup", async (req, res) => {
 });
 
 // passport local login
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res, next) => {
+  console.log("여기가 마지막이네");
   //passport는 req객체에 login과 logout 메서드 추가
-  try {
-    passport.authenticate("local", { session: false }, (err, user, info) => {
-      if (err || !user) {
-        res.status(400).send({ result: "fail", msg: "로그인 실패" });
+  passport.authenticate("local", (err, user, info) => {
+    if (err || !user) {
+      res.status(400).send({ result: "fail", msg: "로그인 실패" });
+      return;
+    }
+    return req.login(user, (err) => {
+      if (err) {
+        res.send(err);
         return;
       }
-      req.login(user, (err) => {
-        if (err) {
-          res.send(err);
-          return;
+      if (user) {
+        const salt = user.salt;
+        let inpw = crypto
+          .createHash("sha512")
+          .update(password + salt)
+          .digest("hex");
+        if (inpw === user.password) {
+          const token = jwt.sign(
+            {
+              id: users["userid"],
+              email: users["email"],
+              nickname: users["nickname"],
+            },
+            process.env.SECRET_KEY
+          );
+          const data = { user: users };
+          logger.info("POST /login");
+          return res.status(200).send({
+            result: "success",
+            msg: "로그인 완료.",
+            token: token,
+            data: data,
+          });
         }
-        if (user) {
-          const salt = user.salt;
-          let inpw = crypto
-            .createHash("sha512")
-            .update(password + salt)
-            .digest("hex");
-          if (inpw === user.password) {
-            const token = jwt.sign(
-              {
-                id: users["userid"],
-                email: users["email"],
-                nickname: users["nickname"],
-              },
-              process.env.SECRET_KEY
-            );
-            const data = { user: users };
-            logger.info("POST /login");
-            return res.status(200).send({
-              result: "success",
-              msg: "로그인 완료.",
-              token: token,
-              data: data,
-            });
-          }
-        }
-      });
+      }
     });
-  } catch (error) {
-    logger.error(error);
-    return res
-      .status(400)
-      .send({ result: "fail", msg: "DB 정보 조회 실패", error: error });
-  }
+  });
+  return res.status(400).send({ result: "fail", msg: "DB 정보 조회 실패" });
 });
 
 // passport local logout

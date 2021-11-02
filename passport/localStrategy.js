@@ -7,20 +7,22 @@ const bcrypt = require("bcrypt");
 const { users } = require("../models");
 
 module.exports = () => {
+  console.log("여기가 두번째네 localStrategy");
   passport.use(
     "local",
     new LocalStrategy(
       {
+        // req.body 값
         usernameField: "email",
         passwordField: "password",
         passReqToCallback: true, //인증을 수행하는 인증 함수로 HTTP request를 그대로  전달할지 여부를 결정한다
       },
+
       async (req, email, password, done) => {
         try {
           const user = await users.findOne({
             where: {
               email,
-              password,
             },
           });
           if (!user) {
