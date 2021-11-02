@@ -163,11 +163,11 @@ login = async (req, res) => {
         headers: { Authorization: heaer },
         url: "https://kapi.kakao.com/v2/user/me",
       },
-      function (error, response, body) {
+      async function (error, response, body) {
         try {
           const query =
             "insert into users (username,email,password,nickname,salt,image,gender,imageUrl) select :username,:email,:password,:nickname,:salt,:image,gender,:imageUrl From dual WHERE NOT exists(select * from comments where userid = :userid);";
-          const isuser = sequelize.query(query, {
+          const isuser = await sequelize.query(query, {
             replacements: {
               username: "카카오 유저",
               email: body.kakao_account.email,
@@ -197,13 +197,11 @@ login = async (req, res) => {
           });
         } catch (error) {
           logger.error(error);
-          return res
-            .status(400)
-            .send({
-              result: "failure",
-              msg: "DB 정보 조회 실패",
-              error: error,
-            });
+          return res.status(400).send({
+            result: "failure",
+            msg: "DB 정보 조회 실패",
+            error: error,
+          });
         }
       }
     );
@@ -322,7 +320,7 @@ getotheruser = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    const data = { user: users };
+    const data = users;
     logger.info("GET /myProfile/:userid");
     return res
       .status(200)
