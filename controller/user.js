@@ -106,7 +106,7 @@ signup = async (req, res) => {
 
 //로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
-  const { email, password, which } = req.body;
+  const { email, password, which , token} = req.body;
   if (!which) {
     try {
       const query = "select * from users where email = :email";
@@ -157,7 +157,8 @@ login = async (req, res) => {
     }
   } else if (which == 2) {
     const location = "authorization";
-    const authorization = req.headers[location];
+    // const authorization = req.headers[location];
+    const authorization = token
     const heaer = "Bearer " + authorization;
     console.log(heaer)
     request.get(
