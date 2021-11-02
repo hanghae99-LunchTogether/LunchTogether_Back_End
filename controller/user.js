@@ -162,7 +162,7 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id)
     const query =
-      "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from comments where userid = :userid);";
+      "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from users where userid = :userid);";
     const isuser = sequelize.query(query, {
       replacements: {
         userid: id,
@@ -178,17 +178,17 @@ loginkakao = async (req, res) => {
     });
     const users = {
       userid: id,
-      email: email,
+      email: "카카오 이메일",
       nickname: nickname,
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
-    const data = { user: users };
+
     logger.info("POST /login");
     return res.status(200).send({
       result: "success",
       msg: "로그인 완료.",
       token: token,
-      data: data,
+      users: users,
     });
   } catch (error) {
     logger.error(error);
