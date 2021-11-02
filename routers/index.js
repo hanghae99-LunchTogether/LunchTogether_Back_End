@@ -12,8 +12,4 @@ router.use("/lunchpost", [lunchRouter]);
 router.use("/spoon", [userReview]);
 router.use("/applicant", [applicantRouter]);
 
-
-const testRouter = require("./mykakakodo")
-router.use("/test",[testRouter])
-
 module.exports = router;
