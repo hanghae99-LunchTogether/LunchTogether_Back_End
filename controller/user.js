@@ -8,6 +8,7 @@ const path = require("path"); //경로지정
 const fs = require("fs");
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 const { logger } = require("../config/logger"); //로그
+const request = require("request");
 
 AWS.config.update({
   //보안자격증명 액세스 키 설정해야 s3 bucket 접근이 가능하다.
@@ -158,12 +159,14 @@ login = async (req, res) => {
     const location = "authorization";
     const authorization = req.headers[location];
     const heaer = "Bearer " + authorization;
+    console.log(heaer)
     request.get(
       {
         headers: { Authorization: heaer },
         url: "https://kapi.kakao.com/v2/user/me",
       },
       function (error, response, body) {
+        console.log(response)
         try {
           const query =
             "insert into users (username,email,password,nickname,salt,image,gender,imageUrl) select :username,:email,:password,:nickname,:salt,:image,gender,:imageUrl From dual WHERE NOT exists(select * from comments where userid = :userid);";
