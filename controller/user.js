@@ -8,7 +8,6 @@ const path = require("path"); //경로지정
 const fs = require("fs");
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 const { logger } = require("../config/logger"); //로그
-const request = require("request");
 
 AWS.config.update({
   //보안자격증명 액세스 키 설정해야 s3 bucket 접근이 가능하다.
