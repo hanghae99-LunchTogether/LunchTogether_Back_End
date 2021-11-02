@@ -197,13 +197,11 @@ login = async (req, res) => {
           });
         } catch (error) {
           logger.error(error);
-          return res
-            .status(400)
-            .send({
-              result: "failure",
-              msg: "DB 정보 조회 실패",
-              error: error,
-            });
+          return res.status(400).send({
+            result: "failure",
+            msg: "DB 정보 조회 실패",
+            error: error,
+          });
         }
       }
     );
