@@ -105,7 +105,7 @@ signup = async (req, res) => {
 
 //로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
-  const { email, password} = req.body;
+  const { email, password } = req.body;
 
   try {
     console.log("여기에서 오니??");
@@ -233,7 +233,7 @@ login = async (req, res) => {
 loginkakao = async (req, res) => {
   const { image, nickname, id } = req.body;
   try {
-    console.log(image, nickname, id)
+    console.log(image, nickname, id);
     const query =
       "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from users where userid = :userid);";
     const isuser = sequelize.query(query, {
@@ -273,7 +273,7 @@ loginkakao = async (req, res) => {
       type: sequelize.QueryTypes.INSERT,
     });
     const users = {
-      userid: id,
+      id: id,
       email: "카카오 이메일",
       nickname: nickname,
     };
@@ -288,7 +288,7 @@ loginkakao = async (req, res) => {
     });
   } catch (error) {
     logger.error(error);
-    console.log(error)
+    console.log(error);
     return res.status(400).send({
       result: "failure",
       msg: "DB 정보 조회 실패",
@@ -338,7 +338,8 @@ upusers = async (req, res) => {
     company,
     introduction,
   } = req.body;
-  console.log(username,
+  console.log(
+    username,
     email,
     nickname,
     menu,
@@ -346,18 +347,13 @@ upusers = async (req, res) => {
     gender,
     location,
     company,
-    introduction)
+    introduction
+  );
+
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
   }
   try {
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userloc.userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
     let originalUrl;
     let querys = "UPDATE users SET ";
     if (username) querys = querys + " username = :username,";
@@ -370,11 +366,29 @@ upusers = async (req, res) => {
     if (mbti) querys = querys + " mbti = :mbti,";
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
-    if (location) querys = querys + " location = :location,";
+    if (location) {
+      console.log(location)
+      const query = "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+      const locationdb = await sequelize.query(query, {
+        replacements: {
+          id:location.id,
+          address_name:location.address_name,
+          road_address_name: location.road_address_name,
+          category_group_name: location.category_group_name,
+          place_name: location.place_name,
+          place_url: location.place_url,
+          phone: location.phone,
+          x: location.x,
+          y: location.y,
+          id: location.id
+        },
+        type: sequelize.QueryTypes.SELECT,
+      });
+      querys = querys + " location = :location,";
+    }
     if (menu) querys = querys + " menu = :menu,";
     if (company) querys = querys + " company = :company,";
     querys = querys.slice(0, -1);
-    console.log(querys[querys.length - 1]);
     querys = querys + " WHERE userid = :userid;";
     console.log("마지막으로 완성된 쿼리문", querys);
     const updateuser = await sequelize.query(querys, {
@@ -386,14 +400,21 @@ upusers = async (req, res) => {
         mbti: mbti,
         gender: gender,
         introduction: introduction,
-        location: location,
+        location: location.id,
         menu: menu,
         company: company,
-        userid: users[0].userid,
+        userid: userloc.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    data = { user: updateuser };
+    const query = "select * from users where userid = :userid";
+    const users = await sequelize.query(query, {
+      replacements: {
+        userid: userloc.userid,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    });
+    data = { user: users[0] };
     logger.info("patch /myProfile");
     return res
       .status(200)
@@ -440,5 +461,5 @@ module.exports = {
   getuser: getuser,
   upusers: upusers,
   getotheruser: getotheruser,
-  loginkakao:loginkakao
+  loginkakao: loginkakao,
 };
