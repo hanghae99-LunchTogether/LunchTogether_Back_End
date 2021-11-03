@@ -89,7 +89,6 @@ postlunchlist = async (req, res) => {
       duration: duration
     });
     lunch.dataValues.nickname = user.nickname;
-    lunch.dataValues.lunchdatas = lunchdatas;
     console.log(lunch);
     const data = { lunch: lunch };
     logger.info("POST /lunchPost");
