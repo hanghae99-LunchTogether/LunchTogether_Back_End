@@ -3,17 +3,17 @@ const { logger } = require("../config/logger"); //로그
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
-  const { targetuserid, spoon } = req.body;
+  const { targetuserid, spoon , comment} = req.body;
   const user = res.locals.user;
   try {
     const query =
       "insert into usersReviews set userid = :userid, targetusers = :targetusers, spoon = :spoon, comments = :comment;";
-    const comment = await sequelize.query(query, {
+    const comments = await sequelize.query(query, {
       replacements: {
         userid: user.userid,
         targetusers: targetuserid,
         spoon: spoon,
-        comment: "현재는 테스트",
+        comment: comment,
       },
       type: sequelize.QueryTypes.INSERT,
     });
