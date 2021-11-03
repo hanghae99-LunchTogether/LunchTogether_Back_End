@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     const [tokenType, token] = authorization.split(' ')
     
     if (tokenType !== "Bearer"){
-      logger.error('/middleware 비정상 토큰');
+      logger.error('/middleware 토큰타입 오류!');
       res.status(401).send({ result: "fail", msg: "비정상 접근 헤더확인 요망" });
       return;
     }
@@ -31,8 +31,8 @@ module.exports = async (req, res, next) => {
       console.log('로컬 유저는?', res.locals.user);
     } else {
       res.locals.user = undefined;
-      logger.error('/middleware 비정상 토큰');
-      res.status(401).send({ result: "fail", msg: "토큰이 변조되었음. 토큰재발급 요망 " });
+      logger.error('/middleware 토큰 없음');
+      res.status(401).send({ result: "fail", msg: "토큰이 없음. 토큰재발급 요망 " });
       return;
     }
     next();
