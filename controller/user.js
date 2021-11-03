@@ -240,7 +240,7 @@ upusers = async (req, res) => {
     location,
     company,
     introduction,
-  } = req.body;
+  } = req.body.profile;
   const testit = req;
   console.log("바디 어떻게 들어오냐?",testit);
   console.log(
