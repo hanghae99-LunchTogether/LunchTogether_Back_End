@@ -241,6 +241,8 @@ upusers = async (req, res) => {
     company,
     introduction,
   } = req.body;
+  const testit = req.body;
+  console.log("바디 어떻게 들어오냐?",testit);
   console.log(
     username,
     email,
