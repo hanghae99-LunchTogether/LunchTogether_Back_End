@@ -54,30 +54,20 @@ postlunchlist = async (req, res) => {
   const postDate = new Date();
   const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
   try {
-    // const querys =
-    //   "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
-    // const lunch = await sequelize.query(querys, {
-    //   replacements: {
-    //     userId: user.userid,
-    //     title: title,
-    //     content: content,
-    //     date: date,
-    //     location: location,
-    //     time: time,
-    //     membernum: membernum,
-    //   },
-    //   type: sequelize.QueryTypes.INSERT,
-    // });
+    const lunchdatas = await lunchdata.create({
+      location
+    });
     const lunch = await lunchs.create({
       userid: user.userid,
       title: title,
       content: content,
       date: date,
-      location: location,
+      location: location.id,
       time: time,
       membernum: membernum,
     });
     lunch.dataValues.nickname = user.nickname;
+    lunch.dataValues.lunchdatas = lunchdatas;
     console.log(lunch)
     const data = { lunch: lunch };
     logger.info("POST /lunchPost");

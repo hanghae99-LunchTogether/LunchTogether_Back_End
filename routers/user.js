@@ -28,7 +28,7 @@ router.route('/checknickname').post(function(req, res){
     }
 });
 router.route('/myprofile').patch(middleware, upload.single("image"),controller.upusers).get(middleware,controller.getuser);
-router.route('/myprofile/:userid').get(controller.getotheruser)
-
+router.route('/myprofile/:userid').get(controller.getotheruser);
+router.route('/kakaologin').post(controller.loginkakao);
 
 module.exports = router;
