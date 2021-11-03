@@ -13,11 +13,11 @@ module.exports = async (req, res, next) => {
       return;
     }
     if (token) {
-      const {userid} = jwt.verify(token, process.env.SECRET_KEY);
+      const { id } = jwt.verify(token, process.env.SECRET_KEY);
       const query = "select * from users where userid = :userid";
       const users = await sequelize.query(query, {
         replacements: {
-          userid: userid,
+          userid: id,
         },
         type: sequelize.QueryTypes.SELECT,
       });

@@ -177,7 +177,7 @@ loginkakao = async (req, res) => {
       type: sequelize.QueryTypes.INSERT,
     });
     const users = {
-      userid: id,
+      id: id,
       email: "카카오 이메일",
       nickname: nickname,
     };
