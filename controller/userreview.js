@@ -5,6 +5,7 @@ const { logger } = require("../config/logger"); //로그
 spoonpost = async (req, res) => {
   const { targetuserid, spoon , comment} = req.body;
   const user = res.locals.user;
+  console.log(targetuserid, spoon , comment)
   try {
     const query =
       "insert into usersReviews set userid = :userid, targetusers = :targetusers, spoon = :spoon, comments = :comment;";
@@ -24,6 +25,7 @@ spoonpost = async (req, res) => {
     });
   } catch (err) {
     logger.error(err);
+    console.log(err)
     return res.status(400).send({
       result: "fail",
       msg: "유저평가 작성 실패",

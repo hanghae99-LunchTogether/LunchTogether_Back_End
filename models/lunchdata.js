@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       onDelete: "cascade",
     });
+    models.lunchdata.hasMany(models.users, {foreignKey: "location", sourceKey: "id", onDelete: "cascade"});
   };
   return lunchdata;
 };

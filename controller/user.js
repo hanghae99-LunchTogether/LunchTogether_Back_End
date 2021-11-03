@@ -1,4 +1,4 @@
-const { users, sequelize } = require("../models");
+const { users, sequelize , lunchdata } = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -309,14 +309,16 @@ upusers = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userloc.userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
-    data = { user: users[0] };
+    const users = await users.findOne(
+      {
+        include: [
+          { model: lunchdata},
+        ],
+        where: { userid: userloc.userid },
+      }
+    )
+    
+    data = { user: users };
     logger.info("patch /myProfile");
     return res
       .status(200)
@@ -334,14 +336,15 @@ upusers = async (req, res) => {
 getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
-    const data = { user: users };
+    const user = await users.findOne(
+      {
+        include: [
+          { model: lunchdata},
+        ],
+        where: { userid: userid },
+      }
+    )
+    const data = { user: user };
     logger.info("GET /myProfile/:userid");
     return res
       .status(200)
