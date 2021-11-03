@@ -241,8 +241,6 @@ upusers = async (req, res) => {
     company,
     introduction,
   } = req.body.profile;
-  const testit = req;
-  console.log("바디 어떻게 들어오냐?",testit);
   console.log(
     username,
     email,
@@ -250,7 +248,6 @@ upusers = async (req, res) => {
     menu,
     mbti,
     gender,
-    location,
     company,
     introduction
   );
@@ -326,7 +323,7 @@ upusers = async (req, res) => {
       .send({ result: "success", msg: "유저정보 수정완료", data: data });
   } catch (error) {
     logger.error(error);
-    // console.log(error)
+    console.log(error)
     return res
       .status(401)
       .send({ result: "fail", msg: "유저정보 조회실패", error: error });
