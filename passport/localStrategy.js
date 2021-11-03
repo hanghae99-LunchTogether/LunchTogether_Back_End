@@ -1,3 +1,4 @@
+// 1
 const passport = require("passport");
 const passportJWT = require("passport-jwt");
 const JwtStrategy = passportJWT.Strategy;
@@ -6,8 +7,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const { users } = require("../models");
 
+// 로그인 성공여부 판단
 module.exports = () => {
-  console.log("여기가 두번째네 localStrategy");
   passport.use(
     "local",
     new LocalStrategy(
@@ -17,7 +18,7 @@ module.exports = () => {
         passwordField: "password",
         passReqToCallback: true, //인증을 수행하는 인증 함수로 HTTP request를 그대로  전달할지 여부를 결정한다
       },
-
+      // 콜백함수
       async (req, email, password, done) => {
         try {
           const user = await users.findOne({
@@ -38,7 +39,7 @@ module.exports = () => {
             .digest("hex");
           // 해쉬된 비밀번호가 같다면 유저 데이터 객체 전송
           if (inpw === user.password) {
-            done(null, user);
+            done(null, user); // -> serializer로 이동
             return;
           }
           // 비밀번호가 다를경우 에러

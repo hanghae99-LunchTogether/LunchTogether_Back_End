@@ -85,8 +85,8 @@ router.post("/signup", async (req, res) => {
 
 // passport local login
 router.post("/login", async (req, res, next) => {
-  console.log("여기가 마지막이네");
   //passport는 req객체에 login과 logout 메서드 추가
+  // authenticate가 localStrategy 호출
   passport.authenticate("local", (err, user, info) => {
     if (err || !user) {
       res.status(400).send({ result: "fail", msg: info.reason });
@@ -98,22 +98,22 @@ router.post("/login", async (req, res, next) => {
         return;
       }
       if (user) {
-          const token = jwt.sign(
-            {
-              id: users["userid"],
-              email: users["email"],
-              nickname: users["nickname"],
-            },
-            process.env.SECRET_KEY
-          );
-          const data = { user: users };
-          logger.info("POST /login");
-          return res.status(200).send({
-            result: "success",
-            msg: "로그인 완료.",
-            token: token,
-            data: data,
-          });
+        const token = jwt.sign(
+          {
+            id: users["userid"],
+            email: users["email"],
+            nickname: users["nickname"],
+          },
+          process.env.SECRET_KEY
+        );
+        const data = { user: users };
+        logger.info("POST /login");
+        return res.status(200).send({
+          result: "success",
+          msg: "로그인 완료.",
+          token: token,
+          data: data,
+        });
       }
     });
   });
