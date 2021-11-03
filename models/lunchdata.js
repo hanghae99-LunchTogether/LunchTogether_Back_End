@@ -61,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "lunchdata",
-      timestamps: false,
+
     }
   );
   lunchdata.associate = function (models) {

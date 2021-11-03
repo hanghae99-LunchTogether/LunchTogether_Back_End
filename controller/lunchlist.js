@@ -78,7 +78,6 @@ postlunchlist = async (req, res) => {
       },
       type: sequelize.QueryTypes.INSERT,
     });
-    querys = querys + " location = :location,";
     const lunch = await lunchs.create({
       userid: user.userid,
       title: title,

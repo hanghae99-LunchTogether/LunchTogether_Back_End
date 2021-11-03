@@ -47,10 +47,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: false,
       },
-      // duration: {
-      //   type: DataTypes.INTEGER,
-      //   required: false,
-      // },
+      duration: {
+        type: DataTypes.INTEGER,
+        required: false,
+      },
     },
     {
       sequelize,
