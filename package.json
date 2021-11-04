@@ -38,14 +38,12 @@
     "nodemon": "^2.0.13",
     "passport": "^0.5.0",
     "passport-kakao": "^1.0.1",
-<<<<<<< HEAD
-=======
     "passport-local": "^1.0.0",
     "request": "^2.88.2",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0",
->>>>>>> 169597d8d3942a5e255f08c70ab7c3c44a496d4a
     "swagger-autogen": "^2.12.2",
+    "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   }
