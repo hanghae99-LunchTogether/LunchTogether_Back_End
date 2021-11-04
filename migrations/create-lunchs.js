@@ -16,6 +16,10 @@ module.exports = {
             key: 'userid',
           },
       },
+      nickname: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       title: {
         allowNull: false,
         type: Sequelize.STRING,

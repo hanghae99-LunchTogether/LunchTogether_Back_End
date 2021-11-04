@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
+      nickname: {
+        required: true,
+        type: DataTypes.STRING,
+      },
       title: {
         required: true,
         type: DataTypes.STRING,
