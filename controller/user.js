@@ -1,4 +1,4 @@
-const { users, sequelize } = require("../models");
+const { users, sequelize, lunchdata } = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -81,7 +81,7 @@ signup = async (req, res) => {
         .digest("hex");
       console.log(username, nickname, email, hashpw);
       const query =
-        "insert into users (username, nickname, email, password, salt) values(:username, :nickname, :email, :password, :salt);";
+        "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
         replacements: {
           username: username,
@@ -149,79 +149,6 @@ login = async (req, res) => {
         .status(400)
         .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
     }
-<<<<<<< HEAD
-  } else if (which == 2) {
-<<<<<<< HEAD
-    const location = "authorization";
-    const authorization = req.headers[location];
-    const heaer = "Bearer " + authorization;
-    request.get(
-      {
-        headers: { Authorization: heaer },
-        url: "https://kapi.kakao.com/v2/user/me",
-      },
-      async function (error, response, body) {
-        try {
-          const query =
-            "insert into users (username,email,password,nickname,salt,image,gender,imageUrl) select :username,:email,:password,:nickname,:salt,:image,gender,:imageUrl From dual WHERE NOT exists(select * from comments where userid = :userid);";
-          const isuser = await sequelize.query(query, {
-            replacements: {
-              username: "카카오 유저",
-              email: body.kakao_account.email,
-              password: "카카오 로그인 유저",
-              nickname: body.kakao_account.nickname,
-              salt: "카카오테스트",
-              image: body.kakao_account.profile.profile_image_url,
-              gender: body.kakao_account.gender,
-              imageUrl: body.kakao_account.thumbnail_image_url,
-              userid: body.id,
-            },
-            type: sequelize.QueryTypes.INSERT,
-          });
-          const users = {
-            id: body.id,
-            email: body.kakao_account.email,
-            nickname: body.kakao_account.nickname,
-          };
-          const token = jwt.sign(users, process.env.SECRET_KEY);
-          const data = { user: users };
-          logger.info("POST /login");
-          return res.status(200).send({
-            result: "success",
-            msg: "로그인 완료.",
-            token: token,
-            data: data,
-          });
-        } catch (error) {
-          logger.error(error);
-          return res.status(400).send({
-            result: "failure",
-            msg: "DB 정보 조회 실패",
-            error: error,
-          });
-        }
-      }
-    );
-=======
-    try {
-      console.log(image, nickname, id)
-      const query =
-        "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from comments where userid = :userid);";
-      const isuser = sequelize.query(query, {
-        replacements: {
-          userid: id,
-          username: "카카오 유저",
-          email: "카카오 이메일",
-          password: "카카오 로그인 유저",
-          nickname: nickname,
-          salt: "카카오 유저",
-          image: image,
-          userid: id,
-        },
-        type: sequelize.QueryTypes.INSERT,
-      });
-      const users = {
-=======
   } catch (error) {
     logger.error(error);
     return res
@@ -238,34 +165,11 @@ loginkakao = async (req, res) => {
       "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from users where userid = :userid);";
     const isuser = sequelize.query(query, {
       replacements: {
->>>>>>> 1bfcd2e1a90a8e173944ef9825ee6f390b94cad6
         userid: id,
         username: "카카오 유저",
         email: "카카오 이메일",
         password: "카카오 로그인 유저",
         nickname: nickname,
-<<<<<<< HEAD
-      };
-      const token = jwt.sign(users, process.env.SECRET_KEY);
-      const data = { user: users };
-      logger.info("POST /login");
-      return res.status(200).send({
-        result: "success",
-        msg: "로그인 완료.",
-        token: token,
-        data: data,
-      });
-    } catch (error) {
-      logger.error(error);
-      console.log(error)
-      return res.status(400).send({
-        result: "failure",
-        msg: "DB 정보 조회 실패",
-        error: error,
-      });
-    }
->>>>>>> 19b847dd7996f62d187e79b1872a983efe8f7d32
-=======
         salt: "카카오 유저",
         image: image,
         userid: id,
@@ -294,7 +198,6 @@ loginkakao = async (req, res) => {
       msg: "DB 정보 조회 실패",
       error: error,
     });
->>>>>>> 1bfcd2e1a90a8e173944ef9825ee6f390b94cad6
   }
 };
 
@@ -337,7 +240,7 @@ upusers = async (req, res) => {
     location,
     company,
     introduction,
-  } = req.body;
+  } = req.body.profile;
   console.log(
     username,
     email,
@@ -345,7 +248,6 @@ upusers = async (req, res) => {
     menu,
     mbti,
     gender,
-    location,
     company,
     introduction
   );
@@ -367,12 +269,13 @@ upusers = async (req, res) => {
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
     if (location) {
-      console.log(location)
-      const query = "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+      console.log(location);
+      const query =
+        "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
       const locationdb = await sequelize.query(query, {
         replacements: {
-          id:location.id,
-          address_name:location.address_name,
+          id: location.id,
+          address_name: location.address_name,
           road_address_name: location.road_address_name,
           category_group_name: location.category_group_name,
           place_name: location.place_name,
@@ -380,9 +283,9 @@ upusers = async (req, res) => {
           phone: location.phone,
           x: location.x,
           y: location.y,
-          id: location.id
+          id: location.id,
         },
-        type: sequelize.QueryTypes.SELECT,
+        type: sequelize.QueryTypes.INSERT,
       });
       querys = querys + " location = :location,";
     }
@@ -407,21 +310,19 @@ upusers = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userloc.userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const users = await users.findOne({
+      include: [{ model: lunchdata }],
+      where: { userid: userloc.userid },
     });
-    data = { user: users[0] };
+
+    data = { user: users };
     logger.info("patch /myProfile");
     return res
       .status(200)
       .send({ result: "success", msg: "유저정보 수정완료", data: data });
   } catch (error) {
     logger.error(error);
-    // console.log(error)
+    console.log(error);
     return res
       .status(401)
       .send({ result: "fail", msg: "유저정보 조회실패", error: error });
@@ -432,14 +333,11 @@ upusers = async (req, res) => {
 getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const user = await users.findOne({
+      include: [{ model: lunchdata }],
+      where: { userid: userid },
     });
-    const data = users;
+    const data = { user: user };
     logger.info("GET /myProfile/:userid");
     return res
       .status(200)

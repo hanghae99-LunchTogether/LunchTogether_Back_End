@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'usersReviews',
-      timestamps: false,
+
     }
   );
   usersReviews.associate = function (models) {
