@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         require: false,
       },
       location: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         require: false,
       },
       menu: {
@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "users",
-      timestamps: false,
+
     }
   );
   users.associate = function (models) {
@@ -104,6 +104,10 @@ module.exports = (sequelize, DataTypes) => {
     models.users.hasMany(models.usersReviews, {
       foreignKey: "targetusers",
       sourceKey: "userid",
+    });
+    models.users.belongsTo(models.lunchdata, {
+      foreignKey: "location",
+      sourceKey: "id",
     });
   };
   return users;

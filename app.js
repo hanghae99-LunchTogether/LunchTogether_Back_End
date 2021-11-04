@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
+const session = require('express-session');
 
 const kakaoLoginRouter = require("./routers/kakaologin.js");
 

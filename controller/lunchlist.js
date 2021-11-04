@@ -1,12 +1,14 @@
 const { lunchs, sequelize, users, lunchdata } = require("../models");
 const { logger } = require("../config/logger"); //로그
-require('date-utils');
+require("date-utils");
 
 getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
-      include: [{ model: users, attributes: ["nickname"] },
-      { model: lunchdata } ],
+      include: [
+        { model: users, attributes: ["nickname"] },
+        { model: lunchdata },
+      ],
       order: [["date", "DESC"]],
     });
     logger.info("GET /lunchpost/");
@@ -28,7 +30,10 @@ detaillunchpost = async (req, res) => {
   const { lunchid } = req.params;
   try {
     const lunchDetail = await lunchs.findOne({
-      include: [{ model: users, attributes: ["nickname"] },{ model: lunchdata }],
+      include: [
+        { model: users, attributes: ["nickname"] },
+        { model: lunchdata },
+      ],
       where: { lunchid: lunchid },
     });
     const data = { lunch: lunchDetail };
@@ -50,35 +55,41 @@ detaillunchpost = async (req, res) => {
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { title, content, date, location, membernum } = req.body;
+  const { title, content, date, location, membernum, duration } = req.body;
   const postDate = new Date();
-  const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+  const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
+  console.log("타이틀"+title, "코맨트"+content, "날짜"+date, "위치"+location,"맴버수"+ membernum, "몇시간" +duration)
   try {
-    // const querys =
-    //   "insert into lunchs (userId ,title,content , date, location,time, membernum) value (:userId,:title,:content,:date,:location,:time,:membernum);";
-    // const lunch = await sequelize.query(querys, {
-    //   replacements: {
-    //     userId: user.userid,
-    //     title: title,
-    //     content: content,
-    //     date: date,
-    //     location: location,
-    //     time: time,
-    //     membernum: membernum,
-    //   },
-    //   type: sequelize.QueryTypes.INSERT,
-    // });
+    //쿼리문 해석 .. lunchdata에 해당 객체를 넣는데 lunchdata DB안에 해당객체의 id값이 존재하는 경우 넣지 않는다.
+    const query =
+      "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+    const locationdb = await sequelize.query(query, {
+      replacements: {
+        id: location.id,
+        address_name: location.address_name,
+        road_address_name: location.road_address_name,
+        category_group_name: location.category_group_name,
+        place_name: location.place_name,
+        place_url: location.place_url,
+        phone: location.phone,
+        x: location.x,
+        y: location.y,
+        id: location.id,
+      },
+      type: sequelize.QueryTypes.INSERT,
+    });
     const lunch = await lunchs.create({
       userid: user.userid,
       title: title,
       content: content,
       date: date,
-      location: location,
+      location: location.id,
       time: time,
       membernum: membernum,
+      duration: duration
     });
     lunch.dataValues.nickname = user.nickname;
-    console.log(lunch)
+    console.log(lunch);
     const data = { lunch: lunch };
     logger.info("POST /lunchPost");
     return res.status(200).send({
@@ -101,10 +112,11 @@ updatelunchlist = async (req, res) => {
   const user = res.locals.user;
   const { title, content, date, location, membernum } = req.body;
   const postDate = new Date();
-  const time = postDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+  const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
 
   try {
     let querys = "UPDATE lunchs SET";
+    querys = querys + " updatedAt = now(),"
     if (title) querys = querys + " title = :title,";
     if (content) querys = querys + " content = :content,";
     if (date) querys = querys + " date = :date,";
@@ -124,7 +136,7 @@ updatelunchlist = async (req, res) => {
         location: location,
         time: time,
         membernum: membernum,
-        userid : user.userid,
+        userid: user.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });
@@ -148,11 +160,12 @@ deletelunchlist = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
-    const querys = "delete from lunchs where lunchid = :lunchid AND userid = :userid";
+    const querys =
+      "delete from lunchs where lunchid = :lunchid AND userid = :userid";
     await sequelize.query(querys, {
       replacements: {
         lunchid: lunchid,
-        userid: user.userid
+        userid: user.userid,
       },
       type: sequelize.QueryTypes.DELETE,
     });
@@ -169,9 +182,6 @@ deletelunchlist = async (req, res) => {
     });
   }
 };
-
-
-
 
 module.exports = {
   getlunchlist: getlunchlist,
