@@ -51,7 +51,6 @@ commentpost = async (req, res) => {
         time: time,
       },
     });
-
     logger.info("POST /comment/:lunchid");
     return res.status(200).send({
       result: "success",

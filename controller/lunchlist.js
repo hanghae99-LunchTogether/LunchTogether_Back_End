@@ -58,7 +58,14 @@ postlunchlist = async (req, res) => {
   const { title, content, date, location, membernum, duration } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
-  console.log("타이틀"+title, "코맨트"+content, "날짜"+date, "위치"+location,"맴버수"+ membernum, "몇시간" +duration)
+  console.log(
+    "타이틀" + title,
+    "코맨트" + content,
+    "날짜" + date,
+    "위치" + location,
+    "맴버수" + membernum,
+    "몇시간" + duration
+  );
   try {
     //쿼리문 해석 .. lunchdata에 해당 객체를 넣는데 lunchdata DB안에 해당객체의 id값이 존재하는 경우 넣지 않는다.
     const query =
@@ -86,7 +93,7 @@ postlunchlist = async (req, res) => {
       location: location.id,
       time: time,
       membernum: membernum,
-      duration: duration
+      duration: duration,
     });
     lunch.dataValues.nickname = user.nickname;
     console.log(lunch);
@@ -116,7 +123,7 @@ updatelunchlist = async (req, res) => {
 
   try {
     let querys = "UPDATE lunchs SET";
-    querys = querys + " updatedAt = now(),"
+    querys = querys + " updatedAt = now(),";
     if (title) querys = querys + " title = :title,";
     if (content) querys = querys + " content = :content,";
     if (date) querys = querys + " date = :date,";
