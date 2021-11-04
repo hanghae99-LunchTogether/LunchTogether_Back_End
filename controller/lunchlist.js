@@ -58,8 +58,33 @@ postlunchlist = async (req, res) => {
   const { title, content, date, location, membernum } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
+  console.log(
+    "타이틀" + title,
+    "코맨트" + content,
+    "날짜" + date,
+    "위치" + location,
+    "맴버수" + membernum
+  );
   try {
-    const lunchdatas = await lunchdata.create(location);
+    //쿼리문 해석 .. lunchdata에 해당 객체를 넣는데 lunchdata DB안에 해당객체의 id값이 존재하는 경우 넣지 않는다.
+    const query =
+      "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+    const locationdb = await sequelize.query(query, {
+      replacements: {
+        id: location.id,
+        address_name: location.address_name,
+        road_address_name: location.road_address_name,
+        category_group_name: location.category_group_name,
+        place_name: location.place_name,
+        place_url: location.place_url,
+        phone: location.phone,
+        x: location.x,
+        y: location.y,
+        id: location.id,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    });
+    querys = querys + " location = :location,";
     const lunch = await lunchs.create({
       userid: user.userid,
       title: title,
