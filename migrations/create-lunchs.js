@@ -40,6 +40,9 @@ module.exports = {
       membernum: {
         type: Sequelize.STRING,
       },
+      duration: {
+        type: Sequelize.INTEGER,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

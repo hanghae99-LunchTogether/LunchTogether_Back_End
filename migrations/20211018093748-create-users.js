@@ -42,6 +42,10 @@ module.exports = {
       },
       location: {
         type: Sequelize.STRING,
+        references: {
+          model: 'lunchdata',
+          key: 'id',
+        },
       },
       menu: {
         type: Sequelize.STRING,

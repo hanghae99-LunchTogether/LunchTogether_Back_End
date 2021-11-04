@@ -28,7 +28,7 @@ module.exports = async (req, res, next) => {
         userimage : users[0]['image']
       };
       res.locals.user = user;
-      console.log('로컬 유저는?', res.locals.user);
+      console.log('로컬 유저는?', res.locals.user.nickname);
     } else {
       res.locals.user = undefined;
       logger.error('/middleware 토큰 없음');

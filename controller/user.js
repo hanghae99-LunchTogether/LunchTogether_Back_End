@@ -1,4 +1,4 @@
-const { users, sequelize } = require("../models");
+const { users, sequelize, lunchdata } = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -81,7 +81,7 @@ signup = async (req, res) => {
         .digest("hex");
       console.log(username, nickname, email, hashpw);
       const query =
-        "insert into users (username, nickname, email, password, salt) values(:username, :nickname, :email, :password, :salt);";
+        "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
         replacements: {
           username: username,
@@ -240,7 +240,7 @@ upusers = async (req, res) => {
     location,
     company,
     introduction,
-  } = req.body;
+  } = req.body.profile;
   console.log(
     username,
     email,
@@ -248,7 +248,6 @@ upusers = async (req, res) => {
     menu,
     mbti,
     gender,
-    location,
     company,
     introduction
   );
@@ -285,7 +284,7 @@ upusers = async (req, res) => {
           y: location.y,
           id: location.id,
         },
-        type: sequelize.QueryTypes.SELECT,
+        type: sequelize.QueryTypes.INSERT,
       });
       querys = querys + " location = :location,";
     }
@@ -310,21 +309,19 @@ upusers = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userloc.userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const users = await users.findOne({
+      include: [{ model: lunchdata }],
+      where: { userid: userloc.userid },
     });
-    data = { user: users[0] };
+
+    data = { user: users };
     logger.info("patch /myProfile");
     return res
       .status(200)
       .send({ result: "success", msg: "유저정보 수정완료", data: data });
   } catch (error) {
     logger.error(error);
-    // console.log(error)
+    console.log(error);
     return res
       .status(401)
       .send({ result: "fail", msg: "유저정보 조회실패", error: error });
@@ -335,14 +332,18 @@ upusers = async (req, res) => {
 getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
-    const query = "select * from users where userid = :userid";
-    const users = await sequelize.query(query, {
-      replacements: {
-        userid: userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const user = await users.findOne({
+      include: [{ model: lunchdata }],
+      where: { userid: userid },
     });
-    const data = { user: users };
+    const data = { user: user };
+    if (data.user === null) {
+      logger.info("GET /myProfile/:userid 유저정보 없음");
+      console.log("유저 없음");
+      return res
+        .status(400)
+        .send({ result: "fail", msg: "유저정보 조회 실패" });
+    }
     logger.info("GET /myProfile/:userid");
     return res
       .status(200)
