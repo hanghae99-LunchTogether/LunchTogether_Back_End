@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       content: {
         required: true,
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       date: {
         type: DataTypes.STRING,
@@ -51,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         required: false,
       },
+      status:{
+        type: DataTypes.STRING,
+        required: false,
+      }
     },
     {
       sequelize,

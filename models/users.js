@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "targetusers",
       sourceKey: "userid",
     });
-    models.users.belongsTo(models.lunchdata, {
+    models.users.belongsTo(models.locationdata, {
       foreignKey: "location",
       sourceKey: "id",
     });

@@ -94,6 +94,7 @@ postlunchlist = async (req, res) => {
       time: time,
       membernum: membernum,
       duration: duration,
+      status: "applied"
     });
     lunch.dataValues.nickname = user.nickname;
     console.log(lunch);
@@ -117,7 +118,7 @@ postlunchlist = async (req, res) => {
 updatelunchlist = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
-  const { title, content, date, location, membernum } = req.body;
+  const { title, content, date, location, membernum, duration } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
 
@@ -130,11 +131,12 @@ updatelunchlist = async (req, res) => {
     if (location) querys = querys + " location = :location,";
     if (time) querys = querys + " time = :time,";
     if (membernum) querys = querys + " membernum = :membernum,";
+    if (duration) querys = querys + " duration = :duration,";
 
     querys = querys.slice(0, -1);
 
     querys = querys + " WHERE lunchid = :lunchid AND userid = :userid;";
-    const lunch = await sequelize.query(querys, {
+    await sequelize.query(querys, {
       replacements: {
         lunchid: lunchid,
         title: title,
@@ -143,12 +145,27 @@ updatelunchlist = async (req, res) => {
         location: location,
         time: time,
         membernum: membernum,
+        duration: duration,
         userid: user.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const data = { lunch: lunch };
-    logger.info("PATCH/lunchPost");
+    const lunchDetail = await lunchs.findOne({
+      include: [
+        { model: users, attributes: ["nickname", "image"] },
+        { model: lunchdata },
+      ],
+      where: { lunchid: lunchid },
+    });
+    if(!lunchDetail){
+      logger.error("PATCH /lunchPost 존재하지 않는 약속");
+      return res.status(400).send({
+        result: "fail",
+        msg: "해당 약속 존재하지 않음",
+      });
+    }
+    const data = { lunch: lunchDetail };
+    logger.info("PATCH /lunchPost");
     return res.status(200).send({
       result: "success",
       msg: "약속 수정 성공",
@@ -163,19 +180,22 @@ updatelunchlist = async (req, res) => {
   }
 };
 
+
+
 deletelunchlist = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
     const querys =
       "delete from lunchs where lunchid = :lunchid AND userid = :userid";
-    await sequelize.query(querys, {
+    const test = await sequelize.query(querys, {
       replacements: {
         lunchid: lunchid,
         userid: user.userid,
       },
       type: sequelize.QueryTypes.DELETE,
     });
+    console.log(test);
     logger.info("DELETE /lunchPost");
     return res.status(200).send({
       result: "success",
