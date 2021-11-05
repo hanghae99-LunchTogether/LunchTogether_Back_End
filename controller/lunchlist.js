@@ -95,7 +95,7 @@ postlunchlist = async (req, res) => {
       time: time,
       membernum: membernum,
       duration: duration,
-      status: "applied"
+      status: "applied",
     });
     lunch.dataValues.nickname = user.nickname;
     console.log(lunch);
@@ -158,7 +158,7 @@ updatelunchlist = async (req, res) => {
       ],
       where: { lunchid: lunchid },
     });
-    if(!lunchDetail){
+    if (!lunchDetail) {
       logger.error("PATCH /lunchPost 존재하지 않는 약속");
       return res.status(400).send({
         result: "fail",
@@ -180,8 +180,6 @@ updatelunchlist = async (req, res) => {
     });
   }
 };
-
-
 
 deletelunchlist = async (req, res) => {
   const { lunchid } = req.params;
@@ -211,10 +209,127 @@ deletelunchlist = async (req, res) => {
   }
 };
 
+onairlunch = async (req, res) => {
+  const { lunchid } = req.params;
+  const user = res.locals.user;
+  try {
+    const lunchDetail = await lunchs.findOne({
+      include: [
+        { model: users, attributes: ["nickname, image"] },
+        { model: lunchdata },
+      ],
+      where: { lunchid: lunchid, userid: user.userid },
+    });
+    if (lunchDetail) {
+      lunchDetail.update({ status: "onair" });
+      logger.info("PATCH /lunchPost/onair");
+      return res.status(200).send({
+        result: "success",
+        msg: "점약 승인 성공",
+        lunch: lunchDetail,
+      });
+    } else {
+      logger.error("PATCH /lunchPost/onair 해당 점약 없음 해당 오너가아님");
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 승인 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+      });
+    }
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+    return res.status(400).send({
+      result: "fail",
+      msg: "점약 진행 오류",
+    });
+  }
+};
+
+cancellunch = async (req, res) => {
+  const { lunchid } = req.params;
+  const { comment } = req.body;
+  const user = res.locals.user;
+
+  try {
+    const lunchDetail = await lunchs.findOne({
+      include: [
+        { model: users, attributes: ["nickname, image"] },
+        { model: lunchdata },
+      ],
+      where: { lunchid: lunchid, userid: user.userid },
+    });
+    if (lunchDetail) {
+      const content = lunchDetail.content + "취소 사유:" + comment;
+      lunchDetail.update({ status: "cancel", content: content });
+      logger.info("PATCH /lunchPost/cancel");
+      return res.status(200).send({
+        result: "success",
+        msg: "점약 취소 성공",
+        lunch: lunchDetail,
+      });
+    }
+    else{
+      logger.error("PATCH /lunchPost/cancel 취소 실패 해당 점약이 없거나 or 점약 오너가아님");
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 취소 실패 해당 점약이 없거나 점약 오너가 아니여",
+      });
+    }
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 취소 오류",
+      });
+  }
+};
+
+donelunch = async (req, res)=>{
+  const { lunchid } = req.params;
+  const user = res.locals.user;
+  
+  try {
+    const lunchDetail = await lunchs.findOne({
+      include: [
+        { model: users, attributes: ["nickname, image"] },
+        { model: lunchdata },
+      ],
+      where: { lunchid: lunchid, userid: user.userid },
+    });
+    if (lunchDetail) {
+      lunchDetail.update({ status: "done"});
+      logger.info("PATCH /lunchPost/done");
+      return res.status(200).send({
+        result: "success",
+        msg: "점약 종료 성공",
+        lunch: lunchDetail,
+      });
+    }
+    else{
+      logger.error("PATCH /lunchPost/done 해당 점약 오너가 아니거나 점약이 존재하지않음");
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 종료 실패 점약 오너아님 || 점약 존재 ㄴㄴ",
+      });
+    }
+  } catch (error) {
+    logger.error(error);
+    console.log(error)
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 종료 오류",
+      });
+  }
+}
+
 module.exports = {
   getlunchlist: getlunchlist,
   detaillunchpost: detaillunchpost,
   postlunchlist: postlunchlist,
   updatelunchlist: updatelunchlist,
   deletelunchlist: deletelunchlist,
+  onairlunch: onairlunch,
+  cancellunch: cancellunch,
+  donelunch: donelunch,
 };
