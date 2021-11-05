@@ -94,6 +94,7 @@ checknickname = async (req, res)=>{
 //회원가입
 signup = async (req, res) => {
   const { nickname, email, password } = req.body;
+  console.log(nickname, email, password);
   try {
     if (await emailCheck(email)) {
       return res
@@ -109,7 +110,7 @@ signup = async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      console.log(username, nickname, email, hashpw);
+      console.log(nickname, email, hashpw);
       const query =
         "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
