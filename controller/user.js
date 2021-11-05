@@ -93,7 +93,7 @@ checknickname = async (req, res)=>{
 
 //회원가입
 signup = async (req, res) => {
-  const { username, nickname, email, password } = req.body;
+  const { nickname, email, password } = req.body;
   try {
     if (await emailCheck(email)) {
       return res
@@ -114,7 +114,7 @@ signup = async (req, res) => {
         "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
         replacements: {
-          username: username,
+          username: "로컬유저",
           nickname: nickname,
           email: email,
           password: hashpw,

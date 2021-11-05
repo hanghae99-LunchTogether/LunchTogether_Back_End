@@ -188,7 +188,15 @@
           {
             "in": "formData",
             "name": "location",
-            "type": "string"
+            "type": "object",
+            "properties": [
+              {
+                "name": "test",
+                "in": "path",
+                "required": true,
+                "type": "string"
+              }
+            ]
           },
           {
             "in": "formData",
