@@ -110,7 +110,7 @@ signup = async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      console.log(username, nickname, email, hashpw);
+      console.log(nickname, email, hashpw);
       const query =
         "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
