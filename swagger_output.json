@@ -198,43 +198,7 @@
               "type": "object",
               "properties": {
                 "profile": {
-                  "example": "변경할 정보 : 변경할 값 Ex) 'mbti': 'rety'  "
-                }
-              }
-            }
-          },
-          {
-            "name": "profile.location",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "address_name": {
-                  "example": "주소 "
-                },
-                "category_group_name": {
-                  "example": "카테고리이름"
-                },
-                "id": {
-                  "example": "고유 id값"
-                },
-                "phone": {
-                  "example": "번호?"
-                },
-                "place_name": {
-                  "example": "지역이름"
-                },
-                "place_url": {
-                  "example": "해당 지역 url"
-                },
-                "road_address_name": {
-                  "example": "도로명 주소"
-                },
-                "x": {
-                  "example": "좌표 "
-                },
-                "y": {
-                  "example": "좌표 "
+                  "example": "변경할 정보 : 변경할 값 Ex) 'mbti': 'rety', 'location': {'address_name': 'test', 'category_group_name': 'test', 'id': 12,'phone': 'test','place_name': 'test','place_url': 'test','road_address_name': 'test','x': 'test', 'y': 'test'} "
                 }
               }
             }
