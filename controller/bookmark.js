@@ -7,29 +7,31 @@ bookmarkpost = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
-    const [user, created] = await bookmarks.findOrCreate({
-      where: { userid: user.userid },
-      default: { lunchid: lunchid },
+    const doc = {userid : user.userid , lunchid : lunchid }
+    const [bookmark, created] = await bookmarks.findOrCreate({
+      where: { userid: user.userid, lunchid : lunchid },
+      default: doc,
     });
-    if (created) {
-      return;
+    if(!created){
+      return res.status(400).send({
+        result: "fail",
+        msg: "이미 북마크 되어있는 점심 약속입니다.",
+      });
+    }else{
+      console.log(bookmark.dataValues.bookmarkid)
+      const books = await bookmarks.findOne({
+        include: [{ model: lunchs }],
+        where: { bookmarkid : bookmark.dataValues.bookmarkid }})
+      logger.info("POST /book/:lunchid");
+      return res.status(200).send({
+        result: "success",
+        msg: "북마크 추가 성공",
+        book : books
+      });
     }
-    // const createdbookmark = await bookmarks.findOne({
-    //   include: [{ model: lunchs }],
-    //   where: {
-    //     lunchid: lunchid,
-    //     userid: user.userid,
-    //   },
-    // });
-    // console.log("여기다", createdbookmark);
-    logger.info("POST /book/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "북마크 추가 성공",
-      bookmarks: bookmark,
-    });
   } catch (err) {
     logger.error(err);
+    console.log(err)
     return res.status(400).send({
       result: "fail",
       msg: "북마크 추가 실패",
@@ -74,7 +76,6 @@ bookmarkdele = async (req, res) => {
       },
       type: sequelize.QueryTypes.DELETE,
     });
-
     logger.info("delete /book/:bookmarkid");
     return res.status(200).send({
       result: "success",
