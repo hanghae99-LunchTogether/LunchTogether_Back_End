@@ -61,6 +61,36 @@ async function nickNameCheck(nickname) {
   }
 }
 
+checkemail = async (req, res)=>{
+  const {email} = req.body;
+  if (await emailCheck(email)) {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "이메일이 중복되었습니다." , data: false});
+  }
+  else{
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "이메일이 중복없음" , data: true });
+  }
+}
+
+checknickname = async (req, res)=>{
+  const {nickname} = req.body;
+  if (await nickNameCheck(nickname)) {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "닉네임이 중복되었습니다." , data: false});
+  }
+  else{
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "닉네임이 중복없음" , data: true });
+  }
+}
+
+
+
 //회원가입
 signup = async (req, res) => {
   const { username, nickname, email, password } = req.body;
@@ -354,8 +384,8 @@ getotheruser = async (req, res) => {
 };
 
 module.exports = {
-  emailCheck: emailCheck,
-  nickNameCheck: nickNameCheck,
+  checkemail: checkemail,
+  checknickname: checknickname,
   signup: signup,
   login: login,
   getuser: getuser,
