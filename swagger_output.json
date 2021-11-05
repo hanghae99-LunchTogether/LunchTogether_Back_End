@@ -189,14 +189,11 @@
             "in": "formData",
             "name": "location",
             "type": "object",
-            "properties": [
-              {
-                "name": "test",
-                "in": "path",
-                "required": true,
-                "type": "string"
+            "properties": {
+              "comment": {
+                "example": "any"
               }
-            ]
+            }
           },
           {
             "in": "formData",
