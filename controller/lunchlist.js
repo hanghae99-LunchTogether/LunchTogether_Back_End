@@ -87,6 +87,7 @@ postlunchlist = async (req, res) => {
     });
     const lunch = await lunchs.create({
       userid: user.userid,
+      nickname: user.nickname,
       title: title,
       content: content,
       date: date,
