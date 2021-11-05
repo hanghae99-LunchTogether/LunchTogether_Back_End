@@ -1,4 +1,4 @@
-// ( 6371 * acos( cos( radians(37) ) * cos( radians( 37 ) ) * cos( radians( 127 ) - radians(127) ) + sin( radians(37) ) * sin( radians( 37 ) ) ) )
+const { lunchdata } = require('../models')
 
 
 Math.radians = function(degrees) {
@@ -7,8 +7,21 @@ Math.radians = function(degrees) {
 
 
 
+function radiusxy(standardx, standardy , tagetx, tagety) {
+    const a = (6371*Math.acos(Math.cos(Math.radians(standardy))*Math.cos(Math.radians(tagety))*Math.cos(Math.radians(tagetx)-Math.radians(standardx))+Math.sin(Math.radians(standardy))*Math.sin(Math.radians(tagety))))
+    return a;
+}
 
-console.log(( 6371 * Math.acos( Math.cos( Math.radians(37) ) * Math.cos( Math.radians( 37 ) ) * Math.cos( Math.radians( 127 ) - Math.radians(127) ) + Math.sin( Math.radians(37) ) * Math.sin( Math.radians( 37 ) ) ) ));
+const tx = 126.571962902672;
+const ty = 33.4545839507193;
+console.log(radiusxy(126.571962902672, 33.4545839507193, 126.572470555321 ,33.4545893987906))
+
+
+const lunch = lunchdata.findAll({
+    where: { },
+});
+console.log(lunch)
+
 
 
 
