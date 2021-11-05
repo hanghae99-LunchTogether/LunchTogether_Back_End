@@ -278,6 +278,7 @@ upusers = async (req, res) => {
     company,
     introduction
   );
+  let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
   }
@@ -313,6 +314,7 @@ upusers = async (req, res) => {
         },
         type: sequelize.QueryTypes.INSERT,
       });
+      locationid = location.id
       querys = querys + " location = :location,";
     }
     if (menu) querys = querys + " menu = :menu,";
@@ -329,7 +331,7 @@ upusers = async (req, res) => {
         mbti: mbti,
         gender: gender,
         introduction: introduction,
-        location: location.id,
+        location: locationid,
         menu: menu,
         company: company,
         userid: userloc.userid,
