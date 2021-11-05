@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const authmiddleware = require("../middlewares/authMiddleware");
-const { commentget, commentpost } = require("../controller/comment");
+const {
+  commentget,
+  commentpost,
+  commentdele,
+} = require("../controller/comment");
 
 router
   .route("/:lunchid")

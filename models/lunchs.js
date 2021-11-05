@@ -55,10 +55,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         required: false,
       },
-      status:{
+      status: {
         type: DataTypes.STRING,
         required: false,
-      }
+      },
     },
     {
       sequelize,
@@ -83,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
     });
     models.lunchs.belongsTo(models.users, {
       foreignKey: "userid",
+      onDelete: "cascade",
+    });
+    models.lunchs.hasMany(models.bookmarks, {
+      foreignKey: "lunchid",
       onDelete: "cascade",
     });
   };

@@ -81,7 +81,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "users",
-
     }
   );
   users.associate = function (models) {
@@ -103,6 +102,10 @@ module.exports = (sequelize, DataTypes) => {
     });
     models.users.hasMany(models.usersReviews, {
       foreignKey: "targetusers",
+      sourceKey: "userid",
+    });
+    models.users.hasMany(models.bookmarks, {
+      foreignKey: "userid",
       sourceKey: "userid",
     });
     models.users.belongsTo(models.locationdata, {
