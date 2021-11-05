@@ -338,12 +338,12 @@ upusers = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const users = await users.findOne({
+    const user = await users.findOne({
       include: [{ model: locationdata }],
       where: { userid: userloc.userid },
     });
 
-    data = { user: users };
+    data = { user: user };
     logger.info("patch /myProfile");
     return res
       .status(200)
