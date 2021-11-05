@@ -24,9 +24,17 @@ module.exports = {
             key: 'userid',
           },
       },
-      approval: {
+      status:{
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      statusdesc: {
         allowNull: false,
         type: Sequelize.BOOLEAN, 
+      },
+      comments:{
+        allowNull: false,
+        type: Sequelize.STRING,
       }
     });
   },

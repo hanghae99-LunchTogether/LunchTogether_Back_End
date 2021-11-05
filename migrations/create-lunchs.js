@@ -16,13 +16,17 @@ module.exports = {
             key: 'userid',
           },
       },
+      nickname: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       title: {
         allowNull: false,
         type: Sequelize.STRING,
       },
       content: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       date: {
         type: Sequelize.STRING,
@@ -43,6 +47,9 @@ module.exports = {
       duration: {
         type: Sequelize.INTEGER,
       },
+      status:{
+        type: Sequelize.STRING,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

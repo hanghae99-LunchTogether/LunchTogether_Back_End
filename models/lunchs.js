@@ -23,13 +23,17 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
+      nickname: {
+        required: true,
+        type: DataTypes.STRING,
+      },
       title: {
         required: true,
         type: DataTypes.STRING,
       },
       content: {
         required: true,
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       date: {
         type: DataTypes.STRING,
@@ -51,6 +55,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         required: false,
       },
+      status:{
+        type: DataTypes.STRING,
+        required: false,
+      }
     },
     {
       sequelize,

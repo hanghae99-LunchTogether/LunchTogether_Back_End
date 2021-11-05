@@ -1,4 +1,4 @@
-const { users, sequelize , lunchdata } = require("../models");
+const { users, sequelize, locationdata } = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -108,7 +108,6 @@ login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    console.log("여기에서 오니??");
     const query = "select * from users where email = :email";
     const isuser = await sequelize.query(query, {
       replacements: {
@@ -116,7 +115,6 @@ login = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    console.log(isuser);
     const users = isuser[0];
     if (users) {
       const salt = users.salt;
@@ -129,7 +127,6 @@ login = async (req, res) => {
         const token = jwt.sign(
           {
             id: users["userid"],
-            email: users["email"],
             nickname: users["nickname"],
           },
           process.env.SECRET_KEY
@@ -144,7 +141,7 @@ login = async (req, res) => {
         });
       }
     } else {
-      logger.error(error);
+      logger.error("해당 유저 이메일 잘못됨");
       return res
         .status(400)
         .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
@@ -178,7 +175,6 @@ loginkakao = async (req, res) => {
     });
     const users = {
       id: id,
-      email: "카카오 이메일",
       nickname: nickname,
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
@@ -251,7 +247,6 @@ upusers = async (req, res) => {
     company,
     introduction
   );
-
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
   }
@@ -269,12 +264,13 @@ upusers = async (req, res) => {
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
     if (location) {
-      console.log(location)
-      const query = "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+      console.log(location);
+      const query =
+        "insert into locationdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from locationdata where id = :id);";
       const locationdb = await sequelize.query(query, {
         replacements: {
-          id:location.id,
-          address_name:location.address_name,
+          id: location.id,
+          address_name: location.address_name,
           road_address_name: location.road_address_name,
           category_group_name: location.category_group_name,
           place_name: location.place_name,
@@ -282,7 +278,7 @@ upusers = async (req, res) => {
           phone: location.phone,
           x: location.x,
           y: location.y,
-          id: location.id
+          id: location.id,
         },
         type: sequelize.QueryTypes.INSERT,
       });
@@ -309,15 +305,11 @@ upusers = async (req, res) => {
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const users = await users.findOne(
-      {
-        include: [
-          { model: lunchdata},
-        ],
-        where: { userid: userloc.userid },
-      }
-    )
-    
+    const users = await users.findOne({
+      include: [{ model: locationdata }],
+      where: { userid: userloc.userid },
+    });
+
     data = { user: users };
     logger.info("patch /myProfile");
     return res
@@ -325,7 +317,7 @@ upusers = async (req, res) => {
       .send({ result: "success", msg: "유저정보 수정완료", data: data });
   } catch (error) {
     logger.error(error);
-    console.log(error)
+    console.log(error);
     return res
       .status(401)
       .send({ result: "fail", msg: "유저정보 조회실패", error: error });
@@ -336,15 +328,18 @@ upusers = async (req, res) => {
 getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
-    const user = await users.findOne(
-      {
-        include: [
-          { model: lunchdata},
-        ],
-        where: { userid: userid },
-      }
-    )
+    const user = await users.findOne({
+      include: [{ model: locationdata }],
+      where: { userid: userid },
+    });
     const data = { user: user };
+    if (data.user === null) {
+      logger.info("GET /myProfile/:userid 유저정보 없음");
+      console.log("유저 없음");
+      return res
+        .status(400)
+        .send({ result: "fail", msg: "유저정보 조회 실패" });
+    }
     logger.info("GET /myProfile/:userid");
     return res
       .status(200)

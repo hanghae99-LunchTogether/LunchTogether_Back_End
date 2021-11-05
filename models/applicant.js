@@ -27,10 +27,18 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
-      approval: {
+      status:{
+        required: true,
+        type: DataTypes.STRING,
+      },
+      statusdesc: {
         require: true,
         type: DataTypes.BOOLEAN,
       },
+      comments:{
+        allowNull: false,
+        type: DataTypes.STRING,
+      }
     },
     {
       sequelize,

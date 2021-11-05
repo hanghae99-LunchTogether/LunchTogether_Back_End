@@ -104,6 +104,3 @@ for (a of data) {
 }
 
 lunchdata.bulkCreate(data);
-
-
-
