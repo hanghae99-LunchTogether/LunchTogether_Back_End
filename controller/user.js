@@ -94,6 +94,7 @@ checknickname = async (req, res)=>{
 //회원가입
 signup = async (req, res) => {
   const { nickname, email, password } = req.body;
+  console.log(nickname, email, password);
   try {
     if (await emailCheck(email)) {
       return res
