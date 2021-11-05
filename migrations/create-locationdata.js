@@ -33,11 +33,11 @@ module.exports = {
         allowNull: false,
       },
       x: {
-        type: Sequelize.STRING,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       y: {
-        type: Sequelize.STRING,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       lunchreview :{

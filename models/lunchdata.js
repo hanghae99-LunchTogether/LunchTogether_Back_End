@@ -45,11 +45,11 @@ module.exports = (sequelize, DataTypes) => {
         require: false,
       },
       x: {
-        type: DataTypes.STRING,
+        type: DataTypes.DOUBLE,
         require: false,
       },
       y: {
-        type: DataTypes.STRING,
+        type: DataTypes.DOUBLE,
         require: false,
       },
       lunchreview :{
