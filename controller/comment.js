@@ -4,7 +4,6 @@ require("date-utils");
 
 commentget = async (req, res) => {
   const { lunchid } = req.params; // params에 lunchid 객체
-  console.log(req);
   try {
     // comments table의 lunchid 조회
     const comment = await comments.findAll({
