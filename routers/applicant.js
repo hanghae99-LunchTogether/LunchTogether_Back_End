@@ -7,7 +7,8 @@ const {
   applicantget,
   applicantapproved,
   applicantconfirmed,
-  applicantgetme
+  applicantgetme,
+  applicantgetthor
 } = require("../controller/applicant");
 
 router
@@ -19,4 +20,5 @@ router
 router.route("/approved/:lunchid").patch(middleware, applicantapproved)
 router.route("/confirmed/:lunchid").patch(middleware, applicantconfirmed)
 router.route("").get(middleware, applicantgetme)
+router.route('/user/:userid').get(applicantgetthor);
 module.exports = router;

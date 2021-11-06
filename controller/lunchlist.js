@@ -1,4 +1,4 @@
-const { lunchs, sequelize, users, lunchdata } = require("../models");
+const { lunchs, sequelize, users, lunchdata, applicant } = require("../models");
 const { logger } = require("../config/logger"); //로그
 require("date-utils");
 
@@ -6,8 +6,9 @@ getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
       include: [
-        { model: users, attributes: ["nickname"] },
+        { model: users},
         { model: lunchdata },
+        { model: applicant , include: [{model: users}]}
       ],
       order: [["date", "DESC"]],
     });
@@ -31,8 +32,9 @@ detaillunchpost = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, attributes: ["nickname"] },
+        { model: users},
         { model: lunchdata },
+        { model: applicant , include: [{model: users}]}
       ],
       where: { lunchid: lunchid },
     });
@@ -153,7 +155,7 @@ updatelunchlist = async (req, res) => {
     });
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, attributes: ["nickname", "image"] },
+        { model: users},
         { model: lunchdata },
       ],
       where: { lunchid: lunchid },
@@ -215,8 +217,9 @@ onairlunch = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, attributes: ["nickname, image"] },
+        { model: users},
         { model: lunchdata },
+        { model: applicant , include: [{model: users}]}
       ],
       where: { lunchid: lunchid, userid: user.userid },
     });
@@ -253,8 +256,9 @@ cancellunch = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, attributes: ["nickname, image"] },
+        { model: users},
         { model: lunchdata },
+        { model: applicant , include: [{model: users}]}
       ],
       where: { lunchid: lunchid, userid: user.userid },
     });
@@ -292,8 +296,9 @@ donelunch = async (req, res)=>{
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, attributes: ["nickname, image"] },
+        { model: users},
         { model: lunchdata },
+        { model: applicant , include: [{model: users}]}
       ],
       where: { lunchid: lunchid, userid: user.userid },
     });
