@@ -1,11 +1,10 @@
 const express = require("express");
+const app = express();
 const dotenv = require("dotenv");
 const passport = require("passport");
-const passportConfig = require("./passport");
+const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
-const kakaoRouter = require("./routers/auth");
-const app = express();
-passportConfig(passport);
+const passportRouter = require("./routers/auth");
 dotenv.config();
 
 const cors = require("cors");
@@ -17,8 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   session({
-    resave: false,
-    saveUnitialized: false,
+    resave: false, // 일단 디폴트값
+    saveUnitialized: true,
     secret: process.env.COOKIE_SECRET,
     cookie: {
       httpOnly: true,
@@ -26,13 +25,6 @@ app.use(
     },
   })
 );
-
-app.use(function (err, req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-  next();
-});
 
 // routers
 const Router = require("./routers");
@@ -44,10 +36,10 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // sequelize
 const { sequelize, Sequelize } = require("./models");
 
-// 카카오로그인
+// passport 로컬,카카오로그인
 app.use(passport.initialize()); // req객체에 passport설정
 app.use(passport.session()); // req.session객체에 passport설정. deserializeUser 호출
-app.use("/auth", kakaoRouter);
+app.use("/auth", passportRouter);
 
 const driver = async () => {
   try {
