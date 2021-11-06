@@ -15,7 +15,7 @@
     </thead>
     <tbody>
     {% for room in rooms %}
-      <tr data-id="{{room._id}}">
+      <tr data-id="{{room.id}}">
         <td>{{room.title}}</td>
         <td>{{'비밀방' if room.password else '공개방'}}</td>
         <td>{{room.max}}</td>
@@ -23,7 +23,7 @@
         <td>
           <button
             data-password="{{'true' if room.password else 'false'}}"
-            data-id="{{room._id}}"
+            data-id="{{room.id}}"
             class="join-btn"
           >입장
           </button>
@@ -60,11 +60,11 @@
     const button = document.createElement('button');
     button.textContent = '입장';
     button.dataset.password = data.password ? 'true' : 'false';
-    button.dataset.id = data._id;
+    button.dataset.id = data.id;
     button.addEventListener('click', addBtnEvent);
     td.appendChild(button);
     tr.appendChild(td);
-    tr.dataset.id = data._id;
+    tr.dataset.id = data.id;
     document.querySelector('table tbody').appendChild(tr); // 화면에 추가
   });
 
