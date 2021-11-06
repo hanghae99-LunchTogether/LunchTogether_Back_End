@@ -61,9 +61,40 @@ async function nickNameCheck(nickname) {
   }
 }
 
+checkemail = async (req, res)=>{
+  const {email} = req.body;
+  if (await emailCheck(email)) {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "이메일이 중복되었습니다." , data: false});
+  }
+  else{
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "이메일이 중복없음" , data: true });
+  }
+}
+
+checknickname = async (req, res)=>{
+  const {nickname} = req.body;
+  if (await nickNameCheck(nickname)) {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "닉네임이 중복되었습니다." , data: false});
+  }
+  else{
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "닉네임이 중복없음" , data: true });
+  }
+}
+
+
+
 //회원가입
 signup = async (req, res) => {
-  const { username, nickname, email, password } = req.body;
+  const { nickname, email, password } = req.body;
+  console.log(nickname, email, password);
   try {
     if (await emailCheck(email)) {
       return res
@@ -79,12 +110,12 @@ signup = async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      console.log(username, nickname, email, hashpw);
+      console.log(nickname, email, hashpw);
       const query =
         "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
         replacements: {
-          username: username,
+          username: "로컬유저",
           nickname: nickname,
           email: email,
           password: hashpw,
@@ -247,6 +278,7 @@ upusers = async (req, res) => {
     company,
     introduction
   );
+  let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
   }
@@ -282,6 +314,7 @@ upusers = async (req, res) => {
         },
         type: sequelize.QueryTypes.INSERT,
       });
+      locationid = location.id
       querys = querys + " location = :location,";
     }
     if (menu) querys = querys + " menu = :menu,";
@@ -298,19 +331,19 @@ upusers = async (req, res) => {
         mbti: mbti,
         gender: gender,
         introduction: introduction,
-        location: location.id,
+        location: locationid,
         menu: menu,
         company: company,
         userid: userloc.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const users = await users.findOne({
+    const user = await users.findOne({
       include: [{ model: locationdata }],
       where: { userid: userloc.userid },
     });
 
-    data = { user: users };
+    data = { user: user };
     logger.info("patch /myProfile");
     return res
       .status(200)
@@ -354,8 +387,8 @@ getotheruser = async (req, res) => {
 };
 
 module.exports = {
-  emailCheck: emailCheck,
-  nickNameCheck: nickNameCheck,
+  checkemail: checkemail,
+  checknickname: checknickname,
   signup: signup,
   login: login,
   getuser: getuser,
