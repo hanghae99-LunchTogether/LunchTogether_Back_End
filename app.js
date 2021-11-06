@@ -8,7 +8,6 @@ const morgan = require('morgan'); //모건
 const ColorHash = require('color-hash').default;
 const dotenv = require("dotenv");
 dotenv.config();
-const webSocket = require('./soket');
 const Router = require("./routers");
 const kakaoLoginRouter = require("./routers/kakaologin.js"); //카카오 로그인 라우터
 
@@ -82,14 +81,12 @@ app.use((err, req, res, next)=>{
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
-const port = process.env.EXPRESS_PORT;
 
 
-const server = app.listen(port, () => {
-    console.log(`listening at http://localhost:${port}`);
-});
+// const server = app.listen(port, () => {
+//     console.log(`listening at http://localhost:${port}`);
+// });
 
-webSocket(server, app, sessionMiddleware)
 
-module.exports = app
+module.exports = {app, sessionMiddleware}
 

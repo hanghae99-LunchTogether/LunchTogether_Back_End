@@ -1,7 +1,5 @@
-const app = require('./app');
-const sessionMiddleware = require('./app')
+const {app, sessionMiddleware} = require('./app');
 const port = process.env.EXPRESS_PORT;
-
 const webSocket = require('./soket');
 
 
