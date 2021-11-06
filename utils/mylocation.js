@@ -1,4 +1,4 @@
-const { lunchdata } = require('../models')
+const { lunchdata , sequelize} = require('../models')
 
 
 Math.radians = function(degrees) {
@@ -17,10 +17,22 @@ const ty = 33.4545839507193;
 console.log(radiusxy(126.571962902672, 33.4545839507193, 126.572470555321 ,33.4545893987906))
 
 
-const lunch = lunchdata.findAll({
-    where: { },
-});
-console.log(lunch)
+// const lunch = lunchdata.findAll({
+//     where: { },
+// });
+// console.log(lunch)
+
+
+lunchdata.findAll({
+attributes: ['id',
+    [
+    sequelize.fn('ST_Distance',
+        sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', ty, tx)),
+    'distance'
+    ],
+],
+}).then(async (store) =>{console.log(store)})
+
 
 
 

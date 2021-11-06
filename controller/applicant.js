@@ -214,7 +214,45 @@ applicantgetme = async (req, res)=>{
       where: 
       { userid: user.userid },
     });
-    if(applicants.length){
+    if(!applicants){
+      logger.error("GET /applicant 신청한 점약이 없음...!");
+      return res.status(200).send({
+        result: "success",
+        msg: "신청한 점약이 없음...!",
+      });
+    }
+    else{
+      logger.info("GET /applicant");
+      return res.status(200).send({
+        result: "success",
+        msg: "신청한 점약 목록 조회 확인...!",
+        applicants : applicants
+      });
+    }
+  } catch (error) {
+    logger.error(error);
+    console.log(error)
+    return res.status(400).send({
+      result: "fail",
+      msg: "신청한 점약 조회 실패!",
+    });
+  }
+}
+
+
+//다른 사람이 신청한 점약목록
+applicantgetthor = async (req, res)=>{
+  const { userid } = req.params;
+  try {
+    const applicants = await applicant.findAll({
+      include: [
+        { model: users },
+        { model: lunchs }
+      ],
+      where: 
+      { userid: userid },
+    });
+    if(!applicants){//applicants.length
       logger.error("GET /applicant 신청한 점약이 없음...!");
       return res.status(200).send({
         result: "success",
@@ -247,5 +285,6 @@ module.exports = {
   applicantget: applicantget,
   applicantapproved: applicantapproved,
   applicantconfirmed: applicantconfirmed,
-  applicantgetme: applicantgetme
+  applicantgetme: applicantgetme,
+  applicantgetthor: applicantgetthor
 };

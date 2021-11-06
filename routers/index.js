@@ -7,11 +7,13 @@ const lunchRouter = require("./lunchlist");
 const userReview = require("./userreview");
 const applicantRouter = require("./applicant");
 const bookRouter = require("./bookmark");
-router.use("/", [userRouter]);
+const soket = require("./soket")
+router.use("/", [userRouter,soket]);
 router.use("/comment", [commRouter]);
 router.use("/lunchpost", [lunchRouter]);
 router.use("/spoon", [userReview]);
 router.use("/applicant", [applicantRouter]);
 router.use("/book", [bookRouter]);
 
+  
 module.exports = router;
