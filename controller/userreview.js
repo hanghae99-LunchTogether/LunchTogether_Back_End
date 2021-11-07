@@ -1,6 +1,6 @@
 const { comments, users, sequelize, usersReviews } = require("../models");
 const { logger } = require("../config/logger"); //로그
-const { where } = require("sequelize/types");
+
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
