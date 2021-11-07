@@ -34,6 +34,7 @@ const sessionMiddleware = session({
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express"); //스웨거 자동생성을 위한 코드
 const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파일 저장 위치
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
@@ -78,7 +79,7 @@ app.use((err, req, res, next)=>{
   res.render('error');
 })
 
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 
 
 
