@@ -1,10 +1,6 @@
 // 1
 const passport = require("passport");
-const passportJWT = require("passport-jwt");
-const JwtStrategy = passportJWT.Strategy;
-const { ExtractJwt } = passportJWT;
 const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
 const { users } = require("../models");
 
 // 로그인 성공여부 판단
@@ -50,28 +46,28 @@ module.exports = () => {
       }
     )
   );
-  passport.use(
-    new JwtStrategy(
-      {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: process.env.SECRET_KEY,
-      },
-      async function jwtVerify(payload, done) {
-        try {
-          const user = await users.findOne({
-            where: {
-              id: payload.id,
-            },
-          });
-          if (user) {
-            done(null, user);
-            return;
-          }
-          done(null, false, { reason: "올바르지 않은 인증정보 입니다" });
-        } catch (error) {
-          done(error);
-        }
-      }
-    )
-  );
+  // passport.use(
+  //   new JwtStrategy(
+  //     {
+  //       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  //       secretOrKey: process.env.SECRET_KEY,
+  //     },
+  //     async function jwtVerify(payload, done) {
+  //       try {
+  //         const user = await users.findOne({
+  //           where: {
+  //             id: payload.id,
+  //           },
+  //         });
+  //         if (user) {
+  //           done(null, user);
+  //           return;
+  //         }
+  //         done(null, false, { reason: "올바르지 않은 인증정보 입니다" });
+  //       } catch (error) {
+  //         done(error);
+  //       }
+  //     }
+  //   )
+  // );
 };

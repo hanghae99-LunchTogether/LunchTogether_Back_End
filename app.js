@@ -13,6 +13,7 @@ const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파�
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 app.use(
   session({
@@ -35,6 +36,13 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // sequelize
 const { sequelize, Sequelize } = require("./models");
+
+app.get("/", function (req, res) {
+  res.send("<h1>hi</h1>");
+  res.sendFile(__dirname + "/public/main.html");
+});
+
+app.set("view engine", "html");
 
 // passport 로컬,카카오로그인
 app.use(passport.initialize()); // req객체에 passport설정
