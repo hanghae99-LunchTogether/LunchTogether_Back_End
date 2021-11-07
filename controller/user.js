@@ -403,20 +403,21 @@ getdeuser = async (req, res) => {
   try {
     const user = users.findOne({
       include: [
-        { model: applicant, include: [{model: lunchs}]},
-        { model: lunchs },
-        { model: usersReviews ,include: [{model: lunchs}]},
+        { model: locationdata, as: 'locations'},
+        { model: applicant , as: 'applied', include: [{model: lunchs}]},
+        { model: lunchs }
       ],
       where:{userid : userloc.userid}
     })
-    // const query =
-    // "SELECT spoon, comments,(SELECT nickname FROM users WHERE userid = usersReviews.userid ) AS writeuser, (SELECT nickname FROM users WHERE users.userid = usersReviews.targetusers) AS targetuser FROM usersReviews WHERE targetusers = :userid;";
-    // const userspoon = await sequelize.query(query, {
-    //   replacements: {
-    //       userid: userid,
-    //     },
-    //   type: sequelize.QueryTypes.SELECT,
-    // });
+    const query =
+      "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
+    const userspoon = await sequelize.query(query, {
+        replacements: {
+            userid: userid,
+          },
+      type: sequelize.QueryTypes.SELECT,
+    });
+    user.dataValues.userreview = userspoon;
     const data = { user: user };
     logger.info("GET /main");
     return res

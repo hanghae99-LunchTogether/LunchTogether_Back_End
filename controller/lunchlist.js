@@ -7,7 +7,7 @@ getlunchlist = async (req, res) => {
     const lunch = await lunchs.findAll({
       include: [
         { model: users},
-        { model: lunchdata },
+        { model: lunchdata, as: "location" },
         { model: applicant , include: [{model: users}]}
       ],
       order: [["date", "DESC"]],
@@ -33,7 +33,7 @@ detaillunchpost = async (req, res) => {
     const lunchDetail = await lunchs.findOne({
       include: [
         { model: users},
-        { model: lunchdata },
+        { model: lunchdata, as: "location" },
         { model: applicant , include: [{model: users}]}
       ],
       where: { lunchid: lunchid },
@@ -98,6 +98,7 @@ postlunchlist = async (req, res) => {
       membernum: membernum,
       duration: duration,
       status: "applied",
+      private: false,
     });
     lunch.dataValues.nickname = user.nickname;
     console.log(lunch);
@@ -156,7 +157,7 @@ updatelunchlist = async (req, res) => {
     const lunchDetail = await lunchs.findOne({
       include: [
         { model: users},
-        { model: lunchdata },
+        { model: lunchdata , as: "location"},
       ],
       where: { lunchid: lunchid },
     });

@@ -59,6 +59,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: false,
       },
+      private:{
+        type: DataTypes.BOOLEAN,
+        required: true,
+      },
     },
     {
       sequelize,
@@ -77,6 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "lunchid",
     });
     models.lunchs.belongsTo(models.lunchdata, {
+      as: "location",
       foreignKey: "location",
       targetKey: "id",
       onDelete: "cascade",

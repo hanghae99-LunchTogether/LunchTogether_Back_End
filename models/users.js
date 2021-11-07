@@ -93,6 +93,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   users.associate = function (models) {
     models.users.hasMany(models.applicant, {
+      as: 'applied',
       foreignKey: "userid",
       sourceKey: "userid",
     });
@@ -117,6 +118,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "userid",
     });
     models.users.belongsTo(models.locationdata, {
+      as: 'locations',
       foreignKey: "location",
       sourceKey: "id",
     });

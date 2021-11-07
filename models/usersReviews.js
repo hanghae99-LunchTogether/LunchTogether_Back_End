@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   usersReviews.associate = function (models) {
     models.usersReviews.belongsTo(models.users, {
+      as : "rater",
       foreignKey: 'userid',
       onDelete: 'cascade',
     });
@@ -57,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'cascade',
     });
     models.usersReviews.belongsTo(models.users, {
+      as: "target",
       foreignKey: 'targetusers',
       targetKey: 'userid',
       onDelete: 'cascade',
