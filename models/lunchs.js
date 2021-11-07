@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "lunchid",
     });
     models.lunchs.belongsTo(models.lunchdata, {
-      as: "location",
+      as: "locations",
       foreignKey: "location",
       targetKey: "id",
       onDelete: "cascade",
