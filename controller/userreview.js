@@ -3,10 +3,36 @@ const { logger } = require("../config/logger"); //로그
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
-  const { targetuserid, spoon , comment} = req.body;
+  const { targetuserid, spoon , comment, lunchid} = req.body;
   const user = res.locals.user;
+  if(user.userid == targetuserid){
+    return res.status(400).send({
+      result: "fail",
+      msg: "본인이 본인을 평가하는건 아닌거같은데요...?",
+    });
+  }
   console.log(targetuserid, spoon , comment)
   try {
+    const doc = {userid : user.userid , targetusers : targetuserid, spoon: spoon, comment: comment }
+    const [isuser, created] = await usersReviews.findOrCreate({
+      where: { userid: user.userid, targetusers : targetuserid },
+      default: doc,
+    });
+    if(!created){
+      return res.status(400).send({
+        result: "fail",
+        msg: "이미 신청 되어있는 점심 약속입니다.",
+      });
+    }else{
+      console.log(isuser.dataValues.userid)
+      const books = await bookmarks.findByPk()
+      logger.info("POST /book/:lunchid");
+      return res.status(200).send({
+        result: "success",
+        msg: "북마크 추가 성공",
+        book : books
+      });
+    }
     const query =
       "insert into usersReviews set userid = :userid, targetusers = :targetusers, spoon = :spoon, comments = :comment;";
     const comments = await sequelize.query(query, {

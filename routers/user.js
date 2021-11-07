@@ -9,7 +9,7 @@ router.route('/login').post(controller.login,function(req, res){}).get(middlewar
 router.route('/signup').post(controller.signup);
 router.route('/checkemail').post(controller.checkemail);
 router.route('/checknickname').post(controller.checknickname);
-router.route('/myprofile').patch(middleware, upload.single("image"),controller.upusers).get(middleware,controller.getuser);
+router.route('/myprofile').patch(middleware, upload.single("image"),controller.upusers).get(middleware,controller.getdeuser);
 router.route('/myprofile/:userid').get(controller.getotheruser);
 router.route('/kakaologin').post(controller.loginkakao);
 

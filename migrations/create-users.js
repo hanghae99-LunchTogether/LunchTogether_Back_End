@@ -47,18 +47,24 @@ module.exports = {
           key: 'id',
         },
       },
-      menu: {
+      likemenu: {
+        type: Sequelize.STRING,
+      },
+      dislikemenu: {
         type: Sequelize.STRING,
       },
       company: {
         type: Sequelize.STRING,
       },
       mannerstatus: {
+        type: Sequelize.INTEGER,
+      },
+      snsurl: {
         type: Sequelize.STRING,
       },
-      imageurl: {
-        type: DataTypes.STRING,
-      },
+      jop:{
+        type: Sequelize.STRING,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

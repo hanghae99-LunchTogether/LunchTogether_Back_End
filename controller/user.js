@@ -1,4 +1,4 @@
-const { users, sequelize, locationdata } = require("../models");
+const { users, sequelize, locationdata, lunchs, applicant ,usersReviews} = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -258,25 +258,30 @@ upusers = async (req, res) => {
   const userloc = res.locals.user;
   const {
     username,
-    password,
     email,
     nickname,
-    menu,
+    likemenu,
+    dislikemenu,
     mbti,
     gender,
     location,
     company,
     introduction,
+    jop,
+    snsurl
   } = req.body.profile;
   console.log(
     username,
     email,
     nickname,
-    menu,
+    likemenu,
+    dislikemenu,
     mbti,
     gender,
     company,
-    introduction
+    introduction,
+    jop,
+    snsurl
   );
   let locationid;
   if (req.file) {
@@ -317,8 +322,11 @@ upusers = async (req, res) => {
       locationid = location.id
       querys = querys + " location = :location,";
     }
-    if (menu) querys = querys + " menu = :menu,";
+    if (likemenu) querys = querys + " likemenu = :likemenu,";
+    if (dislikemenu) querys = querys + " dislikemenu = :dislikemenu,";
     if (company) querys = querys + " company = :company,";
+    if (jop) querys = querys + " jop = :jop,";
+    if (snsurl) querys = querys + " snsurl = :snsurl,";
     querys = querys.slice(0, -1);
     querys = querys + " WHERE userid = :userid;";
     console.log("마지막으로 완성된 쿼리문", querys);
@@ -332,8 +340,11 @@ upusers = async (req, res) => {
         gender: gender,
         introduction: introduction,
         location: locationid,
-        menu: menu,
+        likemenu: likemenu,
+        dislikemenu: dislikemenu,
         company: company,
+        jop: jop,
+        snsurl: snsurl,
         userid: userloc.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
@@ -385,6 +396,47 @@ getotheruser = async (req, res) => {
       .send({ result: "fail", msg: "유저정보 조회실패", error: error });
   }
 };
+//유저 세부정보 요청
+getdeuser = async (req, res) => {
+  const userloc = res.locals.user;
+  console.log("이거불려야됨")
+  try {
+    const user = users.findOne({
+      include: [
+        { model: applicant, include: [{model: lunchs}]},
+        { model: lunchs },
+        { model: usersReviews ,include: [{model: lunchs}]},
+      ],
+      where:{userid : userloc.userid}
+    })
+    // const query =
+    // "SELECT spoon, comments,(SELECT nickname FROM users WHERE userid = usersReviews.userid ) AS writeuser, (SELECT nickname FROM users WHERE users.userid = usersReviews.targetusers) AS targetuser FROM usersReviews WHERE targetusers = :userid;";
+    // const userspoon = await sequelize.query(query, {
+    //   replacements: {
+    //       userid: userid,
+    //     },
+    //   type: sequelize.QueryTypes.SELECT,
+    // });
+    const data = { user: user };
+    logger.info("GET /main");
+    return res
+      .status(200)
+      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+    return res
+      .status(401)
+      .send({ result: "fail", msg: "유저정보 조회실패", error: error });
+  }
+};
+
+
+
+getapplicant = async (req, res)=>{
+  const userloc = res.locals.user;
+
+}
 
 module.exports = {
   checkemail: checkemail,
@@ -395,4 +447,5 @@ module.exports = {
   upusers: upusers,
   getotheruser: getotheruser,
   loginkakao: loginkakao,
+  getdeuser: getdeuser,
 };
