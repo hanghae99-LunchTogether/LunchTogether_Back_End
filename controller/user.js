@@ -350,7 +350,7 @@ upusers = async (req, res) => {
       type: sequelize.QueryTypes.UPDATE,
     });
     const user = await users.findOne({
-      include: [{ model: locationdata }],
+      include: [{ model: locationdata, as: 'locations' }],
       where: { userid: userloc.userid },
     });
 
