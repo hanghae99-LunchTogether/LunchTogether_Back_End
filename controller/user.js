@@ -382,7 +382,7 @@ getotheruser = async (req, res) => {
     const user = await users.findOne({
       include: [
         { model: locationdata, as: "locations" },
-        { model: applicant, as: "applied", include: [{ model: lunchs },{ model: users}] },
+        { model: applicant, as: "applied", include: [{ model: lunchs, include: {model:lunchdata , as: "locations"} },{ model: users}] },
         { model: lunchs, include: [{model:lunchdata , as: "locations"},{ model: users},{ model: applicant, include: [{ model: users}] }]},
       ],
       where: { userid: userid },
