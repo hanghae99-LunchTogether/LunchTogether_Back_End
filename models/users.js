@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      jop:{
+      job:{
         type: DataTypes.STRING,
         require: false,
       }
