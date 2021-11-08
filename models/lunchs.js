@@ -84,7 +84,6 @@ module.exports = (sequelize, DataTypes) => {
     });
     models.lunchs.belongsTo(models.users, {
       as: 'host',
-      as: 'user',
       foreignKey: "userid",
       onDelete: "cascade",
     });

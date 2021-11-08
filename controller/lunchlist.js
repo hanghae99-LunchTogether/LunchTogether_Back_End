@@ -155,7 +155,7 @@ updatelunchlist = async (req, res) => {
     const lunchDetail = await lunchs.findOne({
       include: [
         { model: users, as: "host"},
-        { model: lunchdata , as: "location"},
+        { model: lunchdata , as: "locations"},
       ],
       where: { lunchid: lunchid },
     });
