@@ -6,7 +6,7 @@ getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
       include: [
-        { model: users, as: "user" },
+        { model: users, as: "host" },
         { model: lunchdata, as: "locations" },
         { model: applicant , include: [{model: users}]}
       ],
@@ -32,7 +32,7 @@ detaillunchpost = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, as: "user"},
+        { model: users, as: "host"},
         { model: lunchdata, as: "locations" },
         { model: applicant , include: [{model: users}]}
       ],
@@ -154,7 +154,7 @@ updatelunchlist = async (req, res) => {
     });
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users},
+        { model: users, as: "host"},
         { model: lunchdata , as: "location"},
       ],
       where: { lunchid: lunchid },
@@ -216,7 +216,7 @@ onairlunch = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, as: "user"},
+        { model: users, as: "host"},
         { model: lunchdata ,as: "locations"},
         { model: applicant , include: [{model: users}]}
       ],
@@ -255,7 +255,7 @@ cancellunch = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, as: "user"},
+        { model: users, as: "host"},
         { model: lunchdata,as: "locations" },
         { model: applicant , include: [{model: users}]}
       ],
@@ -295,7 +295,7 @@ donelunch = async (req, res)=>{
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, as: "user"},
+        { model: users, as: "host"},
         { model: lunchdata,as: "locations" },
         { model: applicant , include: [{model: users}]}
       ],
