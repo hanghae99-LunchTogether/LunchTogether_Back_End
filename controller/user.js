@@ -400,9 +400,9 @@ getotheruser = async (req, res) => {
 //유저 세부정보 요청
 getdeuser = async (req, res) => {
   const userloc = res.locals.user;
-  console.log("이거불려야됨")
+  console.log(userloc)
   try {
-    const user = users.findOne({
+    const user = await users.findOne({
       include: [
         { model: locationdata, as: 'locations'},
         { model: applicant , as: 'applied', include: [{model: lunchs}]},
@@ -414,7 +414,7 @@ getdeuser = async (req, res) => {
       "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
     const userspoon = await sequelize.query(query, {
         replacements: {
-            userid: userid,
+            userid: userloc.userid,
           },
       type: sequelize.QueryTypes.SELECT,
     });
