@@ -46,11 +46,11 @@ detaillunchpost = async (req, res) => {
 
 // console.log(nDate);
     // let STRt = OBJt.toString();
-    // console.log(STRt);
-    let a = new Date(lunchDetail.dataValues.time);
-    a.setHours(a.getHours()+lunchDetail.dataValues.duration)
-    console.log(a);
-    lunchDetail.dataValues.duration = a;
+    // // console.log(STRt);
+    // let a = new Date(lunchDetail.dataValues.time);
+    // a.setHours(a.getHours()+lunchDetail.dataValues.duration)
+    // console.log(a);
+    // lunchDetail.dataValues.duration = a;
     const data = { lunch: lunchDetail };
     logger.info("GET /lunchpost/:lunchId");
     return res.status(200).send({
