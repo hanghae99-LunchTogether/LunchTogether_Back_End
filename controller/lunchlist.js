@@ -89,7 +89,6 @@ postlunchlist = async (req, res) => {
     });
     const lunch = await lunchs.create({
       userid: user.userid,
-      nickname: user.nickname,
       title: title,
       content: content,
       date: date,
@@ -97,10 +96,9 @@ postlunchlist = async (req, res) => {
       time: time,
       membernum: membernum,
       duration: duration,
-      status: "applied",
+      confirmed: false,
       private: false,
     });
-    lunch.dataValues.nickname = user.nickname;
     console.log(lunch);
     const data = { lunch: lunch };
     logger.info("POST /lunchPost");
