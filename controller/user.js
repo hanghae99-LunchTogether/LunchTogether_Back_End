@@ -1,4 +1,12 @@
-const { users, sequelize, locationdata, lunchs, applicant ,usersReviews} = require("../models");
+const {
+  users,
+  sequelize,
+  locationdata,
+  lunchs,
+  applicant,
+  usersReviews,
+  lunchdata,
+} = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -61,35 +69,31 @@ async function nickNameCheck(nickname) {
   }
 }
 
-checkemail = async (req, res)=>{
-  const {email} = req.body;
+checkemail = async (req, res) => {
+  const { email } = req.body;
   if (await emailCheck(email)) {
     return res
       .status(200)
-      .send({ result: "fail", msg: "이메일이 중복되었습니다." , data: false});
-  }
-  else{
+      .send({ result: "fail", msg: "이메일이 중복되었습니다.", data: false });
+  } else {
     return res
       .status(200)
-      .send({ result: "fail", msg: "이메일이 중복없음" , data: true });
+      .send({ result: "fail", msg: "이메일이 중복없음", data: true });
   }
-}
+};
 
-checknickname = async (req, res)=>{
-  const {nickname} = req.body;
+checknickname = async (req, res) => {
+  const { nickname } = req.body;
   if (await nickNameCheck(nickname)) {
     return res
       .status(200)
-      .send({ result: "fail", msg: "닉네임이 중복되었습니다." , data: false});
-  }
-  else{
+      .send({ result: "fail", msg: "닉네임이 중복되었습니다.", data: false });
+  } else {
     return res
       .status(200)
-      .send({ result: "fail", msg: "닉네임이 중복없음" , data: true });
+      .send({ result: "fail", msg: "닉네임이 중복없음", data: true });
   }
-}
-
-
+};
 
 //회원가입
 signup = async (req, res) => {
@@ -256,6 +260,8 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
+  console.log(req.body); //
+
   const {
     username,
     email,
@@ -268,8 +274,8 @@ upusers = async (req, res) => {
     company,
     introduction,
     jop,
-    snsurl
-  } = req.body.profile;
+    snsurl,
+  } = req.body.profile
   console.log(
     username,
     email,
@@ -283,6 +289,7 @@ upusers = async (req, res) => {
     jop,
     snsurl
   );
+
   let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
@@ -319,7 +326,7 @@ upusers = async (req, res) => {
         },
         type: sequelize.QueryTypes.INSERT,
       });
-      locationid = location.id
+      locationid = location.id;
       querys = querys + " location = :location,";
     }
     if (likemenu) querys = querys + " likemenu = :likemenu,";
@@ -350,7 +357,7 @@ upusers = async (req, res) => {
       type: sequelize.QueryTypes.UPDATE,
     });
     const user = await users.findOne({
-      include: [{ model: locationdata, as: 'locations' }],
+      include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
 
@@ -374,18 +381,18 @@ getotheruser = async (req, res) => {
   try {
     const user = await users.findOne({
       include: [
-        { model: locationdata, as: 'locations'},
-        { model: applicant , as: 'applied', include: [{model: lunchs}]},
-        { model: lunchs }
+        { model: locationdata, as: "locations" },
+        { model: applicant, as: "applied", include: [{ model: lunchs },{ model: users}] },
+        { model: lunchs, include: [{model:lunchdata , as: "locations"},{ model: users},{ model: applicant, include: [{ model: users}] }]},
       ],
-      where:{userid : userid}
-    })
+      where: { userid: userid },
+    });
     const query =
       "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
     const userspoon = await sequelize.query(query, {
-        replacements: {
-            userid: userid,
-          },
+      replacements: {
+        userid: userid,
+      },
       type: sequelize.QueryTypes.SELECT,
     });
     user.dataValues.userreview = userspoon;
@@ -405,22 +412,22 @@ getotheruser = async (req, res) => {
 //유저 세부정보 요청
 getdeuser = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(userloc)
+  console.log(userloc);
   try {
     const user = await users.findOne({
       include: [
-        { model: locationdata, as: 'locations'},
-        { model: applicant , as: 'applied', include: [{model: lunchs}]},
-        { model: lunchs }
+        { model: locationdata, as: "locations" },
+        { model: applicant, as: "applied", include: [{ model: lunchs }] },
+        { model: lunchs },
       ],
-      where:{userid : userloc.userid}
-    })
+      where: { userid: userloc.userid },
+    });
     const query =
       "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
     const userspoon = await sequelize.query(query, {
-        replacements: {
-            userid: userloc.userid,
-          },
+      replacements: {
+        userid: userloc.userid,
+      },
       type: sequelize.QueryTypes.SELECT,
     });
     user.dataValues.userreview = userspoon;
@@ -438,12 +445,9 @@ getdeuser = async (req, res) => {
   }
 };
 
-
-
-getapplicant = async (req, res)=>{
+getapplicant = async (req, res) => {
   const userloc = res.locals.user;
-
-}
+};
 
 module.exports = {
   checkemail: checkemail,
