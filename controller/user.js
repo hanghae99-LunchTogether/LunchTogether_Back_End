@@ -393,22 +393,33 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
+      attributes: { exclude: ['location'] },
       include: [
         { model: locationdata, as: "locations" },
-        { model: applicant, as: "applied", include: [{ model: lunchs, include: {model:lunchdata , as: "locations"} },{ model: users}] },
-        { model: lunchs, include: [{model:lunchdata , as: "locations"},{ model: users},{ model: applicant, include: [{ model: users}] }]},
       ],
       where: { userid: userid },
     });
-    const query =
-      "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
-    const userspoon = await sequelize.query(query, {
-      replacements: {
-        userid: userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const owned = await lunchs.findAll({
+      attributes: { exclude: ['location', 'userid'] },
+      include: [
+        { model: lunchdata, as: "locations" },
+        { model: users, as: "host" },
+        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+      ],
+      where: { userid: userid },
     });
-    user.dataValues.userreview = userspoon;
+    const applied = await applicant.findAll({
+      attributes: { exclude: ['lunchid', 'userid'] },
+      include: [
+        { model: lunchs },
+      ],
+      where: { userid: userid },
+    });
+    const lunch = {
+      owned:owned,
+      applied: applied
+    }
+    user.dataValues.lunchs = lunch;
     const data = { user: user };
     logger.info("GET /main");
     return res
@@ -438,21 +449,22 @@ getdeuser = async (req, res) => {
       include: [
         { model: lunchdata, as: "locations" },
         { model: users, as: "host" },
+        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userloc.userid },
     });
     const applied = await applicant.findAll({
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
-        { model: users },
+        { model: lunchs },
       ],
       where: { userid: userloc.userid },
     });
-    const lunchs = {
+    const lunch = {
       owned:owned,
       applied: applied
     }
-    user.dataValues.lunchs = lunchs;
+    user.dataValues.lunchs = lunch;
     const data = { user: user };
     logger.info("GET /main");
     return res
