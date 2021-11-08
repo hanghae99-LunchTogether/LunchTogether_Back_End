@@ -302,7 +302,13 @@ upusers = async (req, res) => {
     jop,
     snsurl
   );
-
+  console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
+  if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
+      logger.error("patch /myProfile 유저 정보 아무것도 없음");
+      return res
+      .status(401)
+      .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
+    }
   let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
