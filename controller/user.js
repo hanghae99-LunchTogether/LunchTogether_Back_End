@@ -269,7 +269,7 @@ upusers = async (req, res) => {
     dislikemenu,
     mbti,
     gender,
-    location,
+    locations,
     company,
     introduction,
     job,
@@ -312,8 +312,8 @@ upusers = async (req, res) => {
     if (mbti) querys = querys + " mbti = :mbti,";
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
-    if (location) {
-      console.log(location);
+    if (locations) {
+      console.log(locations);
       const query =
         "insert into locationdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from locationdata where id = :id);";
       const locationdb = await sequelize.query(query, {
@@ -331,7 +331,7 @@ upusers = async (req, res) => {
         },
         type: sequelize.QueryTypes.INSERT,
       });
-      locationid = location.id;
+      locationid = locations.id;
       querys = querys + " location = :location,";
     }
     if (likemenu) querys = querys + " likemenu = :likemenu,";
