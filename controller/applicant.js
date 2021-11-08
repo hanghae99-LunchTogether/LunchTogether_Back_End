@@ -77,7 +77,8 @@ applicantget = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    if(applicant.length){
+    
+    if(!applicant.length){
       logger.error("GET /applicant/:lunchid 신청자가 없거나 해당글이 없어요!");
       return res.status(400).send({
         result: "fail",
