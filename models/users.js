@@ -60,7 +60,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         require: false,
       },
-      menu: {
+      likemenu: {
+        type: DataTypes.STRING,
+        require: false,
+      },
+      dislikemenu: {
         type: DataTypes.STRING,
         require: false,
       },
@@ -69,13 +73,17 @@ module.exports = (sequelize, DataTypes) => {
         require: false,
       },
       mannerStatus: {
+        type: DataTypes.INTEGER,
+        require: false,
+      },
+      snsurl: {
         type: DataTypes.STRING,
         require: false,
       },
-      imageUrl: {
+      jop:{
         type: DataTypes.STRING,
         require: false,
-      },
+      }
     },
 
     {
@@ -85,6 +93,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   users.associate = function (models) {
     models.users.hasMany(models.applicant, {
+      as: 'applied',
       foreignKey: "userid",
       sourceKey: "userid",
     });
@@ -109,6 +118,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "userid",
     });
     models.users.belongsTo(models.locationdata, {
+      as: 'locations',
       foreignKey: "location",
       sourceKey: "id",
     });

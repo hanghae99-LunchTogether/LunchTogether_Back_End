@@ -36,6 +36,7 @@ const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파�
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/gif", express.static(path.join(__dirname, "uploads")));
@@ -73,8 +74,6 @@ app.use((err, req, res, next) => {
   res.status(err.static || 500);
   res.render("error");
 });
-
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // const server = app.listen(port, () => {
 //     console.log(`listening at http://localhost:${port}`);

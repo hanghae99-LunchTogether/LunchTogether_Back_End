@@ -193,7 +193,7 @@
           },
           {
             "name": "profile",
-            "in": "body",
+            "in": "formData",
             "schema": {
               "type": "object",
               "properties": {

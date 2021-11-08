@@ -40,7 +40,6 @@ router.post('/room', async (req, res, next) => {
 router.get('/room/:id', async (req, res, next) => {
   try {
     const room = await Room.findOne({where:{ id: req.params.id }});
-    console.log(room.dataValues.id);
     const io = req.app.get('io');
     if (!room) {
       return res.redirect('/?error=존재하지 않는 방입니다.');

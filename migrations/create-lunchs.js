@@ -49,7 +49,11 @@ module.exports = {
       },
       status:{
         type: Sequelize.STRING,
-      }
+      },
+      private:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
