@@ -261,7 +261,20 @@ getuser = async (req, res) => {
 upusers = async (req, res) => {
   const userloc = res.locals.user;
   console.log(req.body); //
-
+  if(!req.body.length){
+    req.body.profile = {username:null,
+      email:null,
+      nickname:null,
+      likemenu:null,
+      dislikemenu:null,
+      mbti:null,
+      gender:null,
+      location:null,
+      company:null,
+      introduction:null,
+      jop:null,
+      snsurl:null}
+  }
   const {
     username,
     email,
