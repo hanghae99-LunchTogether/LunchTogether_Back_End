@@ -231,14 +231,14 @@ privatelunch = async (req, res) => {
         logger.info("PATCH /lunchPost/private");
         return res.status(200).send({
           result: "success",
-          msg: "점약 숨김 성공",
+          msg: "점약 비공개 성공",
           lunch: lunchDetail,
         });
       } else {
         logger.error("PATCH /lunchPost/private 해당 점약 없음 해당 오너가아님");
         return res.status(400).send({
           result: "fail",
-          msg: "점약 숨김 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+          msg: "점약 비공개 실패 해당 점약 없음 or 해당 점약 오너가 아님",
         });
       }
     } catch (error) {
@@ -246,7 +246,7 @@ privatelunch = async (req, res) => {
       console.log(error);
       return res.status(400).send({
         result: "fail",
-        msg: "점약 숨김 오류",
+        msg: "점약 비공개 오류",
       });
     }
   } else {

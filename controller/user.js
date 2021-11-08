@@ -138,7 +138,6 @@ signup = async (req, res) => {
   }
 };
 
-//로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -194,7 +193,7 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id);
     const query =
-      "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from users where userid = :userid);";
+      "insert into users (userid,username,email,password,nickname,salt,image, createdAt) select :userid,:username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where userid = :userid);";
     const isuser = sequelize.query(query, {
       replacements: {
         userid: id,
@@ -236,7 +235,7 @@ loginkakao = async (req, res) => {
 getuser = async (req, res) => {
   const user = res.locals.user;
   try {
-    const query = "select * from users where userid = :userid";
+    const query = "select userid,email,nickname,image,mbti,introduction,likemenu,dislikemenu,company,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
         userid: user.userid,
@@ -260,21 +259,7 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(req.body); //
-  if(!req.body.length){
-    req.body.profile = {username:null,
-      email:null,
-      nickname:null,
-      likemenu:null,
-      dislikemenu:null,
-      mbti:null,
-      gender:null,
-      location:null,
-      company:null,
-      introduction:null,
-      jop:null,
-      snsurl:null}
-  }
+  console.log(req.body)
   const {
     username,
     email,
@@ -283,10 +268,10 @@ upusers = async (req, res) => {
     dislikemenu,
     mbti,
     gender,
-    location,
+    locations,
     company,
     introduction,
-    jop,
+    job,
     snsurl,
   } = req.body.profile;
   console.log(
@@ -299,10 +284,16 @@ upusers = async (req, res) => {
     gender,
     company,
     introduction,
-    jop,
+    job,
     snsurl
   );
-
+  // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
+  // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
+  //     logger.error("patch /myProfile 유저 정보 아무것도 없음");
+  //     return res
+  //     .status(401)
+  //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
+  //   }
   let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
@@ -320,32 +311,32 @@ upusers = async (req, res) => {
     if (mbti) querys = querys + " mbti = :mbti,";
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
-    if (location) {
-      console.log(location);
+    if (locations) {
+      console.log(locations);
       const query =
         "insert into locationdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from locationdata where id = :id);";
       const locationdb = await sequelize.query(query, {
         replacements: {
-          id: location.id,
-          address_name: location.address_name,
-          road_address_name: location.road_address_name,
-          category_group_name: location.category_group_name,
-          place_name: location.place_name,
-          place_url: location.place_url,
-          phone: location.phone,
-          x: location.x,
-          y: location.y,
-          id: location.id,
+          id: locations.id,
+          address_name: locations.address_name,
+          road_address_name: locations.road_address_name,
+          category_group_name: locations.category_group_name,
+          place_name: locations.place_name,
+          place_url: locations.place_url,
+          phone: locations.phone,
+          x: locations.x,
+          y: locations.y,
+          id: locations.id,
         },
         type: sequelize.QueryTypes.INSERT,
       });
-      locationid = location.id;
+      locationid = locations.id;
       querys = querys + " location = :location,";
     }
     if (likemenu) querys = querys + " likemenu = :likemenu,";
     if (dislikemenu) querys = querys + " dislikemenu = :dislikemenu,";
     if (company) querys = querys + " company = :company,";
-    if (jop) querys = querys + " jop = :jop,";
+    if (job) querys = querys + " job = :job,";
     if (snsurl) querys = querys + " snsurl = :snsurl,";
     querys = querys.slice(0, -1);
     querys = querys + " WHERE userid = :userid;";
@@ -363,13 +354,14 @@ upusers = async (req, res) => {
         likemenu: likemenu,
         dislikemenu: dislikemenu,
         company: company,
-        jop: jop,
+        job: job,
         snsurl: snsurl,
         userid: userloc.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });
     const user = await users.findOne({
+      attributes: { exclude: ['location','password','salt','gender'] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
@@ -393,7 +385,7 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ['location'] },
+      attributes: { exclude: ['location','password','salt','gender'] },
       include: [
         { model: locationdata, as: "locations" },
       ],
@@ -403,15 +395,19 @@ getotheruser = async (req, res) => {
       attributes: { exclude: ['location', 'userid'] },
       include: [
         { model: lunchdata, as: "locations" },
-        { model: users, as: "host" },
-        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+        { model: users, as: "host", attributes: { exclude: ['location','password','salt','gender'] } },
+        { model: applicant,include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] }}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userid },
     });
     const applied = await applicant.findAll({
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
-        { model: lunchs },
+        { model: lunchs ,include: [
+          { model: users, as: "host", attributes: { exclude: ['location','password','salt','gender'] } },
+          { model: lunchdata, as: "locations" },
+          { model: applicant , include: [{model: users, attributes: { exclude: ['location','password','salt','gender'] }}]}
+        ]},
       ],
       where: { userid: userid },
     });
@@ -438,7 +434,7 @@ getdeuser = async (req, res) => {
   const userloc = res.locals.user;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ['location'] },
+      attributes: { exclude: ['location','password','salt','gender'] },
       include: [
         { model: locationdata, as: "locations" },
       ],
@@ -448,15 +444,19 @@ getdeuser = async (req, res) => {
       attributes: { exclude: ['location', 'userid'] },
       include: [
         { model: lunchdata, as: "locations" },
-        { model: users, as: "host" },
-        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+        { model: users, as: "host" ,attributes: { exclude: ['location','password','salt','gender'] } },
+        { model: applicant,include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] }}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userloc.userid },
     });
     const applied = await applicant.findAll({
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
-        { model: lunchs },
+        { model: lunchs,include: [
+          { model: users, as: "host", attributes: { exclude: ['location','password','salt','gender'] } },
+          { model: lunchdata, as: "locations" },
+          { model: applicant , include: [{model: users, attributes: { exclude: ['location','password','salt','gender'] }}]}
+        ] },
       ],
       where: { userid: userloc.userid },
     });
