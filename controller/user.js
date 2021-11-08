@@ -318,16 +318,16 @@ upusers = async (req, res) => {
         "insert into locationdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from locationdata where id = :id);";
       const locationdb = await sequelize.query(query, {
         replacements: {
-          id: location.id,
-          address_name: location.address_name,
-          road_address_name: location.road_address_name,
-          category_group_name: location.category_group_name,
-          place_name: location.place_name,
-          place_url: location.place_url,
-          phone: location.phone,
-          x: location.x,
-          y: location.y,
-          id: location.id,
+          id: locations.id,
+          address_name: locations.address_name,
+          road_address_name: locations.road_address_name,
+          category_group_name: locations.category_group_name,
+          place_name: locations.place_name,
+          place_url: locations.place_url,
+          phone: locations.phone,
+          x: locations.x,
+          y: locations.y,
+          id: locations.id,
         },
         type: sequelize.QueryTypes.INSERT,
       });
