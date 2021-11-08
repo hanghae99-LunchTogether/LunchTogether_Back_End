@@ -1,4 +1,4 @@
-const { sequelize, applicant, users, lunchs } = require("../models");
+const { sequelize, applicant, users, lunchs, lunchdata } = require("../models");
 const Op = sequelize.Op;
 const { logger } = require("../config/logger"); //로그
 
@@ -68,16 +68,17 @@ applicantget = async (req, res) => {
   const { lunchid } = req.params;
   try {
     // comments table의 lunchid 조회
-    const query =
-      "select users.nickname, applicants.* from applicants inner join users on users.userid = applicants.userid where lunchid = :lunchid;";
-    const applicant = await sequelize.query(query, {
-      replacements: {
-        lunchid: lunchid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const applicants = await applicant.findAll({
+      include: [
+        { model: users },
+        {
+          model: lunchs,
+          include: [{ model: lunchdata, as: "locations" }, { model: users }],
+        },
+      ],
+      where: { lunchid: lunchid },
     });
-    console.log(applicant);
-    if (applicant.length) {
+    if (!applicants.length) {
       logger.error("GET /applicant/:lunchid 신청자가 없거나 해당글이 없어요!");
       return res.status(400).send({
         result: "fail",
@@ -88,7 +89,7 @@ applicantget = async (req, res) => {
     return res.status(200).send({
       result: "success",
       msg: "신청자 조회 성공",
-      applicant: applicant,
+      applicant: applicants,
     });
   } catch (err) {
     logger.error(err);
@@ -108,18 +109,22 @@ applicantapproved = async (req, res) => {
   try {
     const applicants = await applicant.findOne({
       include: [
-        { model: users, attributes: ["nickname", "image"] },
-        { model: lunchs },
+        { model: users },
+        {
+          model: lunchs,
+          include: [{ model: lunchdata, as: "locations" }, { model: users }],
+        },
       ],
       where: { lunchid: lunchid, userid: userid },
     });
+
     if (!applicants) {
       logger.error("해당 글이 존재하지 않습니다. 또는 해당 신청자가 없습니다.");
       return res.status(400).send({
         result: "fail",
         msg: "신청자 변경 실패 해당약속이 존재 하지 않습니다. 또는 해당 신청자가 없습니다.",
       });
-    } else if (applicant.lunchs.userid !== user.userid) {
+    } else if (applicants.dataValues.lunch.dataValues.userid !== user.userid) {
       logger.error("해당 글의 오너가 아님");
       return res.status(400).send({
         result: "fail",
@@ -135,6 +140,13 @@ applicantapproved = async (req, res) => {
         applicant: applicants,
       });
     } else {
+      if (!comment) {
+        logger.error("patch /applicant/approved/:lunchid 거절사유 없음");
+        return res.status(400).send({
+          result: "fail",
+          msg: "신청자 변경 실패 거절 사유가 존재하지 않습니다.",
+        });
+      }
       applicants.update({
         status: "approved",
         statusdesc: statusdesc,
@@ -211,7 +223,10 @@ applicantgetme = async (req, res) => {
     const applicants = await applicant.findAll({
       include: [
         { model: users, attributes: ["nickname", "image"] },
-        { model: lunchs },
+        {
+          model: lunchs,
+          include: [{ model: lunchdata, as: "locations" }, { model: users }],
+        },
       ],
       where: { userid: user.userid },
     });
@@ -244,7 +259,13 @@ applicantgetthor = async (req, res) => {
   const { userid } = req.params;
   try {
     const applicants = await applicant.findAll({
-      include: [{ model: users }, { model: lunchs }],
+      include: [
+        { model: users },
+        {
+          model: lunchs,
+          include: [{ model: lunchdata, as: "locations" }, { model: users }],
+        },
+      ],
       where: { userid: userid },
     });
     if (!applicants) {

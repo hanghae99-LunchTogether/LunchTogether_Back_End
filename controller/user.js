@@ -261,7 +261,20 @@ getuser = async (req, res) => {
 upusers = async (req, res) => {
   const userloc = res.locals.user;
   console.log(req.body); //
-
+  if(!req.body.length){
+    req.body.profile = {username:null,
+      email:null,
+      nickname:null,
+      likemenu:null,
+      dislikemenu:null,
+      mbti:null,
+      gender:null,
+      location:null,
+      company:null,
+      introduction:null,
+      jop:null,
+      snsurl:null}
+  }
   const {
     username,
     email,
@@ -380,36 +393,33 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
+      attributes: { exclude: ['location'] },
       include: [
         { model: locationdata, as: "locations" },
-        {
-          model: applicant,
-          as: "applied",
-          include: [
-            { model: lunchs, include: { model: lunchdata, as: "locations" } },
-            { model: users },
-          ],
-        },
-        {
-          model: lunchs,
-          include: [
-            { model: lunchdata, as: "locations" },
-            { model: users },
-            { model: applicant, include: [{ model: users }] },
-          ],
-        },
       ],
       where: { userid: userid },
     });
-    const query =
-      "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
-    const userspoon = await sequelize.query(query, {
-      replacements: {
-        userid: userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    const owned = await lunchs.findAll({
+      attributes: { exclude: ['location', 'userid'] },
+      include: [
+        { model: lunchdata, as: "locations" },
+        { model: users, as: "host" },
+        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+      ],
+      where: { userid: userid },
     });
-    user.dataValues.userreview = userspoon;
+    const applied = await applicant.findAll({
+      attributes: { exclude: ['lunchid', 'userid'] },
+      include: [
+        { model: lunchs },
+      ],
+      where: { userid: userid },
+    });
+    const lunch = {
+      owned:owned,
+      applied: applied
+    }
+    user.dataValues.lunchs = lunch;
     const data = { user: user };
     logger.info("GET /main");
     return res
@@ -426,25 +436,35 @@ getotheruser = async (req, res) => {
 //유저 세부정보 요청
 getdeuser = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(userloc);
   try {
     const user = await users.findOne({
+      attributes: { exclude: ['location'] },
       include: [
         { model: locationdata, as: "locations" },
-        { model: applicant, as: "applied", include: [{ model: lunchs }] },
+      ],
+      where: { userid: userloc.userid },
+    });
+    const owned = await lunchs.findAll({
+      attributes: { exclude: ['location', 'userid'] },
+      include: [
+        { model: lunchdata, as: "locations" },
+        { model: users, as: "host" },
+        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+      ],
+      where: { userid: userloc.userid },
+    });
+    const applied = await applicant.findAll({
+      attributes: { exclude: ['lunchid', 'userid'] },
+      include: [
         { model: lunchs },
       ],
       where: { userid: userloc.userid },
     });
-    const query =
-      "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
-    const userspoon = await sequelize.query(query, {
-      replacements: {
-        userid: userloc.userid,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
-    user.dataValues.userreview = userspoon;
+    const lunch = {
+      owned:owned,
+      applied: applied
+    }
+    user.dataValues.lunchs = lunch;
     const data = { user: user };
     logger.info("GET /main");
     return res

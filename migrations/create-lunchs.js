@@ -16,10 +16,6 @@ module.exports = {
             key: 'userid',
           },
       },
-      nickname: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
       title: {
         allowNull: false,
         type: Sequelize.STRING,
@@ -47,8 +43,8 @@ module.exports = {
       duration: {
         type: Sequelize.INTEGER,
       },
-      status:{
-        type: Sequelize.STRING,
+      confirmed:{
+        type: Sequelize.BOOLEAN,
       },
       private:{
         type: Sequelize.BOOLEAN,

@@ -62,7 +62,7 @@ module.exports = {
       snsurl: {
         type: Sequelize.STRING,
       },
-      jop:{
+      job:{
         type: Sequelize.STRING,
       }
     });

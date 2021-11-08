@@ -6,9 +6,9 @@ getlunchlist = async (req, res) => {
   try {
     const lunch = await lunchs.findAll({
       include: [
-        { model: users},
+        { model: users, as: "host" },
         { model: lunchdata, as: "locations" },
-        { model: applicant , include: [{model: users}]}
+        { model: applicant, include: [{ model: users }] },
       ],
       order: [["date", "DESC"]],
     });
@@ -32,9 +32,9 @@ detaillunchpost = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users},
+        { model: users, as: "host" },
         { model: lunchdata, as: "locations" },
-        { model: applicant , include: [{model: users}]}
+        { model: applicant, include: [{ model: users }] },
       ],
       where: { lunchid: lunchid },
     });
@@ -89,7 +89,6 @@ postlunchlist = async (req, res) => {
     });
     const lunch = await lunchs.create({
       userid: user.userid,
-      nickname: user.nickname,
       title: title,
       content: content,
       date: date,
@@ -97,10 +96,9 @@ postlunchlist = async (req, res) => {
       time: time,
       membernum: membernum,
       duration: duration,
-      status: "applied",
+      confirmed: false,
       private: false,
     });
-    lunch.dataValues.nickname = user.nickname;
     console.log(lunch);
     const data = { lunch: lunch };
     logger.info("POST /lunchPost");
@@ -156,8 +154,8 @@ updatelunchlist = async (req, res) => {
     });
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users},
-        { model: lunchdata , as: "location"},
+        { model: users, as: "host" },
+        { model: lunchdata, as: "locations" },
       ],
       where: { lunchid: lunchid },
     });
@@ -212,122 +210,141 @@ deletelunchlist = async (req, res) => {
   }
 };
 
-onairlunch = async (req, res) => {
+privatelunch = async (req, res) => {
   const { lunchid } = req.params;
+  const { private } = req.body;
   const user = res.locals.user;
-  try {
-    const lunchDetail = await lunchs.findOne({
-      include: [
-        { model: users},
-        { model: lunchdata ,as: "locations"},
-        { model: applicant , include: [{model: users}]}
-      ],
-      where: { lunchid: lunchid, userid: user.userid },
-    });
-    if (lunchDetail) {
-      lunchDetail.update({ status: "onair" });
-      logger.info("PATCH /lunchPost/onair");
-      return res.status(200).send({
-        result: "success",
-        msg: "점약 승인 성공",
-        lunch: lunchDetail,
-      });
-    } else {
-      logger.error("PATCH /lunchPost/onair 해당 점약 없음 해당 오너가아님");
+
+  const lunchDetail = await lunchs.findOne({
+    include: [
+      { model: users, as: "host" },
+      { model: lunchdata, as: "locations" },
+      { model: applicant, include: [{ model: users }] },
+    ],
+    where: { lunchid: lunchid, userid: user.userid },
+  });
+
+  if (private) {
+    try {
+      if (lunchDetail) {
+        lunchDetail.update({ private: true });
+        logger.info("PATCH /lunchPost/private");
+        return res.status(200).send({
+          result: "success",
+          msg: "점약 숨김 성공",
+          lunch: lunchDetail,
+        });
+      } else {
+        logger.error("PATCH /lunchPost/private 해당 점약 없음 해당 오너가아님");
+        return res.status(400).send({
+          result: "fail",
+          msg: "점약 숨김 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+        });
+      }
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
       return res.status(400).send({
         result: "fail",
-        msg: "점약 승인 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+        msg: "점약 숨김 오류",
       });
     }
-  } catch (error) {
-    logger.error(error);
-    console.log(error);
-    return res.status(400).send({
-      result: "fail",
-      msg: "점약 진행 오류",
-    });
+  } else {
+    try {
+      if (lunchDetail) {
+        lunchDetail.update({ private: false });
+        logger.info("PATCH /lunchPost/private");
+        return res.status(200).send({
+          result: "success",
+          msg: "점약 보이기 성공",
+          lunch: lunchDetail,
+        });
+      } else {
+        logger.error("PATCH /lunchPost/private 해당 점약 없음 해당 오너가아님");
+        return res.status(400).send({
+          result: "fail",
+          msg: "점약 보이기 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+        });
+      }
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 보이기 오류",
+      });
+    }
   }
 };
 
-cancellunch = async (req, res) => {
+confirmedlunch = async (req, res) => {
   const { lunchid } = req.params;
-  const { comment } = req.body;
+  const { confirmed } = req.body;
   const user = res.locals.user;
 
-  try {
-    const lunchDetail = await lunchs.findOne({
-      include: [
-        { model: users},
-        { model: lunchdata,as: "locations" },
-        { model: applicant , include: [{model: users}]}
-      ],
-      where: { lunchid: lunchid, userid: user.userid },
-    });
-    if (lunchDetail) {
-      const content = lunchDetail.content + "취소 사유:" + comment;
-      lunchDetail.update({ status: "cancel", content: content });
-      logger.info("PATCH /lunchPost/cancel");
-      return res.status(200).send({
-        result: "success",
-        msg: "점약 취소 성공",
-        lunch: lunchDetail,
-      });
-    }
-    else{
-      logger.error("PATCH /lunchPost/cancel 취소 실패 해당 점약이 없거나 or 점약 오너가아님");
+  const lunchDetail = await lunchs.findOne({
+    include: [
+      { model: users, as: "host" },
+      { model: lunchdata, as: "locations" },
+      { model: applicant, include: [{ model: users }] },
+    ],
+    where: { lunchid: lunchid, userid: user.userid },
+  });
+
+  if (confirmed) {
+    try {
+      if (lunchDetail) {
+        lunchDetail.update({ confirmed: true });
+        logger.info("PATCH /lunchPost/confirmed");
+        return res.status(200).send({
+          result: "success",
+          msg: "점약 컨펌 성공",
+          lunch: lunchDetail,
+        });
+      } else {
+        logger.error("PATCH /lunchPost/private 해당 점약 없음 해당 오너가아님");
+        return res.status(400).send({
+          result: "fail",
+          msg: "점약 컨펌 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+        });
+      }
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
       return res.status(400).send({
         result: "fail",
-        msg: "점약 취소 실패 해당 점약이 없거나 점약 오너가 아니여",
+        msg: "점약 컨펌 오류",
       });
     }
-  } catch (error) {
-    logger.error(error);
-    console.log(error);
+  } else {
+    try {
+      if (lunchDetail) {
+        lunchDetail.update({ confirmed: false });
+        logger.info("PATCH /lunchPost/confirmed");
+        return res.status(200).send({
+          result: "success",
+          msg: "점약 컨펌취소 성공",
+          lunch: lunchDetail,
+        });
+      } else {
+        logger.error(
+          "PATCH /lunchPost/confirmed 해당 점약 없음 해당 오너가아님"
+        );
+        return res.status(400).send({
+          result: "fail",
+          msg: "점약 컨펌취소 실패 해당 점약 없음 or 해당 점약 오너가 아님",
+        });
+      }
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
       return res.status(400).send({
         result: "fail",
-        msg: "점약 취소 오류",
+        msg: "점약 컨펌취소 오류",
       });
+    }
   }
 };
-
-donelunch = async (req, res)=>{
-  const { lunchid } = req.params;
-  const user = res.locals.user;
-  
-  try {
-    const lunchDetail = await lunchs.findOne({
-      include: [
-        { model: users},
-        { model: lunchdata,as: "locations" },
-        { model: applicant , include: [{model: users}]}
-      ],
-      where: { lunchid: lunchid, userid: user.userid },
-    });
-    if (lunchDetail) {
-      lunchDetail.update({ status: "done"});
-      logger.info("PATCH /lunchPost/done");
-      return res.status(200).send({
-        result: "success",
-        msg: "점약 종료 성공",
-        lunch: lunchDetail,
-      });
-    }
-    else{
-      logger.error("PATCH /lunchPost/done 해당 점약 오너가 아니거나 점약이 존재하지않음");
-      return res.status(400).send({
-        result: "fail",
-        msg: "점약 종료 실패 점약 오너아님 || 점약 존재 ㄴㄴ",
-      });
-    }
-  } catch (error) {
-    logger.error(error);
-    console.log(error)
-      return res.status(400).send({
-        result: "fail",
-        msg: "점약 종료 오류",
-      });
-  }
-}
 
 module.exports = {
   getlunchlist: getlunchlist,
@@ -335,7 +352,6 @@ module.exports = {
   postlunchlist: postlunchlist,
   updatelunchlist: updatelunchlist,
   deletelunchlist: deletelunchlist,
-  onairlunch: onairlunch,
-  cancellunch: cancellunch,
-  donelunch: donelunch,
+  confirmedlunch: confirmedlunch,
+  privatelunch: privatelunch,
 };
