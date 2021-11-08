@@ -60,7 +60,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      menu: {
+      likemenu: {
+        type: DataTypes.STRING,
+        require: false,
+      },
+      dislikemenu: {
         type: DataTypes.STRING,
         require: false,
       },
@@ -72,14 +76,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      imageUrl: {
-        type: DataTypes.STRING,
-        require: false,
-      },
       // provider: {
       //   type: DataTypes.STRING,
       //   require: false,
-      //   defaultValue: "kakao",
+      //   defaultValue: "local",
       // }, // local vs kakao
       // snsId: {
       //   type: DataTypes.STRING,

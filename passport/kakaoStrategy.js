@@ -1,13 +1,11 @@
 // 1
 const passport = require("passport");
-const kakaoPassport = require("passport-kakao");
 const { logger } = require("../config/logger");
-const KakaoStrategy = kakaoPassport.Strategy;
+const KakaoStrategy = require("passport-kakao").Strategy;
 const { users } = require("../models");
 
 module.exports = () => {
   passport.use(
-    "kakao",
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
@@ -37,6 +35,7 @@ module.exports = () => {
             done(null, newuser);
           }
         } catch (error) {
+          console.error(error);
           done(error);
         }
       }
