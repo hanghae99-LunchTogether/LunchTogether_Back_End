@@ -5,6 +5,7 @@ module.exports = async (req, res, next) => {
   try {
     const location = 'authorization';
     const authorization = req.headers[location];
+    console.log(authorization);
     const [tokenType, token] = authorization.split(' ')
     
     if (tokenType !== "Bearer"){
