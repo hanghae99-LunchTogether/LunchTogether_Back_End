@@ -61,6 +61,7 @@
       "get": {
         "tags": ["Login"],
         "description": "로그인 정보 확인",
+        "summary": "로그인 정보 확인",
         "parameters": [],
         "security": [{ "token": [] }],
         "responses": {
@@ -72,6 +73,7 @@
       "post": {
         "tags": ["Login"],
         "description": "",
+        "summary": "로컬 로그인",
         "parameters": [
           {
             "name": "obj",
@@ -100,6 +102,7 @@
       "post": {
         "tags": ["signup"],
         "description": "",
+        "summary": "회원가입",
         "parameters": [
           {
             "name": "obj",
@@ -131,6 +134,7 @@
       "post": {
         "tags": ["signup"],
         "description": "이메일 중복확인",
+        "summary": "이메일 중복확인",
         "parameters": [
           {
             "name": "obj",
@@ -152,6 +156,7 @@
       "post": {
         "tags": ["signup"],
         "description": "닉네임 중복확인",
+        "summary": "닉네임 중복확인",
         "parameters": [
           {
             "name": "obj",
@@ -173,6 +178,7 @@
       "get": {
         "tags": ["myProfile"],
         "description": "유저 본인 정보 요청",
+        "summary": "마이프로필 불러오기",
         "parameters": [],
         "security": [{ "token": [] }],
         "responses": {
@@ -184,6 +190,7 @@
       "patch": {
         "tags": ["myProfile"],
         "description": "유저 정보 변경",
+        "summary": "마이프로필 수정",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -215,6 +222,7 @@
       "get": {
         "tags": ["myProfile"],
         "description": "다른 유저 정보 요청",
+        "summary": "다른 유저 프로필 가져오기",
         "parameters": [
           {
             "name": "userid",
@@ -230,6 +238,7 @@
       "post": {
         "tags": ["Login"],
         "description": "카카오 로그인 해당정보 비공개",
+        "summary": "카카오 로그인",
         "parameters": [
           {
             "name": "obj",
@@ -264,6 +273,7 @@
       "get": {
         "tags": ["Comment"],
         "description": "해당 약속 리플 가져오기",
+        "summary": "점심약속 댓글 가져오기",
         "parameters": [
           {
             "name": "lunchid",
@@ -287,6 +297,7 @@
       "post": {
         "tags": ["Comment"],
         "description": "해당 약속 리플달기",
+        "summary": "점심약속 댓글 작성",
         "parameters": [
           {
             "name": "lunchid",
@@ -325,6 +336,7 @@
       "delete": {
         "tags": ["Comment"],
         "description": "해당 약속 코맨트 삭제",
+        "summary": "점심약속 댓글 삭제",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -345,6 +357,7 @@
       "get": {
         "tags": ["lunchPost"],
         "description": "모든 약속 리스트",
+        "summary": "모든 점심약속 리스트 가져오기",
         "parameters": [],
         "responses": {
           "200": {
@@ -358,6 +371,7 @@
       "post": {
         "tags": ["lunchPost"],
         "description": "점약 추가",
+        "summary": "점심약속 등록하기",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -372,7 +386,7 @@
                 "content": {
                   "example": "any"
                 },
-                "location":{
+                "location": {
                   "example": "위치 정보 객체 Ex){'address_name': 'test', 'category_group_name': 'test', 'id': 12,'phone': 'test','place_name': 'test','place_url': 'test','road_address_name': 'test','x': 'test', 'y': 'test'}"
                 },
                 "date": {
@@ -405,6 +419,7 @@
       "get": {
         "tags": ["lunchPost"],
         "description": "해당 약속 정보",
+        "summary": "점심약속 상세정보",
         "parameters": [
           {
             "name": "lunchid",
@@ -425,6 +440,7 @@
       "delete": {
         "tags": ["lunchPost"],
         "description": "해당 약속 삭제",
+        "summary": "점심약속 삭제",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -449,6 +465,7 @@
       "patch": {
         "tags": ["lunchPost"],
         "description": "해당 약속 수정",
+        "summary": "점심약속 수정",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -502,6 +519,7 @@
       "patch": {
         "tags": ["lunchPost"],
         "description": "해당 약속 진행중으로 바꾸기",
+        "summary": "점심약속 상태 : 진행중",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -528,6 +546,7 @@
       "patch": {
         "tags": ["lunchPost"],
         "description": "해당 약속 취소상태로 바꾸기",
+        "summary": "점심약속 상태 : 취소",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -566,6 +585,7 @@
       "patch": {
         "tags": ["lunchPost"],
         "description": "해당 약속 종료 상태로 바꾸기",
+        "summary": "점심약속 상태 : 종료",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -592,6 +612,7 @@
       "post": {
         "tags": ["Spoon"],
         "description": "해당 유저 리플달기",
+        "summary": "유저 평가하기",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -630,6 +651,7 @@
       "get": {
         "tags": ["Spoon"],
         "description": "해당 유저의 리플 가져오기",
+        "summary": "유저 평가 가져오기",
         "parameters": [
           {
             "name": "userid",
@@ -652,6 +674,7 @@
       "get": {
         "tags": ["Applicant"],
         "description": "해당 점약 신청자 가져오기",
+        "summary": "점심약속 신청자 가져오기",
         "parameters": [
           {
             "name": "lunchid",
@@ -672,6 +695,7 @@
       "post": {
         "tags": ["Applicant"],
         "description": "해당 점약 신청",
+        "summary": "신청자의 점심약속 신청",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -696,6 +720,7 @@
       "delete": {
         "tags": ["Applicant"],
         "description": "해당 점약 취소",
+        "summary": "신청자의 점심약속 취소",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -722,6 +747,7 @@
       "patch": {
         "tags": ["Applicant"],
         "description": "신청자 승인or 거절",
+        "summary": "신청자를 승인 or 거절",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -737,13 +763,13 @@
               "type": "object",
               "properties": {
                 "userid": {
-                  "example": "any"
+                  "example": "1964619425"
                 },
                 "statusdesc": {
-                  "example": "any"
+                  "example": "true or false"
                 },
                 "comment": {
-                  "example": "any"
+                  "example": "승인 or 거절시, 거절사유"
                 }
               }
             }
@@ -766,6 +792,7 @@
       "patch": {
         "tags": ["Applicant"],
         "description": "신청자 참석 여부",
+        "summary": "신청자 참석 여부 결정",
         "security": [{ "token": [] }],
         "parameters": [
           {
@@ -781,10 +808,10 @@
               "type": "object",
               "properties": {
                 "statusdesc": {
-                  "example": "any"
+                  "example": "true or false"
                 },
                 "comment": {
-                  "example": "any"
+                  "example": "승인 or 거절시, 거절사유"
                 }
               }
             }
