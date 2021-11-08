@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class applicant extends Model {
+  class bookmarks extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  applicant.init(
+  bookmarks.init(
     {
-      applicantid: {
+      bookmarkid: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -27,34 +27,22 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
-      status:{
-        required: true,
-        type: DataTypes.STRING,
-      },
-      statusdesc: {
-        require: true,
-        type: DataTypes.BOOLEAN,
-      },
-      comments:{
-        allowNull: false,
-        type: DataTypes.STRING,
-      }
     },
     {
       sequelize,
-      modelName: "applicant",
+      modelName: "bookmarks",
     }
   );
 
-  applicant.associate = function (models) {
-    models.applicant.belongsTo(models.lunchs, {
+  bookmarks.associate = function (models) {
+    models.bookmarks.belongsTo(models.lunchs, {
       foreignKey: "lunchid",
       onDelete: "cascade",
     });
-    models.applicant.belongsTo(models.users, {
+    models.bookmarks.belongsTo(models.users, {
       foreignKey: "userid",
       onDelete: "cascade",
     });
   };
-  return applicant;
+  return bookmarks;
 };

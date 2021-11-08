@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       content: {
         required: true,
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       date: {
         type: DataTypes.STRING,
@@ -51,6 +51,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         required: false,
       },
+      confirmed: {
+        type: DataTypes.BOOLEAN,
+        required: false,
+      },
+      private:{
+        type: DataTypes.BOOLEAN,
+        required: true,
+      },
     },
     {
       sequelize,
@@ -69,12 +77,18 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "lunchid",
     });
     models.lunchs.belongsTo(models.lunchdata, {
+      as: "locations",
       foreignKey: "location",
       targetKey: "id",
       onDelete: "cascade",
     });
     models.lunchs.belongsTo(models.users, {
+      as: 'host',
       foreignKey: "userid",
+      onDelete: "cascade",
+    });
+    models.lunchs.hasMany(models.bookmarks, {
+      foreignKey: "lunchid",
       onDelete: "cascade",
     });
   };

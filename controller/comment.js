@@ -4,12 +4,11 @@ require("date-utils");
 
 commentget = async (req, res) => {
   const { lunchid } = req.params; // params에 lunchid 객체
-  console.log(req);
   try {
     // comments table의 lunchid 조회
     const comment = await comments.findAll({
       // comments table과 관계된 users table의 nickname 칼럼 검색
-      include: [{ model: users, attributes: ["nickname"] }],
+      include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] } }],
       where: { lunchid },
     });
 
@@ -51,7 +50,6 @@ commentpost = async (req, res) => {
         time: time,
       },
     });
-
     logger.info("POST /comment/:lunchid");
     return res.status(200).send({
       result: "success",

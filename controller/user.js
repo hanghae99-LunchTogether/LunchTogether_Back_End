@@ -1,4 +1,12 @@
-const { users, sequelize, lunchdata } = require("../models");
+const {
+  users,
+  sequelize,
+  locationdata,
+  lunchs,
+  applicant,
+  usersReviews,
+  lunchdata,
+} = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -61,9 +69,36 @@ async function nickNameCheck(nickname) {
   }
 }
 
+checkemail = async (req, res) => {
+  const { email } = req.body;
+  if (await emailCheck(email)) {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "이메일이 중복되었습니다.", data: false });
+  } else {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "이메일이 중복없음", data: true });
+  }
+};
+
+checknickname = async (req, res) => {
+  const { nickname } = req.body;
+  if (await nickNameCheck(nickname)) {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "닉네임이 중복되었습니다.", data: false });
+  } else {
+    return res
+      .status(200)
+      .send({ result: "fail", msg: "닉네임이 중복없음", data: true });
+  }
+};
+
 //회원가입
 signup = async (req, res) => {
-  const { username, nickname, email, password } = req.body;
+  const { nickname, email, password } = req.body;
+  console.log(nickname, email, password);
   try {
     if (await emailCheck(email)) {
       return res
@@ -79,12 +114,12 @@ signup = async (req, res) => {
         .createHash("sha512")
         .update(password + salt)
         .digest("hex");
-      console.log(username, nickname, email, hashpw);
+      console.log(nickname, email, hashpw);
       const query =
         "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
         replacements: {
-          username: username,
+          username: "로컬유저",
           nickname: nickname,
           email: email,
           password: hashpw,
@@ -103,12 +138,10 @@ signup = async (req, res) => {
   }
 };
 
-//로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    console.log("여기에서 오니??");
     const query = "select * from users where email = :email";
     const isuser = await sequelize.query(query, {
       replacements: {
@@ -116,7 +149,6 @@ login = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    console.log(isuser);
     const users = isuser[0];
     if (users) {
       const salt = users.salt;
@@ -129,7 +161,6 @@ login = async (req, res) => {
         const token = jwt.sign(
           {
             id: users["userid"],
-            email: users["email"],
             nickname: users["nickname"],
           },
           process.env.SECRET_KEY
@@ -144,7 +175,7 @@ login = async (req, res) => {
         });
       }
     } else {
-      logger.error(error);
+      logger.error("해당 유저 이메일 잘못됨");
       return res
         .status(400)
         .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
@@ -162,7 +193,7 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id);
     const query =
-      "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from users where userid = :userid);";
+      "insert into users (userid,username,email,password,nickname,salt,image, createdAt) select :userid,:username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where userid = :userid);";
     const isuser = sequelize.query(query, {
       replacements: {
         userid: id,
@@ -178,7 +209,6 @@ loginkakao = async (req, res) => {
     });
     const users = {
       id: id,
-      email: "카카오 이메일",
       nickname: nickname,
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
@@ -205,7 +235,8 @@ loginkakao = async (req, res) => {
 getuser = async (req, res) => {
   const user = res.locals.user;
   try {
-    const query = "select * from users where userid = :userid";
+    const query =
+      "select userid,email,nickname,image,mbti,introduction,likemenu,dislikemenu,company,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
         userid: user.userid,
@@ -229,29 +260,42 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
+  console.log(req.body);
   const {
     username,
-    password,
     email,
     nickname,
-    menu,
+    likemenu,
+    dislikemenu,
     mbti,
     gender,
-    location,
+    locations,
     company,
     introduction,
+    job,
+    snsurl,
   } = req.body.profile;
   console.log(
     username,
     email,
     nickname,
-    menu,
+    likemenu,
+    dislikemenu,
     mbti,
     gender,
     company,
-    introduction
+    introduction,
+    job,
+    snsurl
   );
-
+  // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
+  // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
+  //     logger.error("patch /myProfile 유저 정보 아무것도 없음");
+  //     return res
+  //     .status(401)
+  //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
+  //   }
+  let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
   }
@@ -268,29 +312,33 @@ upusers = async (req, res) => {
     if (mbti) querys = querys + " mbti = :mbti,";
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
-    if (location) {
-      console.log(location);
+    if (locations) {
+      console.log(locations);
       const query =
-        "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+        "insert into locationdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from locationdata where id = :id);";
       const locationdb = await sequelize.query(query, {
         replacements: {
-          id: location.id,
-          address_name: location.address_name,
-          road_address_name: location.road_address_name,
-          category_group_name: location.category_group_name,
-          place_name: location.place_name,
-          place_url: location.place_url,
-          phone: location.phone,
-          x: location.x,
-          y: location.y,
-          id: location.id,
+          id: locations.id,
+          address_name: locations.address_name,
+          road_address_name: locations.road_address_name,
+          category_group_name: locations.category_group_name,
+          place_name: locations.place_name,
+          place_url: locations.place_url,
+          phone: locations.phone,
+          x: locations.x,
+          y: locations.y,
+          id: locations.id,
         },
         type: sequelize.QueryTypes.INSERT,
       });
+      locationid = locations.id;
       querys = querys + " location = :location,";
     }
-    if (menu) querys = querys + " menu = :menu,";
+    if (likemenu) querys = querys + " likemenu = :likemenu,";
+    if (dislikemenu) querys = querys + " dislikemenu = :dislikemenu,";
     if (company) querys = querys + " company = :company,";
+    if (job) querys = querys + " job = :job,";
+    if (snsurl) querys = querys + " snsurl = :snsurl,";
     querys = querys.slice(0, -1);
     querys = querys + " WHERE userid = :userid;";
     console.log("마지막으로 완성된 쿼리문", querys);
@@ -303,19 +351,23 @@ upusers = async (req, res) => {
         mbti: mbti,
         gender: gender,
         introduction: introduction,
-        location: location.id,
-        menu: menu,
+        location: locationid,
+        likemenu: likemenu,
+        dislikemenu: dislikemenu,
         company: company,
+        job: job,
+        snsurl: snsurl,
         userid: userloc.userid,
       },
       type: sequelize.QueryTypes.UPDATE,
     });
-    const users = await users.findOne({
-      include: [{ model: lunchdata }],
+    const user = await users.findOne({
+      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
 
-    data = { user: users };
+    data = { user: user };
     logger.info("patch /myProfile");
     return res
       .status(200)
@@ -334,11 +386,152 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      include: [{ model: lunchdata }],
+      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      include: [{ model: locationdata, as: "locations" }],
       where: { userid: userid },
     });
+    const owned = await lunchs.findAll({
+      attributes: { exclude: ["location", "userid"] },
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+      ],
+      where: { userid: userid },
+    });
+    const applied = await applicant.findAll({
+      attributes: { exclude: ["lunchid", "userid"] },
+      include: [
+        {
+          model: lunchs,
+          include: [
+            {
+              model: users,
+              as: "host",
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+            { model: lunchdata, as: "locations" },
+            {
+              model: applicant,
+              include: [
+                {
+                  model: users,
+                  attributes: {
+                    exclude: ["location", "password", "salt", "gender"],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      where: { userid: userid },
+    });
+    const lunch = {
+      owned: owned,
+      applied: applied,
+    };
+    user.dataValues.lunchs = lunch;
     const data = { user: user };
-    logger.info("GET /myProfile/:userid");
+    logger.info("GET /main");
+    return res
+      .status(200)
+      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+    return res
+      .status(401)
+      .send({ result: "fail", msg: "유저정보 조회실패", error: error });
+  }
+};
+//유저 세부정보 요청
+getdeuser = async (req, res) => {
+  const userloc = res.locals.user;
+  try {
+    const user = await users.findOne({
+      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      include: [{ model: locationdata, as: "locations" }],
+      where: { userid: userloc.userid },
+    });
+    const owned = await lunchs.findAll({
+      attributes: { exclude: ["location", "userid"] },
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+      ],
+      where: { userid: userloc.userid },
+    });
+    const applied = await applicant.findAll({
+      attributes: { exclude: ["lunchid", "userid"] },
+      include: [
+        {
+          model: lunchs,
+          include: [
+            {
+              model: users,
+              as: "host",
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+            { model: lunchdata, as: "locations" },
+            {
+              model: applicant,
+              include: [
+                {
+                  model: users,
+                  attributes: {
+                    exclude: ["location", "password", "salt", "gender"],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      where: { userid: userloc.userid },
+    });
+    const lunch = {
+      owned: owned,
+      applied: applied,
+    };
+    user.dataValues.lunchs = lunch;
+    const data = { user: user };
+    logger.info("GET /main");
     return res
       .status(200)
       .send({ result: "success", msg: "유저정보 조회 완료", data: data });
@@ -351,13 +544,18 @@ getotheruser = async (req, res) => {
   }
 };
 
+getapplicant = async (req, res) => {
+  const userloc = res.locals.user;
+};
+
 module.exports = {
-  emailCheck: emailCheck,
-  nickNameCheck: nickNameCheck,
+  checkemail: checkemail,
+  checknickname: checknickname,
   signup: signup,
   login: login,
   getuser: getuser,
   upusers: upusers,
   getotheruser: getotheruser,
   loginkakao: loginkakao,
+  getdeuser: getdeuser,
 };

@@ -16,6 +16,14 @@ module.exports = {
             key: 'userid',
           },
       },
+      lunchid: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'lunchs',
+            key: 'lunchid',
+          },
+      },
       targetusers: {
         type: Sequelize.INTEGER,
         allowNull: false,

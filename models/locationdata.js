@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class lunchdata extends Model {
+  class locationdata extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  lunchdata.init(
+  locationdata.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -57,20 +57,18 @@ module.exports = (sequelize, DataTypes) => {
         require: false,
       }
     },
-
     {
       sequelize,
-      modelName: "lunchdata",
+      modelName: "locationdata",
 
     }
   );
-  lunchdata.associate = function (models) {
-    models.lunchdata.hasMany(models.lunchs, {
-      foreignKey: "location",
-      sourceKey: "id",
-      onDelete: "cascade",
+  locationdata.associate = function (models) {
+    models.locationdata.hasMany(models.users, {
+        foreignKey: "location", 
+        sourceKey: "id", 
+        onDelete: "cascade"
     });
-    models.lunchdata.hasMany(models.users, {foreignKey: "location", sourceKey: "id", onDelete: "cascade"});
   };
-  return lunchdata;
+  return locationdata;
 };

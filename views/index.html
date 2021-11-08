@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="shortcut icon" href="#">
+  <meta charset="UTF-8">
+  <title>GIF 채팅방</title>
+</head>
+<body>
+<div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io.connect('http://3.35.54.135', {
+    path: '/socket.io',
+    transports: ['websocket'],
+  });
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('reply', 'Hello Node.JS');
+  });
+</script>
+</body>
+</html>

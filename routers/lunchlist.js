@@ -5,15 +5,22 @@ const {
   detaillunchpost,
   postlunchlist,
   updatelunchlist,
-  deletelunchlist
+  deletelunchlist,
+  confirmedlunch,
+  privatelunch,
 } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
 
+router.route("/").get(getlunchlist).post(authMiddleware, postlunchlist);
+
 router
-  .route("/")
-  .get(getlunchlist)
-  .post(authMiddleware, postlunchlist);
-  
-router.route("/:lunchid").get(detaillunchpost).patch(authMiddleware, updatelunchlist).delete(authMiddleware,deletelunchlist);
+  .route("/:lunchid")
+  .get(detaillunchpost)
+  .patch(authMiddleware, updatelunchlist)
+  .delete(authMiddleware, deletelunchlist);
+
+router.route("/confirmed/:lunchid").patch(authMiddleware, confirmedlunch);
+
+router.route("/private/:lunchid").patch(authMiddleware, privatelunch);
 
 module.exports = router;

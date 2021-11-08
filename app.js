@@ -1,20 +1,82 @@
 const express = require("express");
-const app = express();
+
+const path = require("path"); // 소켓
+const cookieParser = require("cookie-parser"); // 쿠키파서
+const session = require("express-session"); //세션
+const nunjucks = require("nunjucks"); // 넌적스
+const morgan = require("morgan"); //모건
+const ColorHash = require("color-hash").default;
 const dotenv = require("dotenv");
 dotenv.config();
-const session = require('express-session');
+const Router = require("./routers");
+const kakaoLoginRouter = require("./routers/kakaologin.js"); //카카오 로그인 라우터
 
-const cors = require('cors');
-const swaggerUi = require('swagger-ui-express'); //스웨거 자동생성을 위한 코드
-const swaggerFile = require('./swagger_output.json'); //스웨거 아웃풋파일 저장 위치
+const app = express();
+
+app.set("view engine", "html");
+nunjucks.configure("views", {
+  express: app,
+  watch: true,
+});
+
+const sessionMiddleware = session({
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+  },
+});
+
+const cors = require("cors");
+const swaggerUi = require("swagger-ui-express"); //스웨거 자동생성을 위한 코드
+const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파일 저장 위치
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/gif", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.SECRET_KEY));
 
-const Router = require("./routers");
+app.use(sessionMiddleware);
+app.use((req, res, next) => {
+  if (!req.session.color) {
+    const colorHash = new ColorHash();
+    console.log(colorHash);
+    req.session.color = colorHash.hex(req.sessionID);
+    console.log(req.session.color);
+  }
+  next();
+});
+
 app.use("/", [Router]);
+app.use("/kakao", [kakaoLoginRouter]);
 
-app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.get("/kakao", (req, res, next) => {
+  res.render("kakaologin");
+});
 
-module.exports = app;
+app.use((req, res, next) => {
+  const error = new Error(`${req.method} ${req.url} 라우터 없는데요..?`);
+  error.status = 404;
+  next(error);
+});
+
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
+  res.status(err.static || 500);
+  res.render("error");
+});
+
+// const server = app.listen(port, () => {
+//     console.log(`listening at http://localhost:${port}`);
+// });
+
+module.exports = { app, sessionMiddleware };

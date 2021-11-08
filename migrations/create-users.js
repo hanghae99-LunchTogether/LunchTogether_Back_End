@@ -43,22 +43,28 @@ module.exports = {
       location: {
         type: Sequelize.STRING,
         references: {
-          model: 'lunchdata',
+          model: 'locationdata',
           key: 'id',
         },
       },
-      menu: {
+      likemenu: {
+        type: Sequelize.STRING,
+      },
+      dislikemenu: {
         type: Sequelize.STRING,
       },
       company: {
         type: Sequelize.STRING,
       },
       mannerstatus: {
+        type: Sequelize.INTEGER,
+      },
+      snsurl: {
         type: Sequelize.STRING,
       },
-      imageurl: {
-        type: DataTypes.STRING,
-      },
+      job:{
+        type: Sequelize.STRING,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

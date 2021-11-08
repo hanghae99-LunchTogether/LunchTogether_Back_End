@@ -22,7 +22,7 @@ module.exports = {
       },
       content: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       date: {
         type: Sequelize.STRING,
@@ -42,6 +42,13 @@ module.exports = {
       },
       duration: {
         type: Sequelize.INTEGER,
+      },
+      confirmed:{
+        type: Sequelize.BOOLEAN,
+      },
+      private:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
     });
   },

@@ -5,6 +5,10 @@ const {
   applicantpost,
   applicantdelete,
   applicantget,
+  applicantapproved,
+  applicantconfirmed,
+  applicantgetme,
+  applicantgetthor
 } = require("../controller/applicant");
 
 router
@@ -12,5 +16,9 @@ router
   .get(applicantget)
   .post(middleware, applicantpost)
   .delete(middleware, applicantdelete);
-
+  
+router.route("/approved/:lunchid").patch(middleware, applicantapproved)
+router.route("/confirmed/:lunchid").patch(middleware, applicantconfirmed)
+router.route("").get(middleware, applicantgetme)
+router.route('/user/:userid').get(applicantgetthor);
 module.exports = router;

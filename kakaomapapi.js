@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { sequelize, lunchdata } = require("./models");
+const { sequelize, lunchdata , locationdata} = require("./models");
 const api_key = process.env.kakaoApiKey;
 const request = require("request");
 
@@ -103,7 +103,4 @@ for (a of data) {
   console.log(a.id);
 }
 
-lunchdata.bulkCreate(data);
-
-
-
+locationdata.bulkCreate(data);
