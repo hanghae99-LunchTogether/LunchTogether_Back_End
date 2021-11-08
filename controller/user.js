@@ -373,19 +373,24 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      include: [{ model: locationdata, as: 'locations' }],
-      where: { userid: userid },
+      include: [
+        { model: locationdata, as: 'locations'},
+        { model: applicant , as: 'applied', include: [{model: lunchs}]},
+        { model: lunchs }
+      ],
+      where:{userid : userid}
+    })
+    const query =
+      "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
+    const userspoon = await sequelize.query(query, {
+        replacements: {
+            userid: userid,
+          },
+      type: sequelize.QueryTypes.SELECT,
     });
-    console.log(user)
+    user.dataValues.userreview = userspoon;
     const data = { user: user };
-    if (data.user === null) {
-      logger.info("GET /myProfile/:userid 유저정보 없음");
-      console.log("유저 없음");
-      return res
-        .status(400)
-        .send({ result: "fail", msg: "유저정보 조회 실패" });
-    }
-    logger.info("GET /myProfile/:userid");
+    logger.info("GET /main");
     return res
       .status(200)
       .send({ result: "success", msg: "유저정보 조회 완료", data: data });
