@@ -403,7 +403,11 @@ getotheruser = async (req, res) => {
     const applied = await applicant.findAll({
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
-        { model: lunchs },
+        { model: lunchs ,include: [
+          { model: users, as: "host" },
+          { model: lunchdata, as: "locations" },
+          { model: applicant , include: [{model: users}]}
+        ]},
       ],
       where: { userid: userid },
     });
@@ -448,7 +452,11 @@ getdeuser = async (req, res) => {
     const applied = await applicant.findAll({
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
-        { model: lunchs },
+        { model: lunchs,include: [
+          { model: users, as: "host" },
+          { model: lunchdata, as: "locations" },
+          { model: applicant , include: [{model: users}]}
+        ] },
       ],
       where: { userid: userloc.userid },
     });
