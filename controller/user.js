@@ -260,21 +260,7 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(req.body); //
-  if(!req.body.length){
-    req.body.profile = {username:null,
-      email:null,
-      nickname:null,
-      likemenu:null,
-      dislikemenu:null,
-      mbti:null,
-      gender:null,
-      location:null,
-      company:null,
-      introduction:null,
-      jop:null,
-      snsurl:null}
-  }
+  console.log(req.body.profile)
   const {
     username,
     email,
@@ -286,7 +272,7 @@ upusers = async (req, res) => {
     location,
     company,
     introduction,
-    jop,
+    job,
     snsurl,
   } = req.body.profile
   console.log(
@@ -299,16 +285,16 @@ upusers = async (req, res) => {
     gender,
     company,
     introduction,
-    jop,
+    job,
     snsurl
   );
-  console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
-  if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
-      logger.error("patch /myProfile 유저 정보 아무것도 없음");
-      return res
-      .status(401)
-      .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
-    }
+  // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
+  // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
+  //     logger.error("patch /myProfile 유저 정보 아무것도 없음");
+  //     return res
+  //     .status(401)
+  //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
+  //   }
   let locationid;
   if (req.file) {
     console.log("파일은 담기고있는가?", req.file.location);
@@ -351,7 +337,7 @@ upusers = async (req, res) => {
     if (likemenu) querys = querys + " likemenu = :likemenu,";
     if (dislikemenu) querys = querys + " dislikemenu = :dislikemenu,";
     if (company) querys = querys + " company = :company,";
-    if (jop) querys = querys + " jop = :jop,";
+    if (job) querys = querys + " job = :job,";
     if (snsurl) querys = querys + " snsurl = :snsurl,";
     querys = querys.slice(0, -1);
     querys = querys + " WHERE userid = :userid;";
@@ -369,7 +355,7 @@ upusers = async (req, res) => {
         likemenu: likemenu,
         dislikemenu: dislikemenu,
         company: company,
-        jop: jop,
+        job: job,
         snsurl: snsurl,
         userid: userloc.userid,
       },
