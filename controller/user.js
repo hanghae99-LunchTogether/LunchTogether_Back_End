@@ -373,9 +373,10 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      include: [{ model: locationdata }],
+      include: [{ model: locationdata, as: 'locations' }],
       where: { userid: userid },
     });
+    console.log(user)
     const data = { user: user };
     if (data.user === null) {
       logger.info("GET /myProfile/:userid 유저정보 없음");
