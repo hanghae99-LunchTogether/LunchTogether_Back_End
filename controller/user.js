@@ -138,7 +138,6 @@ signup = async (req, res) => {
   }
 };
 
-//로그인  which ==1 로컬 which == 2 카카오 로그인!
 login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -194,7 +193,7 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id);
     const query =
-      "insert into users (userid,username,email,password,nickname,salt,image) select :userid,:username,:email,:password,:nickname,:salt,:image From dual WHERE NOT exists(select * from users where userid = :userid);";
+      "insert into users (userid,username,email,password,nickname,salt,image, createdAt) select :userid,:username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where userid = :userid);";
     const isuser = sequelize.query(query, {
       replacements: {
         userid: id,
@@ -236,7 +235,7 @@ loginkakao = async (req, res) => {
 getuser = async (req, res) => {
   const user = res.locals.user;
   try {
-    const query = "select * from users where userid = :userid";
+    const query = "select userid,email,nickname,image,mbti,introduction,likemenu,dislikemenu,company,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
         userid: user.userid,
@@ -362,6 +361,7 @@ upusers = async (req, res) => {
       type: sequelize.QueryTypes.UPDATE,
     });
     const user = await users.findOne({
+      attributes: { exclude: ['location','password','salt','gender'] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
@@ -385,7 +385,7 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ['location'] },
+      attributes: { exclude: ['location','password','salt','gender'] },
       include: [
         { model: locationdata, as: "locations" },
       ],
@@ -395,8 +395,8 @@ getotheruser = async (req, res) => {
       attributes: { exclude: ['location', 'userid'] },
       include: [
         { model: lunchdata, as: "locations" },
-        { model: users, as: "host" },
-        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+        { model: users, as: "host", exclude: ['location','password','salt','gender'] },
+        { model: applicant,include: [{ model: users, exclude: ['location','password','salt','gender']}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userid },
     });
@@ -404,9 +404,9 @@ getotheruser = async (req, res) => {
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
         { model: lunchs ,include: [
-          { model: users, as: "host" },
+          { model: users, as: "host", exclude: ['location','password','salt','gender'] },
           { model: lunchdata, as: "locations" },
-          { model: applicant , include: [{model: users}]}
+          { model: applicant , include: [{model: users, exclude: ['location','password','salt','gender']}]}
         ]},
       ],
       where: { userid: userid },
@@ -434,7 +434,7 @@ getdeuser = async (req, res) => {
   const userloc = res.locals.user;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ['location'] },
+      attributes: { exclude: ['location','password','salt','gender'] },
       include: [
         { model: locationdata, as: "locations" },
       ],
@@ -444,8 +444,8 @@ getdeuser = async (req, res) => {
       attributes: { exclude: ['location', 'userid'] },
       include: [
         { model: lunchdata, as: "locations" },
-        { model: users, as: "host" },
-        { model: applicant,include: [{ model: users}], exclude: ['lunchid', 'userid'] },
+        { model: users, as: "host" ,exclude: ['location','password','salt','gender'] },
+        { model: applicant,include: [{ model: users, exclude: ['location','password','salt','gender']}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userloc.userid },
     });
@@ -453,9 +453,9 @@ getdeuser = async (req, res) => {
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
         { model: lunchs,include: [
-          { model: users, as: "host" },
+          { model: users, as: "host", exclude: ['location','password','salt','gender'] },
           { model: lunchdata, as: "locations" },
-          { model: applicant , include: [{model: users}]}
+          { model: applicant , include: [{model: users, exclude: ['location','password','salt','gender']}]}
         ] },
       ],
       where: { userid: userloc.userid },
