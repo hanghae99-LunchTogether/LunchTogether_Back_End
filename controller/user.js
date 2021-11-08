@@ -395,8 +395,8 @@ getotheruser = async (req, res) => {
       attributes: { exclude: ['location', 'userid'] },
       include: [
         { model: lunchdata, as: "locations" },
-        { model: users, as: "host", exclude: ['location','password','salt','gender'] },
-        { model: applicant,include: [{ model: users, exclude: ['location','password','salt','gender']}], exclude: ['lunchid', 'userid'] },
+        { model: users, as: "host", attributes: { exclude: ['location','password','salt','gender'] } },
+        { model: applicant,include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] }}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userid },
     });
@@ -404,9 +404,9 @@ getotheruser = async (req, res) => {
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
         { model: lunchs ,include: [
-          { model: users, as: "host", exclude: ['location','password','salt','gender'] },
+          { model: users, as: "host", attributes: { exclude: ['location','password','salt','gender'] } },
           { model: lunchdata, as: "locations" },
-          { model: applicant , include: [{model: users, exclude: ['location','password','salt','gender']}]}
+          { model: applicant , include: [{model: users, attributes: { exclude: ['location','password','salt','gender'] }}]}
         ]},
       ],
       where: { userid: userid },
@@ -444,8 +444,8 @@ getdeuser = async (req, res) => {
       attributes: { exclude: ['location', 'userid'] },
       include: [
         { model: lunchdata, as: "locations" },
-        { model: users, as: "host" ,exclude: ['location','password','salt','gender'] },
-        { model: applicant,include: [{ model: users, exclude: ['location','password','salt','gender']}], exclude: ['lunchid', 'userid'] },
+        { model: users, as: "host" ,attributes: { exclude: ['location','password','salt','gender'] } },
+        { model: applicant,include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] }}], exclude: ['lunchid', 'userid'] },
       ],
       where: { userid: userloc.userid },
     });
@@ -453,9 +453,9 @@ getdeuser = async (req, res) => {
       attributes: { exclude: ['lunchid', 'userid'] },
       include: [
         { model: lunchs,include: [
-          { model: users, as: "host", exclude: ['location','password','salt','gender'] },
+          { model: users, as: "host", attributes: { exclude: ['location','password','salt','gender'] } },
           { model: lunchdata, as: "locations" },
-          { model: applicant , include: [{model: users, exclude: ['location','password','salt','gender']}]}
+          { model: applicant , include: [{model: users, attributes: { exclude: ['location','password','salt','gender'] }}]}
         ] },
       ],
       where: { userid: userloc.userid },

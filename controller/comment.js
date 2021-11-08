@@ -8,7 +8,7 @@ commentget = async (req, res) => {
     // comments table의 lunchid 조회
     const comment = await comments.findAll({
       // comments table과 관계된 users table의 nickname 칼럼 검색
-      include: [{ model: users, attributes: ["nickname"] }],
+      include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] } }],
       where: { lunchid },
     });
 

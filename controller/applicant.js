@@ -71,8 +71,8 @@ applicantget = async (req, res) => {
     // comments table의 lunchid 조회
     const applicants = await applicant.findAll({
       include: [
-        { model: users },
-        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users}]}
+        { model: users , attributes: { exclude: ['location','password','salt','gender'] }},
+        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users ,as:"host", attributes: { exclude: ['location','password','salt','gender'] }}]}
       ],
       where: 
       {lunchid: lunchid },
@@ -109,8 +109,8 @@ applicantapproved = async (req, res) =>{
   try {
     const applicants = await applicant.findOne({
       include: [
-        { model: users },
-        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users}]}
+        { model: users ,attributes: { exclude: ['location','password','salt','gender'] }},
+        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users , as:"host",attributes: { exclude: ['location','password','salt','gender'] }}]}
       ],
       where: 
       {lunchid: lunchid, userid: userid },
@@ -173,6 +173,10 @@ applicantconfirmed = async (req, res) =>{
   const user = res.locals.user;
   try {
     const applicants = await applicant.findOne({
+      include: [
+        { model: users ,attributes: { exclude: ['location','password','salt','gender'] }},
+        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users , as:"host",attributes: { exclude: ['location','password','salt','gender'] }}]}
+      ],
       where: 
       {lunchid: lunchid, userid: user.userid },
     });
@@ -216,8 +220,8 @@ applicantgetme = async (req, res)=>{
   try {
     const applicants = await applicant.findAll({
       include: [
-        { model: users, attributes: ["nickname", "image"] },
-        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users}]}
+        { model: users, attributes: { exclude: ['location','password','salt','gender']} },
+        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users, as: 'host',attributes: { exclude: ['location','password','salt','gender']} }]}
       ],
       where: 
       { userid: user.userid },
@@ -254,8 +258,8 @@ applicantgetthor = async (req, res)=>{
   try {
     const applicants = await applicant.findAll({
       include: [
-        { model: users },
-        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users}]}
+        { model: users , attributes: { exclude: ['location','password','salt','gender']}},
+        { model: lunchs ,include: [{model:lunchdata , as: "locations"},{ model: users , as:"host", attributes: { exclude: ['location','password','salt','gender']}}]}
       ],
       where: 
       { userid: userid },
