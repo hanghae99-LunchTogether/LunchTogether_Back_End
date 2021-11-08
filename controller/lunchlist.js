@@ -42,11 +42,13 @@ detaillunchpost = async (req, res) => {
     // console.log(lunchDetail.dataValues.time);
     // let OBJt = new Date();
     // OBJt.setHours(OBJt.getHours()+9);
-    // console.log(OBJt);
+    // console.log(OBJt);const nDate = new Date().toLocaleString("ko-KR", {timeZone: "Asia/Seoul"});
+
+// console.log(nDate);
     // let STRt = OBJt.toString();
     // console.log(STRt);
     let a = new Date(lunchDetail.dataValues.time);
-    a.setHours(a.getHours()+lunchDetail.dataValues.duration+9)
+    a.setHours(a.getHours()+lunchDetail.dataValues.duration)
     console.log(a);
     lunchDetail.dataValues.duration = a;
     const data = { lunch: lunchDetail };
