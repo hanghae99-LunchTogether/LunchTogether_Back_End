@@ -10,8 +10,17 @@ const dotenv = require("dotenv");
 dotenv.config();
 const Router = require("./routers");
 const kakaoLoginRouter = require("./routers/kakaologin.js"); //카카오 로그인 라우터
-
 const app = express();
+
+app.use(function (req, res, next) {
+  if(!req.secure){
+    res.redirect("https://"+req.headers["host"] + req.url)
+    console.log('리다이렉트..!')
+  }
+  else{
+    next();
+  }
+})
 
 app.set("view engine", "html");
 nunjucks.configure("views", {
@@ -32,6 +41,20 @@ const sessionMiddleware = session({
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express"); //스웨거 자동생성을 위한 코드
 const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파일 저장 위치
+
+// const whitelist = [process.env.dododomein, process.env.melocal, process.env.testlocal];
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not Allowed Origin!"));
+//     }
+//   },
+//   credentials: true
+// };
+
+// { origin: 'https://lunchtogether-88cf5.web.app/', credentials: true }
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
