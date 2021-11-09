@@ -24,11 +24,12 @@ httpServer.listen(80, () => {
     console.log('HTTP Server running on port 80');
 })
 
-httpsServer.listen(443, ()=>{
+const server = httpsServer.listen(443, ()=>{
     console.log((new Date()).toLocaleString());
-    console.log(`HTTPS -- listening on port 3000 ...`);
+    console.log(`HTTPS -- listening on port 443 ...`);
 })
 
+webSocket(server, app, sessionMiddleware);
 
 
 //혹시모를 예전 서버코드
@@ -53,4 +54,3 @@ httpsServer.listen(443, ()=>{
 //   console.log(`listening at http://localhost:${port}`);
 // });
 
-// webSocket(server, app, sessionMiddleware);
