@@ -1,5 +1,37 @@
 const { app, sessionMiddleware } = require("./app");
 const port = process.env.EXPRESS_PORT;
+'use strict';
+const fs = require("fs");
+const http = require("http");
+const https = require("https");
+
+const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem", "utf8");
+const certificate = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem", "utf8")
+const ca = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem", "utf8")
+
+const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca
+};
+
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+
+httpServer.listen(80, () => {
+    console.log((new Date()).toLocaleString());
+    console.log('HTTP Server running on port 80');
+})
+
+httpsServer.listen(443, ()=>{
+    console.log((new Date()).toLocaleString());
+    console.log(`HTTPS -- listening on port 3000 ...`);
+})
+
+
+
+//혹시모를 예전 서버코드
 // const webSocket = require("./soket");
 // const http =require('http');
 // const https = require('https')
@@ -22,60 +54,3 @@ const port = process.env.EXPRESS_PORT;
 // });
 
 // webSocket(server, app, sessionMiddleware);
-
-'use strict';
-const fs = require("fs");
-const http = require("http");
-const https = require("https");
-const express = require("express");
-
-// const app = express();  // https
-// const app2 = express();  // http
-
-// yourdomain.com 은 실제로 사용중인 도메인으로 바꿔야함. -- Let's Encrypt 인증서 설치시 위치 사용.
-const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem", "utf8");
-const certificate = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem", "utf8")
-const ca = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem", "utf8")
-
-const credentials = {
-    key: privateKey,
-    cert: certificate,
-    ca: ca
-};
-
-// const httpServer = http.createServer(app2);
-const httpsServer = https.createServer(credentials, app);
-
-// // 80 port -- http
-// app2.get("/", (req, res) => {
-//     console.log("------ http get / -----" + (new Date()).toLocaleString());
-//     console.log("req.ip => " + req.ip);
-//     console.log("req.hostname => " + req.hostname);
-//     console.log(req.url);
-//     console.log(req.originalUrl);
-
-//     res.send("<h1>HTTP Server running on port 80</h1>");
-// })
-
-// // 3000 port -- https
-// app.get("/", (req, res) => {
-//     console.log("------ https get / -----" + (new Date()).toLocaleString());
-//     console.log("req.ip => " + req.ip);
-//     console.log("req.hostname => " + req.hostname);
-//     console.log(req.url);
-//     console.log(req.originalUrl);
-
-//     res.send("<h1>HTTPS Server running on port 3000</h1>");
-// })
-
-
-// httpServer.listen(80, () => {
-//     console.log((new Date()).toLocaleString());
-//     console.log('HTTP Server running on port 80');
-// })
-
-httpsServer.listen(3000, ()=>{
-    console.log((new Date()).toLocaleString());
-    console.log(`HTTPS -- listening on port 3000 ...`);
-})
-
