@@ -27,8 +27,8 @@ const express = require("express");
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
-const HTTP_PORT = 3000;
-const HTTPS_PORT = 443;
+// const HTTP_PORT = 3000;
+const HTTPS_PORT = 3000;
 const options = {
   ca: fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem"),
   key: fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem"),
@@ -41,6 +41,6 @@ app.get("/", (req, res) => {
   });
 }); 
 // Create an HTTP server. 
-http.createServer(app).listen(HTTP_PORT); 
+// http.createServer(app).listen(HTTP_PORT); 
 // Create an HTTPS server. 
 https.createServer(options, app).listen(HTTPS_PORT);
