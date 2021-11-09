@@ -32,6 +32,7 @@
     "express-session": "^1.17.2",
     "fs": "0.0.1-security",
     "http-errors": "^1.8.0",
+    "https": "^1.0.0",
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
