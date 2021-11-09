@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
-      status:{
+      status: {
         required: true,
         type: DataTypes.STRING,
       },
@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         require: true,
         type: DataTypes.BOOLEAN,
       },
-      comments:{
-        allowNull: false,
+      comments: {
+        require: false,
         type: DataTypes.STRING,
-      }
+      },
     },
     {
       sequelize,

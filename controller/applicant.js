@@ -7,23 +7,46 @@ applicantpost = async (req, res) => {
   const { lunchid } = req.params; // params에 lunchid 객체
   const user = res.locals.user;
   try {
-    const query =
-      "insert into applicants set status = :status, statusdesc = :statusdesc ,lunchid = :lunchid, userid = :userid;";
-    const applicant = await sequelize.query(query, {
-      replacements: {
-        status: "applied",
-        statusdesc: true,
-        lunchid: lunchid,
+    const lunch = await lunchs.findByPk(lunchid);
+    if (!lunch) {
+      return res.status(400).send({
+        result: "fail",
+        msg: "해당 점심 약속이 없습니다",
+      });
+    }
+    const applicants = await applicant.findOne({
+      where: { userid: user.userid, lunchid: lunchid },
+    });
+    if (!applicants) {
+      if (user.userid === lunch.dataValues.userid) {
+        return res.status(400).send({
+          result: "fail",
+          msg: "해당 점심 약속의 오너는 신청할 수 없습니다",
+        });
+      }
+      await applicant.create({
         userid: user.userid,
-      },
-      type: sequelize.QueryTypes.INSERT,
-    });
-    console.log(applicant);
-    logger.info("POST /comment/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "신청 작성 성공",
-    });
+        lunchid: lunchid,
+        statusdesc: true,
+        status: "applied",
+      });
+      const isapplicant = await applicant.findOne({
+        include: [{ model: lunchs }],
+        where: { userid: user.userid, lunchid: lunchid },
+      });
+
+      logger.info("POST /applicant/:lunchid");
+      return res.status(200).send({
+        result: "success",
+        msg: "신청 성공",
+        applicants: isapplicant,
+      });
+    } else {
+      return res.status(400).send({
+        result: "fail",
+        msg: "이미 신청 되어있는 점심 약속입니다.",
+      });
+    }
   } catch (err) {
     logger.error(err);
     console.log(err);
