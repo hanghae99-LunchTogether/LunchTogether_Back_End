@@ -173,6 +173,11 @@ login = async (req, res) => {
           token: token,
           data: data,
         });
+      }else{
+        logger.error("POST /login 해당 유저 비밀번호 잘못됨");
+        return res
+          .status(400)
+          .send({ result: "fail", msg: "비밀번호가 잘못되었습니다." });
       }
     } else {
       logger.error("해당 유저 이메일 잘못됨");
