@@ -47,7 +47,7 @@ const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파�
 
 // { origin: 'https://lunchtogether-88cf5.web.app/', credentials: true }
 
-app.use(cors({ origin: 'https://lunchtogether-88cf5.web.app/', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
