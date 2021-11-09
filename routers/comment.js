@@ -9,7 +9,7 @@ const {
 
 router
   .route("/:lunchid")
-  .get(authmiddleware, commentget)
+  .get(commentget)
   .post(authmiddleware, commentpost);
 router.route("/:commentid").delete(authmiddleware, commentdele);
 
