@@ -3,6 +3,7 @@ const port = process.env.EXPRESS_PORT;
 const webSocket = require("./soket");
 const http =require('http');
 const https = require('https')
+const fs = require('fs')
 
 const options = {
   // letsencrypt로 받은 인증서 경로를 입력
