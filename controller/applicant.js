@@ -7,33 +7,49 @@ applicantpost = async (req, res) => {
   const { lunchid } = req.params; // params에 lunchid 객체
   const user = res.locals.user;
   try {
-    const doc = { userid: user.userid, lunchid: lunchid };
-    const [applicants, created] = await applicant.findOrCreate({
-      where: { userid: user.userid, lunchid: lunchid },
-      default: doc,
-    });
-    console.log("여기도", applicants);
-    if (!created) {
+    const lunch = await lunchs.findByPk(lunchid);
+    if (!lunch) {
       return res.status(400).send({
         result: "fail",
-        msg: "이미 신청 되어있는 점심 약속입니다.",
+        msg: "해당 점심 약속이 없습니다",
       });
-    } else {
-      console.log("어떤값:", applicants);
-      const isApplicant = await applicant.findOne({
+    }
+    const applicants = await applicant.findOne({
+      where: { userid: user.userid, lunchid: lunchid },
+    });
+    if (!applicants) {
+      if (user.userid === lunch.dataValues.userid) {
+        return res.status(400).send({
+          result: "fail",
+          msg: "해당 점심 약속의 오너는 신청할 수 없습니다",
+        });
+      }
+      await applicant.create({
+        userid: user.userid,
+        lunchid: lunchid,
+        statusdesc: true,
+        status: "applied",
+      });
+      const isapplicant = await applicant.findOne({
         include: [{ model: lunchs }],
-        where: { applicantid: applicants.applicantid },
+        where: { userid: user.userid, lunchid: lunchid },
       });
+
       logger.info("POST /applicant/:lunchid");
       return res.status(200).send({
         result: "success",
         msg: "신청 성공",
-        isApplicant: isApplicant,
+        applicants: isapplicant,
+      });
+    } else {
+      return res.status(400).send({
+        result: "fail",
+        msg: "이미 신청 되어있는 점심 약속입니다.",
       });
     }
   } catch (err) {
     logger.error(err);
-    // console.log(err);
+    console.log(err);
     return res.status(400).send({
       result: "fail",
       msg: "신청 작성 실패",
