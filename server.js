@@ -10,7 +10,7 @@ const options = {
   key: fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem"),
   cert: fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem"),
 };
-const server = http.createServer(app).listen(3000);
+http.createServer(app).listen(3000);
 const server = https.createServer(options, app).listen(443, () => {
     console.log(`listening at http://localhost:${port}`);
   });
