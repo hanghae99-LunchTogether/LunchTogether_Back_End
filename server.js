@@ -68,10 +68,10 @@ try {
   };
 
   HTTPS.createServer(option, app).listen(3000, () => {
-    colorConsole.success(`[HTTPS] Soda Server is started on port 3000`);
+    console.log("되나?")
   });
 } catch (error) {
-  colorConsole.error('[HTTPS] HTTPS 오류가 발생하였습니다. HTTPS 서버는 실행되지 않습니다.');
-  colorConsole.warn(error);
+    console.log(error)
+    console.log("안됨....")
 }
 
