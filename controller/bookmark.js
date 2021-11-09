@@ -7,31 +7,32 @@ bookmarkpost = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
-    const doc = {userid : user.userid , lunchid : lunchid }
+    const doc = { userid: user.userid, lunchid: lunchid };
     const [bookmark, created] = await bookmarks.findOrCreate({
-      where: { userid: user.userid, lunchid : lunchid },
+      where: { userid: user.userid, lunchid: lunchid },
       default: doc,
     });
-    if(!created){
+    if (!created) {
       return res.status(400).send({
         result: "fail",
         msg: "이미 북마크 되어있는 점심 약속입니다.",
       });
-    }else{
-      console.log(bookmark.dataValues.bookmarkid)
+    } else {
+      console.log(bookmark.dataValues.bookmarkid);
       const books = await bookmarks.findOne({
         include: [{ model: lunchs }],
-        where: { bookmarkid : bookmark.dataValues.bookmarkid }})
+        where: { bookmarkid: bookmark.dataValues.bookmarkid },
+      });
       logger.info("POST /book/:lunchid");
       return res.status(200).send({
         result: "success",
         msg: "북마크 추가 성공",
-        book : books
+        book: books,
       });
     }
   } catch (err) {
     logger.error(err);
-    console.log(err)
+    console.log(err);
     return res.status(400).send({
       result: "fail",
       msg: "북마크 추가 실패",
