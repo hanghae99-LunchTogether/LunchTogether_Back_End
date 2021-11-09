@@ -19,26 +19,26 @@ const ca = fs.readFileSync(
   "utf8"
 );
 
-const credentials = {
-  key: privateKey,
-  cert: certificate,
-  ca: ca,
-};
+// const credentials = {
+//   key: privateKey,
+//   cert: certificate,
+//   ca: ca,
+// };
 
-const httpServer = http.createServer(app);
-const httpsServer = https.createServer(credentials, app);
+// const httpServer = http.createServer(app);
+// const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(80, () => {
   console.log(new Date().toLocaleString());
   console.log("HTTP Server running on port 80");
 });
 
-const server = httpsServer.listen(443, () => {
-  console.log(new Date().toLocaleString());
-  console.log(`HTTPS -- listening on port 443 ...`);
-});
+// const server = httpsServer.listen(443, () => {
+//   console.log(new Date().toLocaleString());
+//   console.log(`HTTPS -- listening on port 443 ...`);
+// });
 
-webSocket(server, app, sessionMiddleware);
+// webSocket(server, app, sessionMiddleware);
 
 //혹시모를 예전 서버코드
 // const webSocket = require("./soket");
