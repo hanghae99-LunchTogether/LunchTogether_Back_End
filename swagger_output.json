@@ -5,7 +5,7 @@
     "title": "Lunch Meet",
     "description": "Description"
   },
-  "host": "3.35.54.135",
+  "host": "lebania.shop",
   "basePath": "/",
   "tags": [
     {
@@ -41,7 +41,7 @@
       "description": "북마크"
     }
   ],
-  "schemes": ["http", "https"],
+  "schemes": ["https"],
   "securityDefinitions": {
     "token": {
       "type": "apiKey",
@@ -834,7 +834,7 @@
         }
       }
     },
-    "/bookmark": {
+    "/book": {
       "get": {
         "tags": ["bookmark"],
         "description": "북마크 가져오기",
@@ -854,7 +854,7 @@
         }
       }
     },
-    "/bookmark/lunchid": {
+    "/book/{lunchid}": {
       "post": {
         "tags": ["bookmark"],
         "description": "북마크 추가하기",
@@ -881,7 +881,7 @@
         }
       }
     },
-    "/bookmark/bookmarkid": {
+    "/book/{bookmarkid}": {
       "delete": {
         "tags": ["bookmark"],
         "description": "북마크 삭제하기",

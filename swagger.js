@@ -6,7 +6,7 @@ const doc = {
     title: "Lunch Meet",
     description: "Description",
   },
-  host: "3.35.54.135", //배포 하려고 하는 host에 맞춰줘야 동작함
+  host: "lebania.shop", //배포 하려고 하는 host에 맞춰줘야 동작함
   basePath: "/",
   schemes: ["http", "https"],
   tags: [
