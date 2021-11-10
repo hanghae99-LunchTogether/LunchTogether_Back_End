@@ -5,7 +5,6 @@ const {
   applicantpost,
   applicantdelete,
   applicantget,
-  applicantapproved,
   applicantconfirmed,
   applicantgetme,
   applicantgetthor
@@ -15,10 +14,9 @@ router
   .route("/:lunchid")
   .get(applicantget)
   .post(middleware, applicantpost)
-  .delete(middleware, applicantdelete);
+  .delete(middleware, applicantdelete)
+  .patch(middleware, applicantconfirmed);
   
-router.route("/approved/:lunchid").patch(middleware, applicantapproved)
-router.route("/confirmed/:lunchid").patch(middleware, applicantconfirmed)
 router.route("").get(middleware, applicantgetme)
 router.route('/user/:userid').get(applicantgetthor);
 module.exports = router;

@@ -24,16 +24,12 @@ module.exports = {
             key: 'userid',
           },
       },
-      status:{
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      statusdesc: {
-        allowNull: false,
+      confirmed: {
+        allowNull: true,
         type: Sequelize.BOOLEAN, 
       },
       comments:{
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING,
       }
     });

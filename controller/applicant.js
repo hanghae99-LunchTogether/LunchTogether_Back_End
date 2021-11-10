@@ -137,8 +137,9 @@ applicantget = async (req, res) => {
 };
 
 //신청 승인여부
-applicantapproved = async (req, res) => {
-  const { userid, statusdesc, comment } = req.body;
+applicantconfirmed = async (req, res) => {
+  const { userid, confirmed } = req.body;
+  const comment = "거절상태 입니다..."
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
@@ -178,8 +179,8 @@ applicantapproved = async (req, res) => {
         msg: "신청자 변경 실패 해당약속의 오너가 아님",
       });
     }
-    if (statusdesc) {
-      applicants.update({ status: "approved", statusdesc: statusdesc });
+    if (confirmed) {
+      applicants.update({ confirmed: confirmed });
       logger.info("patch /applicant/approved/:lunchid");
       return res.status(200).send({
         result: "success",
@@ -195,80 +196,13 @@ applicantapproved = async (req, res) => {
         });
       }
       applicants.update({
-        status: "approved",
-        statusdesc: statusdesc,
+        confirmed: confirmed,
         comments: comment,
       });
       logger.info("patch /applicant/approved/:lunchid");
       return res.status(200).send({
         result: "success",
         msg: "신청자 거절 성공",
-        applicant: applicants,
-      });
-    }
-  } catch (error) {
-    logger.error(error);
-    console.log(error);
-    return res.status(400).send({
-      result: "fail",
-      msg: "신청자 변경 실패",
-    });
-  }
-};
-
-//참석 여부
-applicantconfirmed = async (req, res) => {
-  const { statusdesc, comment } = req.body;
-  const { lunchid } = req.params;
-  const user = res.locals.user;
-  try {
-    const applicants = await applicant.findOne({
-      include: [
-        {
-          model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
-        },
-        {
-          model: lunchs,
-          include: [
-            { model: lunchdata, as: "locations" },
-            {
-              model: users,
-              as: "host",
-              attributes: {
-                exclude: ["location", "password", "salt", "gender"],
-              },
-            },
-          ],
-        },
-      ],
-      where: { lunchid: lunchid, userid: user.userid },
-    });
-    if (!applicants) {
-      logger.error("해당 글이 존재하지 않습니다. 또는 해당 신청자가 없습니다.");
-      return res.status(400).send({
-        result: "fail",
-        msg: "신청자 변경 실패 해당약속이 존재 하지 않습니다. 또는 해당 신청자가 없습니다.",
-      });
-    }
-    if (statusdesc) {
-      applicants.update({ status: "confirmed", statusdesc: statusdesc });
-      logger.info("patch /applicant/confirmed/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "신청자 참석 확인 성공",
-        applicant: applicants,
-      });
-    } else {
-      applicants.update({
-        status: "confirmed",
-        statusdesc: statusdesc,
-        comments: comment,
-      });
-      logger.info("patch /applicant/confirmed/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "신청자 참석 거절 성공",
         applicant: applicants,
       });
     }
@@ -387,7 +321,6 @@ module.exports = {
   applicantpost: applicantpost,
   applicantdelete: applicantdelete,
   applicantget: applicantget,
-  applicantapproved: applicantapproved,
   applicantconfirmed: applicantconfirmed,
   applicantgetme: applicantgetme,
   applicantgetthor: applicantgetthor,

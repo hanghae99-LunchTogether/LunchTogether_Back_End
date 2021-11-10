@@ -173,7 +173,7 @@ login = async (req, res) => {
           token: token,
           data: data,
         });
-      }else{
+      } else {
         logger.error("POST /login 해당 유저 비밀번호 잘못됨");
         return res
           .status(400)
@@ -449,11 +449,21 @@ getotheruser = async (req, res) => {
       ],
       where: { userid: userid },
     });
+
+    const usersReview = await usersReviews.findAll({
+      include: [
+        { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
+        { model: users, as: "target", attributes: { exclude: ["location", "password", "salt", "gender"]},},
+        { model: lunchs }
+      ],
+      where: { targetusers: userid },
+    })
     const lunch = {
       owned: owned,
       applied: applied,
     };
     user.dataValues.lunchs = lunch;
+    user.dataValues.usersReviews = usersReview;
     const data = { user: user };
     logger.info("GET /main");
     return res
@@ -530,11 +540,20 @@ getdeuser = async (req, res) => {
       ],
       where: { userid: userloc.userid },
     });
+    const usersReview = await usersReviews.findAll({
+      include: [
+        { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
+        { model: users, as: "target", attributes: { exclude: ["location", "password", "salt", "gender"]},},
+        { model: lunchs }
+      ],
+      where: { targetusers: userloc.userid },
+    })
     const lunch = {
       owned: owned,
       applied: applied,
     };
     user.dataValues.lunchs = lunch;
+    user.dataValues.usersReviews = usersReview;
     const data = { user: user };
     logger.info("GET /main");
     return res

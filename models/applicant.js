@@ -27,12 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.INTEGER,
       },
-      status: {
-        required: true,
-        type: DataTypes.STRING,
-      },
-      statusdesc: {
-        require: true,
+      confirmed: {
+        require: false,
         type: DataTypes.BOOLEAN,
       },
       comments: {

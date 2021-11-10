@@ -4,7 +4,7 @@ const { logger } = require("../config/logger"); //로그
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
-  const { targetuserid, spoon , comment, lunchid} = req.body;
+  const { targetuserid, spoon , comment, lunchid } = req.body;
   const user = res.locals.user;
   if(user.userid == targetuserid){
     return res.status(400).send({
