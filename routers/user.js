@@ -12,5 +12,6 @@ router.route('/checknickname').post(controller.checknickname);
 router.route('/myprofile').patch(middleware, upload.single("image"),controller.upusers).get(middleware,controller.getdeuser);
 router.route('/myprofile/:userid').get(controller.getotheruser);
 router.route('/kakaologin').post(controller.loginkakao);
+router.route('/alluser').get(controller.testusers);
 
 module.exports = router;

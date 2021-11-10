@@ -675,8 +675,23 @@ getdeuser = async (req, res) => {
   }
 };
 
-getapplicant = async (req, res) => {
-  const userloc = res.locals.user;
+testusers = async (req, res) => {
+  try {
+    const user = await users.findAll({
+      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      include: [{ model: locationdata, as: "locations" }]
+    });
+    logger.info("GET /usertest");
+    return res
+      .status(200)
+      .send({ result: "success", msg: "유저정보 조회 완료", user: user });
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+    return res
+      .status(401)
+      .send({ result: "fail", msg: "알수없는 오류", error: error });
+  }
 };
 
 module.exports = {
@@ -689,4 +704,5 @@ module.exports = {
   getotheruser: getotheruser,
   loginkakao: loginkakao,
   getdeuser: getdeuser,
+  testusers: testusers,
 };
