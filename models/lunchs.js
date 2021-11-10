@@ -67,12 +67,16 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   lunchs.associate = function (models) {
-    //posts모델 안에 "postsId라는 컬럼 이름"으로 comments모델에 있는 "postId값"을 새로운 컬럼으로 추가한다.
+    //posts모델 안에 "postsId라는 컬럼 이름"으로 comments모델에 있는 "postId값"을 새로운 컬럼으로 추가한다. offered
     models.lunchs.hasMany(models.comments, {
       foreignKey: "lunchid",
       sourceKey: "lunchid",
     });
     models.lunchs.hasMany(models.applicant, {
+      foreignKey: "lunchid",
+      sourceKey: "lunchid",
+    });
+    models.lunchs.hasMany(models.useroffer, {
       foreignKey: "lunchid",
       sourceKey: "lunchid",
     });

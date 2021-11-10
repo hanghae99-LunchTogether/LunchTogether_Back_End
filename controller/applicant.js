@@ -26,9 +26,7 @@ applicantpost = async (req, res) => {
       }
       await applicant.create({
         userid: user.userid,
-        lunchid: lunchid,
-        statusdesc: true,
-        status: "applied",
+        lunchid: lunchid
       });
       const isapplicant = await applicant.findOne({
         include: [{ model: lunchs }],

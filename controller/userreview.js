@@ -1,4 +1,4 @@
-const { comments, users, sequelize, usersReviews } = require("../models");
+const { comments, users, sequelize, usersReviews, lunchs } = require("../models");
 const { logger } = require("../config/logger"); //로그
 
 
@@ -12,30 +12,39 @@ spoonpost = async (req, res) => {
       msg: "본인이 본인을 평가하는건 아닌거같은데요...?",
     });
   }
-  console.log("타겟:",targetuserid,"점수:", spoon,"어떤 포스터:" ,lunchid,"코맨트는:" ,comment)
+  console.log("타겟:",targetuserid, "몇점:",spoon ,"코맨트:", comment,"몇번포스터?:", lunchid)
   try {
-    let sum;
-    const all = await usersReviews.findAll({where: {targetusers : targetuserid}});
-    const doc = {userid : user.userid , targetusers : targetuserid,lunchid:lunchid ,spoon: spoon, comment: comment }
-    const [isuser, created] = await usersReviews.findOrCreate({
-      where: { userid: user.userid, targetusers : targetuserid, lunchid:lunchid },
-      default: doc,
-    });
-    if(!created){
+    let sum = 0;
+    const islunch = await lunchs.findOne({where: { lunchid : lunchid}})
+    if(!islunch){
+      return res.status(400).send({
+        result: "fail",
+        msg: "잘못된 요청 해당 점약이 존재하지 않음.",
+      });
+    }
+    const all = await usersReviews.findAll({where: { targetusers : targetuserid}});
+    const doc = { userid : user.userid , targetusers : targetuserid, lunchid:lunchid , spoon: spoon, comments: comment }
+    function findisuser(element) {
+      sum = sum + element.dataValues.spoon;
+      if(element.dataValues.targetusers === targetuserid && element.dataValues.lunchid === lunchid)  {
+        return true;
+      }
+    }
+    const isusers = all.filter(findisuser);
+    if(isusers.length){
       return res.status(400).send({
         result: "fail",
         msg: "평가를 벌써 하셧네요..",
       });
     }else{
-      for(a of all){
-        sum += a.spoon;
-      }
-      users.update({mannerStatus: sum+spoon/all.length+1},{ where:{userid: targetuserid}})
+      const userre = await usersReviews.create(doc)
+      const issum = (sum+spoon)/(all.length+1);
+      users.update({mannerStatus: issum},{ where:{userid: targetuserid}})
       logger.info("POST /book/:lunchid");
       return res.status(200).send({
         result: "success",
         msg: "평가 성공!",
-        review: isuser
+        review: userre
       });
     }
   } catch (err) {

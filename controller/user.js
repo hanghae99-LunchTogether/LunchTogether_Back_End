@@ -6,6 +6,8 @@ const {
   applicant,
   usersReviews,
   lunchdata,
+  bookmarks,
+  useroffer
 } = require("../models");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
@@ -449,7 +451,6 @@ getotheruser = async (req, res) => {
       ],
       where: { userid: userid },
     });
-
     const usersReview = await usersReviews.findAll({
       include: [
         { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
@@ -458,9 +459,38 @@ getotheruser = async (req, res) => {
       ],
       where: { targetusers: userid },
     })
+    const book =await lunchs.findAll({
+      where: [
+        {'$bookmarks.userid$': userid },
+      ],
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+        {
+        model: bookmarks
+      }]
+    });
+    
     const lunch = {
       owned: owned,
       applied: applied,
+      bookmarked: book
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
@@ -514,8 +544,7 @@ getdeuser = async (req, res) => {
       attributes: { exclude: ["lunchid", "userid"] },
       include: [
         {
-          model: lunchs,
-          include: [
+          model: lunchs,include: [
             {
               model: users,
               as: "host",
@@ -543,14 +572,92 @@ getdeuser = async (req, res) => {
     const usersReview = await usersReviews.findAll({
       include: [
         { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
-        { model: users, as: "target", attributes: { exclude: ["location", "password", "salt", "gender"]},},
-        { model: lunchs }
+        {
+          model: lunchs,include: [
+            {
+              model: users,
+              as: "host",
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+            { model: lunchdata, as: "locations" },
+            {
+              model: applicant,
+              include: [
+                {
+                  model: users,
+                  attributes: {
+                    exclude: ["location", "password", "salt", "gender"],
+                  },
+                },
+              ],
+            },
+          ],
+        }
       ],
       where: { targetusers: userloc.userid },
     })
+    const book =await lunchs.findAll({
+      where: [
+        {'$bookmarks.userid$': userloc.userid },
+      ],
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+        {
+        model: bookmarks
+      }]
+    });
+    const offered =await lunchs.findAll({
+      where: [
+        {'$useroffers.userid$': userloc.userid },
+      ],
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+        {
+        model: useroffer,
+      }]
+    });
+
     const lunch = {
       owned: owned,
       applied: applied,
+      bookmarked: book,
+      offered: offered,
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
