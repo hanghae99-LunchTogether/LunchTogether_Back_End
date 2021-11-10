@@ -35,6 +35,10 @@
     {
       "name": "myProfile",
       "description": "유저정보"
+    },
+    {
+      "name": "bookmark",
+      "description": "북마크"
     }
   ],
   "schemes": ["http", "https"],
@@ -830,6 +834,80 @@
         }
       }
     },
+    "/bookmark": {
+      "get": {
+        "tags": ["bookmark"],
+        "description": "북마크 가져오기",
+        "summary": "북마크 가져오기",
+        "parameters": [],
+        "security": [{ "token": [] }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/bookmark/lunchid": {
+      "post": {
+        "tags": ["bookmark"],
+        "description": "북마크 추가하기",
+        "summary": "북마크 추가하기",
+        "security": [{ "token": [] }],
+        "parameters": [
+          {
+            "name": "lunchid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/bookmark/bookmarkid": {
+      "delete": {
+        "tags": ["bookmark"],
+        "description": "북마크 삭제하기",
+        "summary": "북마크 삭제하기",
+        "security": [{ "token": [] }],
+        "parameters": [
+          {
+            "name": "bookmarkid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/kakao/auth": {
       "get": {
         "tags": [],
@@ -838,7 +916,7 @@
         "responses": {}
       }
     },
-    "/kakao\r/auth/callback": {
+    "/kakao/auth/callback": {
       "get": {
         "tags": [],
         "description": "비공개",

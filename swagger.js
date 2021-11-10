@@ -38,6 +38,10 @@ const doc = {
       name: "myProfile",
       description: "유저정보",
     },
+    {
+      name: "bookmark",
+      description: "북마크",
+    },
   ],
 };
 
