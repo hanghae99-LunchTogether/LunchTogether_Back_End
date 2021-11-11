@@ -11,7 +11,8 @@ require("date-utils");
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { title, content, date, locations, membernum, duration, userid } = req.body;
+  const { userid } = req.params;
+  const { title, content, date, locations, membernum } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   console.log(
@@ -20,7 +21,6 @@ postlunchlist = async (req, res) => {
     "날짜" + date,
     "위치" + locations,
     "맴버수" + membernum,
-    "몇시간" + duration,
     "누구랑" + userid
   );
   if(userid === user.userid){
@@ -57,7 +57,6 @@ postlunchlist = async (req, res) => {
       location: locations.id,
       time: time,
       membernum: membernum,
-      duration: duration,
       confirmed: false,
       private: true,
     });
