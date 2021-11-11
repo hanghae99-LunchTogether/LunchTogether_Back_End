@@ -486,11 +486,39 @@ getotheruser = async (req, res) => {
         model: bookmarks
       }]
     });
+    const offered =await lunchs.findAll({
+      where: [
+        {'$useroffers.userid$': userid },
+      ],
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+        {
+        model: useroffer,
+      }]
+    });
     
     const lunch = {
       owned: owned,
       applied: applied,
-      bookmarked: book
+      bookmarked: book,
+      offered:offered
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;

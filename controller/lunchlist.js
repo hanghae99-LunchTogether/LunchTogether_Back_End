@@ -44,7 +44,7 @@ detaillunchpost = async (req, res) => {
     // OBJt.setHours(OBJt.getHours()+9);
     // console.log(OBJt);const nDate = new Date().toLocaleString("ko-KR", {timeZone: "Asia/Seoul"});
 
-// console.log(nDate);
+    // console.log(nDate);
     // let STRt = OBJt.toString();
     // // console.log(STRt);
     // let a = new Date(lunchDetail.dataValues.time);
@@ -70,14 +70,14 @@ detaillunchpost = async (req, res) => {
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { title, content, date, location, membernum, duration } = req.body;
+  const { title, content, date, locations, membernum, duration } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   console.log(
     "타이틀" + title,
     "코맨트" + content,
     "날짜" + date,
-    "위치" + location,
+    "위치" + locations,
     "맴버수" + membernum,
     "몇시간" + duration
   );
@@ -87,16 +87,16 @@ postlunchlist = async (req, res) => {
       "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
     const locationdb = await sequelize.query(query, {
       replacements: {
-        id: location.id,
-        address_name: location.address_name,
-        road_address_name: location.road_address_name,
-        category_group_name: location.category_group_name,
-        place_name: location.place_name,
-        place_url: location.place_url,
-        phone: location.phone,
-        x: location.x,
-        y: location.y,
-        id: location.id,
+        id: locations.id,
+        address_name: locations.address_name,
+        road_address_name: locations.road_address_name,
+        category_group_name: locations.category_group_name,
+        place_name: locations.place_name,
+        place_url: locations.place_url,
+        phone: locations.phone,
+        x: locations.x,
+        y: locations.y,
+        id: locations.id,
       },
       type: sequelize.QueryTypes.INSERT,
     });
@@ -105,7 +105,7 @@ postlunchlist = async (req, res) => {
       title: title,
       content: content,
       date: date,
-      location: location.id,
+      location: locations.id,
       time: time,
       membernum: membernum,
       duration: duration,
@@ -133,17 +133,36 @@ postlunchlist = async (req, res) => {
 updatelunchlist = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
-  const { title, content, date, location, membernum, duration } = req.body;
+  const { title, content, date, locations, membernum, duration } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
-
+  console.log(title, content, date, locations, membernum, duration)
   try {
     let querys = "UPDATE lunchs SET";
     querys = querys + " updatedAt = now(),";
     if (title) querys = querys + " title = :title,";
     if (content) querys = querys + " content = :content,";
     if (date) querys = querys + " date = :date,";
-    if (location) querys = querys + " location = :location,";
+    if (locations) {
+      const query =
+        "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
+      const locationdb = await sequelize.query(query, {
+        replacements: {
+          id: locations.id,
+          address_name: locations.address_name,
+          road_address_name: locations.road_address_name,
+          category_group_name: locations.category_group_name,
+          place_name: locations.place_name,
+          place_url: locations.place_url,
+          phone: locations.phone,
+          x: locations.x,
+          y: locations.y,
+          id: locations.id,
+        },
+        type: sequelize.QueryTypes.INSERT,
+      });
+      querys = querys + " location = :location,";
+    }
     if (time) querys = querys + " time = :time,";
     if (membernum) querys = querys + " membernum = :membernum,";
     if (duration) querys = querys + " duration = :duration,";
@@ -157,7 +176,7 @@ updatelunchlist = async (req, res) => {
         title: title,
         content: content,
         date: date,
-        location: location,
+        location: locations.id,
         time: time,
         membernum: membernum,
         duration: duration,

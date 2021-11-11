@@ -11,16 +11,16 @@ require("date-utils");
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { title, content, date, location, membernum, duration, userid } = req.body;
+  const { userid } = req.params;
+  const { title, content, date, locations, membernum } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   console.log(
     "타이틀" + title,
     "코맨트" + content,
     "날짜" + date,
-    "위치" + location,
+    "위치" + locations,
     "맴버수" + membernum,
-    "몇시간" + duration,
     "누구랑" + userid
   );
   if(userid === user.userid){
@@ -36,16 +36,16 @@ postlunchlist = async (req, res) => {
       "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
     const locationdb = await sequelize.query(query, {
       replacements: {
-        id: location.id,
-        address_name: location.address_name,
-        road_address_name: location.road_address_name,
-        category_group_name: location.category_group_name,
-        place_name: location.place_name,
-        place_url: location.place_url,
-        phone: location.phone,
-        x: location.x,
-        y: location.y,
-        id: location.id,
+        id: locations.id,
+        address_name: locations.address_name,
+        road_address_name: locations.road_address_name,
+        category_group_name: locations.category_group_name,
+        place_name: locations.place_name,
+        place_url: locations.place_url,
+        phone: locations.phone,
+        x: locations.x,
+        y: locations.y,
+        id: locations.id,
       },
       type: sequelize.QueryTypes.INSERT,
     });
@@ -54,10 +54,9 @@ postlunchlist = async (req, res) => {
       title: title,
       content: content,
       date: date,
-      location: location.id,
+      location: locations.id,
       time: time,
       membernum: membernum,
-      duration: duration,
       confirmed: false,
       private: true,
     });
