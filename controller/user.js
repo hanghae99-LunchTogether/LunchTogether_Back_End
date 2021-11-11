@@ -421,32 +421,35 @@ getotheruser = async (req, res) => {
       ],
       where: { userid: userid },
     });
-    const applied =await applicant.findAll({
-      where: [
-        {'$applicants.userid$': userid },
-      ],
+    const applied = await applicant.findAll({
+      attributes: { exclude: ["lunchid", "userid"] },
       include: [
-        { model: lunchdata, as: "locations" },
         {
-          model: users,
-          as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
-        },
-        {
-          model: applicant,
+          model: lunchs,
           include: [
             {
               model: users,
+              as: "host",
               attributes: {
                 exclude: ["location", "password", "salt", "gender"],
               },
             },
+            { model: lunchdata, as: "locations" },
+            {
+              model: applicant,
+              include: [
+                {
+                  model: users,
+                  attributes: {
+                    exclude: ["location", "password", "salt", "gender"],
+                  },
+                },
+              ],
+            },
           ],
-          exclude: ["lunchid", "userid"],
         },
-        {
-        model: applicant
-      }]
+      ],
+      where: { userid: userid },
     });
     const usersReview = await usersReviews.findAll({
       include: [
@@ -565,32 +568,34 @@ getdeuser = async (req, res) => {
       ],
       where: { userid: userloc.userid },
     });
-    const applied =await applicant.findAll({
-      where: [
-        {'$applicants.userid$': userloc.userid },
-      ],
+    const applied = await applicant.findAll({
+      attributes: { exclude: ["lunchid", "userid"] },
       include: [
-        { model: lunchdata, as: "locations" },
         {
-          model: users,
-          as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
-        },
-        {
-          model: applicant,
-          include: [
+          model: lunchs,include: [
             {
               model: users,
+              as: "host",
               attributes: {
                 exclude: ["location", "password", "salt", "gender"],
               },
             },
+            { model: lunchdata, as: "locations" },
+            {
+              model: applicant,
+              include: [
+                {
+                  model: users,
+                  attributes: {
+                    exclude: ["location", "password", "salt", "gender"],
+                  },
+                },
+              ],
+            },
           ],
-          exclude: ["lunchid", "userid"],
         },
-        {
-        model: applicant
-      }]
+      ],
+      where: { userid: userloc.userid },
     });
     const usersReview = await usersReviews.findAll({
       include: [
