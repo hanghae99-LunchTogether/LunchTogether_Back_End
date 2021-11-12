@@ -178,7 +178,7 @@ applicantconfirmed = async (req, res) => {
       });
     }
     if (confirmed) {
-      applicants.update({ confirmed: confirmed });
+      applicants.update({ confirmed: true });
       logger.info("patch /applicant/approved/:lunchid");
       return res.status(200).send({
         result: "success",
@@ -194,7 +194,7 @@ applicantconfirmed = async (req, res) => {
         });
       }
       applicants.update({
-        confirmed: confirmed,
+        confirmed: false,
         comments: comment,
       });
       logger.info("patch /applicant/approved/:lunchid");
