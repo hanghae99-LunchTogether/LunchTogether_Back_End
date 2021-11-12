@@ -42,6 +42,10 @@ const doc = {
       name: "bookmark",
       description: "북마크",
     },
+    {
+      name: "offer",
+      description: "다른 유저에게 점약 제안",
+    },
   ],
 };
 
