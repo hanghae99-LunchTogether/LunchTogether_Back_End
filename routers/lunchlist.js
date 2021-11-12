@@ -8,6 +8,7 @@ const {
   deletelunchlist,
   confirmedlunch,
   privatelunch,
+  bookmarklunch,
 } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -22,5 +23,7 @@ router
 router.route("/confirmed/:lunchid").patch(authMiddleware, confirmedlunch);
 
 router.route("/private/:lunchid").patch(authMiddleware, privatelunch);
+
+// router.route("/bookmark/:lunchid").patch(authMiddleware, bookmarklunch);
 
 module.exports = router;

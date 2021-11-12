@@ -7,8 +7,7 @@ const {
   bookmarkdele,
 } = require("../controller/bookmark");
 
-router.route("/:lunchid").post(authmiddleware, bookmarkpost);
-router.route("/:bookmarkid").delete(authmiddleware, bookmarkdele);
+router.route("/:lunchid").post(authmiddleware, bookmarkpost).delete(authmiddleware, bookmarkdele);
 router.route("/").get(authmiddleware, bookmarkget);
 
 module.exports = router;

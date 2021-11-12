@@ -18,16 +18,46 @@ bookmarkpost = async (req, res) => {
         msg: "이미 북마크 되어있는 점심 약속입니다.",
       });
     } else {
-      console.log(bookmark.dataValues.bookmarkid);
-      const books = await bookmarks.findOne({
-        include: [{ model: lunchs }],
-        where: { bookmarkid: bookmark.dataValues.bookmarkid },
+      const query =
+        "UPDATE lunchs SET bk_num = bk_num + 1 WHERE lunchid = :lunchid;";
+      await sequelize.query(query, {
+        replacements: {
+          lunchid: lunchid,
+        },
+        type: sequelize.QueryTypes.UPDATE,
+      });
+      const book =await lunchs.findAll({
+        where: [
+          {'$bookmarks.bookmarkid$': bookmark.dataValues.bookmarkid },
+        ],
+        include: [
+          { model: lunchdata, as: "locations" },
+          {
+            model: users,
+            as: "host",
+            attributes: { exclude: ["location", "password", "salt", "gender"] },
+          },
+          {
+            model: applicant,
+            include: [
+              {
+                model: users,
+                attributes: {
+                  exclude: ["location", "password", "salt", "gender"],
+                },
+              },
+            ],
+            exclude: ["lunchid", "userid"],
+          },
+          {
+          model: bookmarks
+        }]
       });
       logger.info("POST /book/:lunchid");
       return res.status(200).send({
         result: "success",
         msg: "북마크 추가 성공",
-        book: books,
+        book: book,
       });
     }
   } catch (err) {
@@ -65,23 +95,32 @@ bookmarkget = async (req, res) => {
 
 // 북마크 삭제
 bookmarkdele = async (req, res) => {
-  const { bookmarkid } = req.params;
+  const { lunchid } = req.params;
   const user = res.locals.user;
   try {
-    const query =
-      "delete from bookmarks where bookmarkid = :bookmarkid AND userid = :userid;";
-    const bookmark = await sequelize.query(query, {
-      replacements: {
-        bookmarkid: bookmarkid,
-        userid: user.userid,
-      },
-      type: sequelize.QueryTypes.DELETE,
-    });
-    logger.info("delete /book/:bookmarkid");
-    return res.status(200).send({
-      result: "success",
-      msg: "북마크 삭제 성공",
-    });
+    const a = await bookmarks.destroy({ where: { lunchid: lunchid, userid: user.userid } }); // 특정 데이터만 삭제
+    console.log(a);
+    if (a) {
+      const query =
+        "UPDATE lunchs SET bk_num = bk_num - 1 WHERE lunchid = :lunchid;";
+      await sequelize.query(query, {
+        replacements: {
+          lunchid: lunchid,
+        },
+        type: sequelize.QueryTypes.UPDATE,
+      });
+      logger.info("delete /book/:bookmarkid");
+      return res.status(200).send({
+        result: "success",
+        msg: "북마크 삭제 성공",
+      });
+    }else{
+      logger.error(err);
+      return res.status(400).send({
+        result: "fail",
+        msg: "북마크 삭제 실패",
+      });
+    }
   } catch (err) {
     logger.error(err);
     return res.status(400).send({

@@ -111,6 +111,7 @@ postlunchlist = async (req, res) => {
       duration: duration,
       confirmed: false,
       private: false,
+      bk_num: 0,
     });
     console.log(lunch);
     const data = { lunch: lunch };
@@ -136,13 +137,14 @@ updatelunchlist = async (req, res) => {
   const { title, content, date, locations, membernum, duration } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
-  console.log(title, content, date, locations, membernum, duration)
+  console.log(title, content, date, locations, membernum, duration);
   try {
     let querys = "UPDATE lunchs SET";
     querys = querys + " updatedAt = now(),";
     if (title) querys = querys + " title = :title,";
     if (content) querys = querys + " content = :content,";
     if (date) querys = querys + " date = :date,";
+
     if (locations) {
       const query =
         "insert into lunchdata (id,address_name,road_address_name,category_group_name,place_name,place_url,phone,x,y) select :id,:address_name,:road_address_name,:category_group_name,:place_name,:place_url,:phone,:x,:y From dual WHERE NOT exists(select * from lunchdata where id = :id);";
@@ -378,6 +380,72 @@ confirmedlunch = async (req, res) => {
   }
 };
 
+bookmarklunch = async (req, res) => {
+  const { lunchid } = req.params;
+  const { bk_bool } = req.body;
+
+  const lunchDetail = await lunchs.findOne({
+    include: [
+      { model: users, as: "host" },
+      { model: lunchdata, as: "locations" },
+      { model: applicant, include: [{ model: users }] },
+    ],
+    where: { lunchid: lunchid },
+  });
+  let { bk_num } = lunchDetail;
+
+  if (bk_bool) {
+    try {
+      if (lunchDetail) {
+        lunchDetail.update({ bk_num: bk_num + 1 });
+        logger.info("PATCH /lunchPost/bookmark");
+        return res.status(200).send({
+          result: "success",
+          msg: "북마크 적용 성공",
+          lunch: lunchDetail,
+        });
+      } else {
+        logger.error("PATCH /lunchPost/bookmark 해당 점약 없음 ");
+        return res.status(400).send({
+          result: "fail",
+          msg: "점약 북마크 실패 해당 점약 없음 ",
+        });
+      }
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 북마크 오류",
+      });
+    }
+  } else {
+    try {
+      if (lunchDetail) {
+        lunchDetail.update({ bk_num: bk_num - 1 });
+        logger.info("PATCH /lunchPost/bookmark");
+        return res.status(200).send({
+          result: "success",
+          msg: "점약 북마크취소 성공",
+          lunch: lunchDetail,
+        });
+      } else {
+        logger.error("PATCH /lunchPost/bookmark 해당 점약 없음 ");
+        return res.status(400).send({
+          result: "fail",
+          msg: "점약 북마크취소 실패 해당 점약 없음 ",
+        });
+      }
+    } catch (error) {
+      logger.error(error);
+      console.log(error);
+      return res.status(400).send({
+        result: "fail",
+        msg: "점약 북마크취소 오류",
+      });
+    }
+  }
+};
 module.exports = {
   getlunchlist: getlunchlist,
   detaillunchpost: detaillunchpost,
@@ -386,4 +454,5 @@ module.exports = {
   deletelunchlist: deletelunchlist,
   confirmedlunch: confirmedlunch,
   privatelunch: privatelunch,
+  bookmarklunch: bookmarklunch,
 };
