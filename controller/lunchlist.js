@@ -3,7 +3,9 @@ const { logger } = require("../config/logger"); //로그
 require("date-utils");
 
 getlunchlist = async (req, res) => {
+  const user = res.locals.user;
   try {
+    
     const lunch = await lunchs.findAll({
       include: [
         { model: users, as: "host" },
@@ -12,6 +14,13 @@ getlunchlist = async (req, res) => {
       ],
       order: [["date", "DESC"]],
     });
+    if(user){
+      const book = user.book
+      for(i of lunch){
+        if(user.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+        console.log(i.dataValues.lunchid);
+      }
+    }
     logger.info("GET /lunchpost/");
     return res.status(200).send({
       result: "success",
@@ -20,6 +29,7 @@ getlunchlist = async (req, res) => {
     });
   } catch (err) {
     logger.error(err);
+    console.log(err);
     return res.status(400).send({
       result: "fail",
       msg: "리스트 불러오기 실패",
