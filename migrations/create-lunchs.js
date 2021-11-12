@@ -50,6 +50,15 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },
+      bk_num: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        default: 0,
+        validate: {
+          max: 999,
+          min: 0,
+        },
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
