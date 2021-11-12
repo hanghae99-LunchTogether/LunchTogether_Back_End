@@ -12,25 +12,15 @@ const Router = require("./routers");
 const kakaoLoginRouter = require("./routers/kakaologin.js"); //카카오 로그인 라우터
 const app = express();
 
-app.all(function (req, res, next) {
-  let protocol = req.headers['x-forwarded-proto'] || req.protocol; 
-  if (protocol == 'https') { 
-    next(); 
-  } 
-  else {
-    let from = `${protocol}://${req.hostname}${req.url}`; let to = `https://${req.hostname}${req.url}`; // log and redirect 
-    console.log(`[${req.method}]: ${from} -> ${to}`); 
-    res.redirect(to);
+app.use(function (req, res, next) {
+  if(!req.secure){
+    res.redirect("https://"+req.headers["host"] + req.url)
+    console.log('리다이렉트..!')
   }
-  
+  else{
+    next();
+  }
 })
-// if (!req.secure) {
-//   res.redirect("https://" + req.headers["host"] + req.url)
-//   console.log('리다이렉트..!')
-// }
-// else {
-//   next();
-// }
 
 app.set("view engine", "html");
 nunjucks.configure("views", {
