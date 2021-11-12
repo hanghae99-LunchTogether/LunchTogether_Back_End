@@ -80,10 +80,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      job:{
+      job: {
         type: DataTypes.STRING,
         require: false,
-      }
+      },
     },
 
     {
@@ -93,7 +93,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   users.associate = function (models) {
     models.users.hasMany(models.applicant, {
-      as: 'applied',
+      as: "applied",
       foreignKey: "userid",
       sourceKey: "userid",
     });
@@ -118,7 +118,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "userid",
     });
     models.users.belongsTo(models.locationdata, {
-      as: 'locations',
+      as: "locations",
       foreignKey: "location",
       sourceKey: "id",
     });

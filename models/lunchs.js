@@ -55,9 +55,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         required: false,
       },
-      private:{
+      private: {
         type: DataTypes.BOOLEAN,
         required: true,
+      },
+      bk_num: {
+        type: DataTypes.INTEGER,
+        required: true,
+        default: 0,
+        validate: {
+          max: 999,
+          min: 0,
+        },
       },
     },
     {
@@ -87,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "cascade",
     });
     models.lunchs.belongsTo(models.users, {
-      as: 'host',
+      as: "host",
       foreignKey: "userid",
       onDelete: "cascade",
     });

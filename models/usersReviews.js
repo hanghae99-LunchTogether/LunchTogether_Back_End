@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class usersReviews extends Model {
     /**
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         require: true,
       },
-      lunchid:{
+      lunchid: {
         type: DataTypes.INTEGER,
         require: true,
       },
@@ -36,32 +36,31 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         require: true,
       },
-      comments:{
+      comments: {
         type: DataTypes.STRING,
         require: false,
-      }
+      },
     },
     {
       sequelize,
-      modelName: 'usersReviews',
-
+      modelName: "usersReviews",
     }
   );
   usersReviews.associate = function (models) {
     models.usersReviews.belongsTo(models.users, {
-      as : "rater",
-      foreignKey: 'userid',
-      onDelete: 'cascade',
+      as: "rater",
+      foreignKey: "userid",
+      onDelete: "cascade",
     });
     models.usersReviews.belongsTo(models.lunchs, {
-      foreignKey: 'lunchid',
-      onDelete: 'cascade',
+      foreignKey: "lunchid",
+      onDelete: "cascade",
     });
     models.usersReviews.belongsTo(models.users, {
       as: "target",
-      foreignKey: 'targetusers',
-      targetKey: 'userid',
-      onDelete: 'cascade',
+      foreignKey: "targetusers",
+      targetKey: "userid",
+      onDelete: "cascade",
     });
   };
   return usersReviews;

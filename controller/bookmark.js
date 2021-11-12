@@ -6,12 +6,14 @@ require("date-utils");
 bookmarkpost = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
+  console.log(user);
   try {
     const doc = { userid: user.userid, lunchid: lunchid };
     const [bookmark, created] = await bookmarks.findOrCreate({
       where: { userid: user.userid, lunchid: lunchid },
       default: doc,
     });
+    let { bk_num } = bookmark;
     if (!created) {
       return res.status(400).send({
         result: "fail",
@@ -19,6 +21,12 @@ bookmarkpost = async (req, res) => {
       });
     } else {
       console.log(bookmark.dataValues.bookmarkid);
+
+      await lunchs.update(
+        { bk_num: bk_num + 1 },
+        { where: { lunchid: lunchid } }
+      );
+
       const books = await bookmarks.findOne({
         include: [{ model: lunchs }],
         where: { bookmarkid: bookmark.dataValues.bookmarkid },
@@ -77,6 +85,9 @@ bookmarkdele = async (req, res) => {
       },
       type: sequelize.QueryTypes.DELETE,
     });
+    console.log(bookmark);
+    // lunchs.update({ bk_num: bk_num - 1 }, { where: { lunchid: lunchid } });
+
     logger.info("delete /book/:bookmarkid");
     return res.status(200).send({
       result: "success",
