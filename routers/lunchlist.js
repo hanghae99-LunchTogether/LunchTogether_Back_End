@@ -11,8 +11,9 @@ const {
   bookmarklunch,
 } = require("../controller/lunchlist");
 const authMiddleware = require("../middlewares/authMiddleware");
+const isuser = require("../middlewares/doMiddlewares");
 
-router.route("/").get(getlunchlist).post(authMiddleware, postlunchlist);
+router.route("/").get(isuser,getlunchlist).post(authMiddleware, postlunchlist);
 
 router
   .route("/:lunchid")

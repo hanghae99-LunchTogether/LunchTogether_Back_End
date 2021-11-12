@@ -92,15 +92,38 @@ bookmarkpost = async (req, res) => {
 bookmarkget = async (req, res) => {
   const user = res.locals.user;
   try {
-    const isbookmarks = await bookmarks.findAll({
-      include: [{ model: lunchs }],
-      where: { userid: user.userid },
+    const book = await lunchs.findAll({
+      where: [
+        {'$bookmarks.userid$': user.userid },
+      ],
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+        {
+        model: bookmarks
+      }]
     });
     logger.info("GET /book/:lunchid");
     return res.status(200).send({
       result: "success",
       msg: "북마크 가져오기 성공",
-      bookmarks: isbookmarks,
+      bookmarks: book,
     });
   } catch (err) {
     logger.error(err);
