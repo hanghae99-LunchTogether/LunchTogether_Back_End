@@ -142,7 +142,12 @@ signup = async (req, res) => {
 
 login = async (req, res) => {
   const { email, password } = req.body;
-
+  if(!email){
+    logger.error("해당 유저 이메일 잘못됨");
+      return res
+        .status(400)
+        .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
+  }
   try {
     const query = "select * from users where email = :email";
     const isuser = await sequelize.query(query, {
