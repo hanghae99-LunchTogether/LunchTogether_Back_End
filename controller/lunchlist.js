@@ -1,17 +1,25 @@
 const { lunchs, sequelize, users, lunchdata, applicant } = require("../models");
 const { logger } = require("../config/logger"); //로그
+
 require("date-utils");
 
 getlunchlist = async (req, res) => {
   const user = res.locals.user;
   try {
-    
+    let pageNum = req.query.page; // 요청 페이지 넘버
+    console.log(pageNum);
+    let offset = 0;
+    if(pageNum > 1){
+      offset = 7 * (pageNum - 1);
+    }
     const lunch = await lunchs.findAll({
       include: [
         { model: users, as: "host" },
         { model: lunchdata, as: "locations" },
         { model: applicant, include: [{ model: users }] },
       ],
+      offset: offset,
+      limit: 12,
       order: [["date", "DESC"]],
     });
     if(user){
