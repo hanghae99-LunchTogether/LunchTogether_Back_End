@@ -6,18 +6,18 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 
-// const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem", "utf8");
-// const certificate = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem", "utf8")
-// const ca = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem", "utf8")
+const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem", "utf8");
+const certificate = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem", "utf8")
+const ca = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem", "utf8")
 
-// const credentials = {
-//     key: privateKey,
-//     cert: certificate,
-//     ca: ca
-// };
+const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca
+};
 
 const httpServer = http.createServer(app);
-// const httpsServer = https.createServer(credentials, app);
+const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(80, () => {
   console.log(new Date().toLocaleString());
