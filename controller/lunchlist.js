@@ -10,7 +10,7 @@ getlunchlist = async (req, res) => {
     console.log(pageNum);
     let offset = 0;
     if(pageNum > 1){
-      offset = 7 * (pageNum - 1);
+      offset = 12 * (pageNum - 1);
     }
     const lunch = await lunchs.findAll({
       include: [
