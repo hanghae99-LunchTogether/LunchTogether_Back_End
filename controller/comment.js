@@ -62,6 +62,13 @@ commentpost = async (req, res) => {
         time: time,
       },
     });
+    if (!createdcomment) {
+      logger.info("POST /comment/:lunchid 작성한 댓글이 없는것 같네요...?");
+      return res.status(200).send({
+        result: "success",
+        msg: "작성한 댓글이 없는것 같네요...?",
+      });
+    }
     logger.info("POST /comment/:lunchid");
     return res.status(200).send({
       result: "success",
@@ -92,13 +99,6 @@ commentdele = async (req, res) => {
       },
       type: sequelize.QueryTypes.DELETE,
     });
-    if (!comment) {
-      logger.info("delete /comment/:commentid 삭제할 댓글이 없어요");
-      return res.status(200).send({
-        result: "success",
-        msg: "삭제할 댓글이 없어요",
-      });
-    }
     logger.info("delete /comment/:commentid");
     return res.status(200).send({
       result: "success",
