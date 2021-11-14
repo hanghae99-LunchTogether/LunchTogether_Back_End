@@ -38,9 +38,9 @@ router.post('/test', isNotLoggedIn, (req, res, next) => {
 });
 //isLoggedIn,
 router.get('/logout',  (req, res) => {
-  // req.logout();
-  // req.session.destroy();
-  res.redirect('/');
+  req.logout();
+  req.session.destroy();
+  res.send({msg: "로그아웃 요청 완료"});
 });
 
 router.get('/kakao', passport.authenticate('kakao'));
