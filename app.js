@@ -32,19 +32,19 @@ const sessionMiddleware = session({
   },
 });
 
-const whitelist = [process.env.dododomein, process.env.melocal, process.env.testlocal, "http://localhost:3000"];
+const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error("Not Allowed Origin!"));
+      callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
     }
   },
   credentials: true
 };
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors(corsOptions));
 app.use(sessionMiddleware);
 
 
