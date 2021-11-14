@@ -6,6 +6,7 @@ const session = require("express-session"); //세션
 const nunjucks = require("nunjucks"); // 넌적스
 const morgan = require("morgan"); //모건
 const ColorHash = require("color-hash").default;
+const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const Router = require("./routers");
@@ -20,13 +21,6 @@ app.use(function (req, res, next) {
     next();
   }
 })
-
-app.set("view engine", "html");
-nunjucks.configure("views", {
-  express: app,
-  watch: true,
-});
-
 const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
@@ -36,8 +30,15 @@ const sessionMiddleware = session({
     secure: false,
   },
 });
+app.use(sessionMiddleware);
+app.use(cors({ origin: true, credentials: true }));
 
-const cors = require("cors");
+app.set("view engine", "html");
+nunjucks.configure("views", {
+  express: app,
+  watch: true,
+});
+
 const swaggerUi = require("swagger-ui-express"); //스웨거 자동생성을 위한 코드
 const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파일 저장 위치
 
@@ -55,7 +56,7 @@ const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파�
 
 // { origin: 'https://lunchtogether-88cf5.web.app/', credentials: true }
 
-app.use(cors({ origin: true, credentials: true }));
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
@@ -66,7 +67,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.SECRET_KEY));
 
-app.use(sessionMiddleware);
+
 app.use((req, res, next) => {
   if (!req.session.color) {
     const colorHash = new ColorHash();
