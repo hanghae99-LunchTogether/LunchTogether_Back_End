@@ -31,7 +31,7 @@ const sessionMiddleware = session({
     secure: false,
   },
 });
-
+app.use(sessionMiddleware);
 const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -45,8 +45,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(sessionMiddleware);
-
 
 app.set("view engine", "html");
 nunjucks.configure("views", {
