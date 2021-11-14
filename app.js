@@ -1,5 +1,5 @@
 const express = require("express");
-
+const passport = require('passport');
 const path = require("path"); // 소켓
 const cookieParser = require("cookie-parser"); // 쿠키파서
 const session = require("express-session"); //세션
@@ -9,9 +9,8 @@ const ColorHash = require("color-hash").default;
 const dotenv = require("dotenv");
 dotenv.config();
 const Router = require("./routers");
-const kakaoLoginRouter = require("./routers/kakaologin.js"); //카카오 로그인 라우터
 const app = express();
-
+const passportConfig = require('./passport');
 // app.use(function (req, res, next) {
 //   if(!req.secure){
 //     res.redirect("https://"+req.headers["host"] + req.url)
@@ -77,9 +76,14 @@ app.use((req, res, next) => {
   }
   next();
 });
+passportConfig(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 app.use("/", [Router]);
-app.use("/kakao", [kakaoLoginRouter]);
+
 
 app.get("/kakao", (req, res, next) => {
   res.render("kakaologin");
