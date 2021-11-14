@@ -38,8 +38,8 @@ router.post('/test', isNotLoggedIn, (req, res, next) => {
 });
 
 router.get('/logout', isLoggedIn, (req, res) => {
-  req.logout();
-  req.session.destroy();
+  // req.logout();
+  // req.session.destroy();
   res.redirect('/');
 });
 
