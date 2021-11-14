@@ -16,9 +16,6 @@ const https = require("https");
 //     ca: ca
 // };
 
-// const httpServer = http.createServer(app);
-// const httpsServer = https.createServer(credentials, app);
-
 const httpServer = http.createServer(app);
 // const httpsServer = https.createServer(credentials, app);
 

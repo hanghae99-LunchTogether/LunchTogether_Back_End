@@ -1,17 +1,34 @@
 const { lunchs, sequelize, users, lunchdata, applicant } = require("../models");
 const { logger } = require("../config/logger"); //로그
+
 require("date-utils");
 
 getlunchlist = async (req, res) => {
+  const user = res.locals.user;
   try {
+    let pageNum = req.query.page; // 요청 페이지 넘버
+    console.log(pageNum);
+    let offset = 0;
+    if(pageNum > 1){
+      offset = 12 * (pageNum - 1);
+    }
     const lunch = await lunchs.findAll({
       include: [
         { model: users, as: "host" },
         { model: lunchdata, as: "locations" },
         { model: applicant, include: [{ model: users }] },
       ],
+      offset: offset,
+      limit: 12,
       order: [["date", "DESC"]],
     });
+    if(user){
+      const book = user.book
+      for(i of lunch){
+        if(user.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+        console.log(i.dataValues.lunchid);
+      }
+    }
     logger.info("GET /lunchpost/");
     return res.status(200).send({
       result: "success",
@@ -20,6 +37,7 @@ getlunchlist = async (req, res) => {
     });
   } catch (err) {
     logger.error(err);
+    console.log(err);
     return res.status(400).send({
       result: "fail",
       msg: "리스트 불러오기 실패",

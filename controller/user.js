@@ -142,7 +142,12 @@ signup = async (req, res) => {
 
 login = async (req, res) => {
   const { email, password } = req.body;
-
+  if(!email){
+    logger.error("해당 유저 이메일 잘못됨");
+      return res
+        .status(400)
+        .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
+  }
   try {
     const query = "select * from users where email = :email";
     const isuser = await sequelize.query(query, {
@@ -696,9 +701,17 @@ getdeuser = async (req, res) => {
 
 testusers = async (req, res) => {
   try {
+    let pageNum = req.query.page; // 요청 페이지 넘버
+    console.log(pageNum);
+    let offset = 0;
+    if(pageNum > 1){
+      offset = 12 * (pageNum - 1);
+    }
     const user = await users.findAll({
       attributes: { exclude: ["location", "password", "salt", "gender"] },
-      include: [{ model: locationdata, as: "locations" }]
+      include: [{ model: locationdata, as: "locations" }],
+      offset: offset,
+      limit: 12
     });
     logger.info("GET /usertest");
     return res

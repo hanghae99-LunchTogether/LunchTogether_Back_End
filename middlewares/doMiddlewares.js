@@ -6,8 +6,12 @@ module.exports = async (req, res, next) => {
     const location = 'authorization';
     const authorization = req.headers[location];
     console.log(authorization);
+    if(!authorization){
+      res.locals.user = undefined;
+      next();
+      return;
+    }
     const [tokenType, token] = authorization.split(' ')
-    
     if (tokenType !== "Bearer"){
       logger.error('/middleware 토큰타입 오류!');
       res.status(401).send({ result: "fail", msg: "비정상 접근 헤더확인 요망" });
@@ -15,14 +19,19 @@ module.exports = async (req, res, next) => {
     }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
-      const query = "select * from users where userid = :userid";
+      const query = "select * from users LEFT join bookmarks on users.userid = bookmarks.userid where users.userid = :userid;";
+      console.log(id);
       const users = await sequelize.query(query, {
         replacements: {
           userid: id,
         },
         type: sequelize.QueryTypes.SELECT,
       });
-      if(!users){
+      let userbookmark = []
+      for(a of users){
+        userbookmark.push(a.lunchid);
+      }
+      if(!users.length){
         logger.error('/middleware 토큰 변조됨');
         res.status(401).send({ result: "fail", msg: "해당토큰이 변조됨 다시발급요망" }); 
         return ; 
@@ -31,8 +40,9 @@ module.exports = async (req, res, next) => {
         userid: users[0]['userid'],
         email: users[0]['email'],
         nickname: users[0]['nickname'],
-        userimage : users[0]['image']
+        book: userbookmark
       };
+      console.log(user)
       res.locals.user = user;
       console.log('로컬 유저는?', res.locals.user.nickname);
     } else {

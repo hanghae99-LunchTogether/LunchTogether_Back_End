@@ -9,7 +9,8 @@ const applicantRouter = require("./applicant");
 const bookRouter = require("./bookmark");
 const soket = require("./soket");
 const offer = require("./offer");
-router.use("/", [userRouter,soket]);
+const test = require("./test")
+router.use("/", [userRouter,soket,test]);
 router.use("/comment", [commRouter]);
 router.use("/lunchpost", [lunchRouter]);
 router.use("/spoon", [userReview]);

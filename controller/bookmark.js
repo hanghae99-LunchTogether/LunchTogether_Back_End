@@ -1,4 +1,4 @@
-const { bookmarks, users, lunchs, sequelize } = require("../models");
+const { bookmarks, users, lunchs, sequelize, lunchdata, applicant } = require("../models");
 const { logger } = require("../config/logger"); //로그
 require("date-utils");
 
@@ -13,10 +13,28 @@ bookmarkpost = async (req, res) => {
       default: doc,
     });
     if (!created) {
-      return res.status(400).send({
-        result: "fail",
-        msg: "이미 북마크 되어있는 점심 약속입니다.",
-      });
+      const a = await bookmarks.destroy({ where: { lunchid: lunchid, userid: user.userid } }); // 특정 데이터만 삭제
+      if (a) {
+        const query =
+          "UPDATE lunchs SET bk_num = bk_num - 1 WHERE lunchid = :lunchid;";
+        await sequelize.query(query, {
+          replacements: {
+            lunchid: lunchid,
+          },
+          type: sequelize.QueryTypes.UPDATE,
+        });
+        logger.info("delete /book/:bookmarkid");
+        return res.status(200).send({
+          result: "success",
+          msg: "북마크 삭제 성공",
+        });
+      }else{
+        logger.error(err);
+        return res.status(400).send({
+          result: "fail",
+          msg: "북마크 삭제 실패",
+        });
+      }
     } else {
       const query =
         "UPDATE lunchs SET bk_num = bk_num + 1 WHERE lunchid = :lunchid;";
@@ -74,15 +92,38 @@ bookmarkpost = async (req, res) => {
 bookmarkget = async (req, res) => {
   const user = res.locals.user;
   try {
-    const isbookmarks = await bookmarks.findAll({
-      include: [{ model: lunchs }],
-      where: { userid: user.userid },
+    const book = await lunchs.findAll({
+      where: [
+        {'$bookmarks.userid$': user.userid },
+      ],
+      include: [
+        { model: lunchdata, as: "locations" },
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+          exclude: ["lunchid", "userid"],
+        },
+        {
+        model: bookmarks
+      }]
     });
     logger.info("GET /book/:lunchid");
     return res.status(200).send({
       result: "success",
       msg: "북마크 가져오기 성공",
-      bookmarks: isbookmarks,
+      bookmarks: book,
     });
   } catch (err) {
     logger.error(err);
