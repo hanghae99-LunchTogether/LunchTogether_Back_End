@@ -22,7 +22,6 @@ app.use(function (req, res, next) {
   }
 })
 
-
 const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
@@ -33,8 +32,19 @@ const sessionMiddleware = session({
   },
 });
 
+const whitelist = [process.env.dododomein, process.env.melocal, process.env.testlocal, "http://localhost:3000"];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not Allowed Origin!"));
+    }
+  },
+  credentials: true
+};
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors(corsOptions));
 app.use(sessionMiddleware);
 
 
@@ -47,17 +57,7 @@ nunjucks.configure("views", {
 const swaggerUi = require("swagger-ui-express"); //스웨거 자동생성을 위한 코드
 const swaggerFile = require("./swagger_output.json"); //스웨거 아웃풋파일 저장 위치
 
-// const whitelist = [process.env.dododomein, process.env.melocal, process.env.testlocal];
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not Allowed Origin!"));
-//     }
-//   },
-//   credentials: true
-// };
+
 
 // { origin: 'https://lunchtogether-88cf5.web.app/', credentials: true }
 
