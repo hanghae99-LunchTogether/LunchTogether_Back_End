@@ -36,8 +36,8 @@ router.post('/test', isNotLoggedIn, (req, res, next) => {
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
-
-router.get('/logout', isLoggedIn, (req, res) => {
+//isLoggedIn,
+router.get('/logout',  (req, res) => {
   // req.logout();
   // req.session.destroy();
   res.redirect('/');
