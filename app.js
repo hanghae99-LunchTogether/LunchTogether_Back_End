@@ -21,6 +21,8 @@ app.use(function (req, res, next) {
     next();
   }
 })
+
+
 const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
@@ -30,8 +32,11 @@ const sessionMiddleware = session({
     secure: false,
   },
 });
-app.use(sessionMiddleware);
+
+
 app.use(cors({ origin: true, credentials: true }));
+app.use(sessionMiddleware);
+
 
 app.set("view engine", "html");
 nunjucks.configure("views", {
