@@ -8,16 +8,28 @@ commentget = async (req, res) => {
     // comments table의 lunchid 조회
     const comment = await comments.findAll({
       // comments table과 관계된 users table의 nickname 칼럼 검색
-      include: [{ model: users, attributes: { exclude: ['location','password','salt','gender'] } }],
+      include: [
+        {
+          model: users,
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+      ],
       where: { lunchid },
     });
-
-    logger.info("GET /comment/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "댓글 불러오기 성공",
-      comment: comment,
-    });
+    if (!comment) {
+      logger.info("GET /comment/:lunchid 불러올 댓글이 없어요");
+      return res.status(200).send({
+        result: "success",
+        msg: "불러올 댓글이 없어요",
+      });
+    } else {
+      logger.info("GET /comment/:lunchid");
+      return res.status(200).send({
+        result: "success",
+        msg: "댓글 불러오기 성공",
+        comment: comment,
+      });
+    }
   } catch (err) {
     logger.error(err);
     return res.status(400).send({
@@ -50,6 +62,13 @@ commentpost = async (req, res) => {
         time: time,
       },
     });
+    if (!createdcomment) {
+      logger.info("POST /comment/:lunchid 작성한 댓글이 없는것 같네요...?");
+      return res.status(200).send({
+        result: "success",
+        msg: "작성한 댓글이 없는것 같네요...?",
+      });
+    }
     logger.info("POST /comment/:lunchid");
     return res.status(200).send({
       result: "success",
@@ -80,7 +99,6 @@ commentdele = async (req, res) => {
       },
       type: sequelize.QueryTypes.DELETE,
     });
-
     logger.info("delete /comment/:commentid");
     return res.status(200).send({
       result: "success",
