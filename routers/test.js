@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-router.post('/test', isNotLoggedIn, (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
       console.error(authError);
@@ -37,7 +37,7 @@ router.post('/test', isNotLoggedIn, (req, res, next) => {
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
 //isLoggedIn,
-router.get('/logout',  (req, res) => {
+router.get('/logout',isLoggedIn , (req, res) => {
   req.logout();
   req.session.destroy();
   res.send({msg: "로그아웃 요청 완료"});

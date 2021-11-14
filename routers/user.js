@@ -5,7 +5,7 @@ const controller = require('../controller/user')
 const middleware = require('../middlewares/authMiddleware');
 const upload = require('../utils/s3')
 
-router.route('/login').post(controller.login,function(req, res){}).get(middleware,controller.getuser);
+router.route('/login11').post(controller.login,function(req, res){}).get(middleware,controller.getuser);
 router.route('/signup').post(controller.signup);
 router.route('/checkemail').post(controller.checkemail);
 router.route('/checknickname').post(controller.checknickname);
