@@ -17,6 +17,11 @@ module.exports = async (req, res, next) => {
       res.status(401).send({ result: "fail", msg: "비정상 접근 헤더확인 요망" });
       return;
     }
+    if(token = null){
+      res.locals.user = undefined;
+      next();
+      return;
+    }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
       const query = "select * from users LEFT join bookmarks on users.userid = bookmarks.userid where users.userid = :userid;";
