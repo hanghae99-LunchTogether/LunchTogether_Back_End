@@ -21,16 +21,16 @@ module.exports = () => {
     console.log('kakao profile', profile);
     try {
       const exUser = await users.findOne({
-        where: { snsId: profile.id, provider: 'kakao' },
+        where: { userid: profile.id, username: '카카오유저' },
       });
       if (exUser) {
         done(null, exUser);
       } else {
         const newUser = await users.create({
           email: profile._json && profile._json.kakao_account_email,
-          nick: profile.displayName,
-          snsId: profile.id,
-          provider: 'kakao',
+          nickname: profile.displayName,
+          userid: profile.id,
+          username: '카카오유저',
         });
         done(null, newUser);
       }
