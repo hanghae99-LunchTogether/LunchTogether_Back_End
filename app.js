@@ -31,7 +31,7 @@ const sessionMiddleware = session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: "lax",
     secure: true
   },
 });
@@ -48,7 +48,6 @@ const corsOptions = {
   },
   credentials: true
 };
-
 app.use(cors(corsOptions));
 
 app.set("view engine", "html");
