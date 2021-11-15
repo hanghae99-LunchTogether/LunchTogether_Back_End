@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
       res.status(401).send({ result: "fail", msg: "비정상 접근 헤더확인 요망" });
       return;
     }
-    if(token = null){
+    if(token == null){
       res.locals.user = undefined;
       next();
       return;
