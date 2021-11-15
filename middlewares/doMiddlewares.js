@@ -49,7 +49,6 @@ module.exports = async (req, res, next) => {
       res.locals.user = undefined;
       // logger.error('/middleware 토큰 없음');
       // res.status(401).send({ result: "fail", msg: "토큰이 없음. 토큰재발급 요망 " });
-      return;
     }
     next();
   } catch (error) {
