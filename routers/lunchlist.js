@@ -17,7 +17,7 @@ router.route("/").get(isuser,getlunchlist).post(authMiddleware, postlunchlist);
 
 router
   .route("/:lunchid")
-  .get(detaillunchpost)
+  .get(authMiddleware, detaillunchpost)
   .patch(authMiddleware, updatelunchlist)
   .delete(authMiddleware, deletelunchlist);
 

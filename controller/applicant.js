@@ -26,7 +26,7 @@ applicantpost = async (req, res) => {
       }
       await applicant.create({
         userid: user.userid,
-        lunchid: lunchid
+        lunchid: lunchid,
       });
       const isapplicant = await applicant.findOne({
         include: [{ model: lunchs }],
@@ -60,26 +60,66 @@ applicantdelete = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
-    const query =
-      "DELETE FROM applicants WHERE lunchid = :lunchid AND userid = :userid;";
-    const comment = await sequelize.query(query, {
+    const query0 =
+      "SELECT * FROM applicants WHERE lunchid = :lunchid AND userid = :userid;";
+    const applicant0 = await sequelize.query(query0, {
       replacements: {
         lunchid: lunchid,
         userid: user.userid,
       },
-      type: sequelize.QueryTypes.DELETE,
+      type: sequelize.QueryTypes.SELECT,
     });
-    logger.info("POST /applicant/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "신청 취소 성공",
-      test: comment,
+    console.log(applicant0);
+
+    if (applicant0.length) {
+      const query =
+        "DELETE FROM applicants WHERE lunchid = :lunchid AND userid = :userid;";
+      const applicant = await sequelize.query(query, {
+        replacements: {
+          lunchid: lunchid,
+          userid: user.userid,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      });
+      console.log(applicant);
+    } else {
+      logger.info(
+        "delete /appicant/:lunchid 신청 취소 실패 게시물 존재하지않음"
+      );
+      return res.status(200).send({
+        result: "success",
+        msg: "신청 취소 실패 게시물 x",
+      });
+    }
+
+    const query2 =
+      "SELECT * FROM applicants WHERE lunchid = :lunchid AND userid = :userid;";
+    const applicant2 = await sequelize.query(query2, {
+      replacements: {
+        lunchid: lunchid,
+        userid: user.userid,
+      },
+      type: sequelize.QueryTypes.SELECT,
     });
+    console.log(applicant2 == false);
+    if (applicant2.length) {
+      logger.info("delete /appicant/:lunchid 신청 취소 실패");
+      return res.status(200).send({
+        result: "success",
+        msg: "신청 취소 실패",
+      });
+    } else {
+      logger.info("POST /applicant/:lunchid");
+      return res.status(200).send({
+        result: "success",
+        msg: "신청 취소 성공",
+      });
+    }
   } catch (err) {
     logger.error(err);
     return res.status(400).send({
       result: "fail",
-      msg: "신청 취소 실패",
+      msg: "신청 취소 에러",
     });
   }
 };
@@ -137,7 +177,7 @@ applicantget = async (req, res) => {
 //신청 승인여부
 applicantconfirmed = async (req, res) => {
   const { userid, confirmed } = req.body;
-  const comment = "거절상태 입니다..."
+  const comment = "거절상태 입니다...";
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
