@@ -24,11 +24,13 @@ app.use(function (req, res, next) {
 
 const sessionMiddleware = session({
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   secret: process.env.COOKIE_SECRET,
+  secure: true,
+  httpOnly: true,
   cookie: {
     httpOnly: true,
-    secure: false,
+    secure: true,
   },
 });
 app.use(sessionMiddleware);
