@@ -33,7 +33,7 @@ const sessionMiddleware = session({
     httpOnly: true,
     sameSite: 'Lax',
     secure: true,
-    domain : ".lebania"  
+    domain : ".lebania.shop"  
   },
 });
 app.use(sessionMiddleware);
