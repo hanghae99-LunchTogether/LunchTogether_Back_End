@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 exports.create = function (req, res, next) {
   passport.authenticate(
     "local",
-    { session: false },
     (authError, user, info) => {
       if (authError) {
         console.error(authError);
@@ -13,7 +12,7 @@ exports.create = function (req, res, next) {
       if (!user) {
         return res.status(400).send({ result: "fail", msg: info.message });
       }
-      return req.login(user, { session: false }, (loginError) => {
+      return req.login(user, (loginError) => {
         if (loginError) {
           console.error(loginError);
           return next(loginError);
