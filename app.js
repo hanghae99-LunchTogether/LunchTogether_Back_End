@@ -89,7 +89,10 @@ app.use((req, res, next) => {
 passportConfig();
 app.use(passport.initialize());
 
-
+app.use((req,res,next)=>{
+  res.header('Access-Control-Expose-Headers','Set-Cookie');
+  next();
+})
 
 app.use("/", [Router]);
 
