@@ -31,8 +31,9 @@ const sessionMiddleware = session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: 'Lax',
     secure: true,
+    name: "dodo"
   },
 });
 app.use(sessionMiddleware);
