@@ -26,7 +26,7 @@ exports.create = function (req, res, next) {
           process.env.SECRET_KEY
         );
         const data = { user: user };
-        return res.status(200).send({
+        return res.status(200).header('Access-Control-Expose-Headers','Set-Cookie').send({
           result: "success",
           msg: "로그인 완료.",
           token: token,
