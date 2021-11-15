@@ -37,7 +37,7 @@ const sessionMiddleware = session({
   },
 });
 app.use(sessionMiddleware);
-const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein+",withCredentials = 'true'"];
+const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1|| !origin) {
