@@ -31,7 +31,7 @@ const sessionMiddleware = session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: 'Lax',
+    sameSite: 'none',
     secure: true,
     domain : ".lebania.shop"  
   },
