@@ -3,7 +3,7 @@ const passport = require('passport');
 const router = express.Router();
 const passportlogin = require('../controller/passportlogin')
 
-router.post('/test',passportlogin.create);
+router.post('/login',passportlogin.create);
 
 router.get('/kakao', passport.authenticate('kakao'));
 
