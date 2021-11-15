@@ -32,10 +32,10 @@ const sessionMiddleware = session({
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
     sameSite: 'none',
-    secure: true,
-    domain : ".lebania.shop"  
+    secure: true
   },
 });
+//    domain : "lebania.shop"  
 app.use(sessionMiddleware);
 const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
