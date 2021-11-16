@@ -83,8 +83,9 @@ app.use((req, res, next) => {
   }
   next();
 });
-passportConfig();
+passportConfig(passport);
 app.use(passport.initialize());
+app.use(passport.session());
 
 
 

@@ -2,9 +2,15 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 const passportlogin = require('../controller/passportlogin')
-const axios = require('axios');
+const {isLoggedIn, isNotLoggedIn} = require('../middlewares/passportmid')
 
-router.post('/login',passportlogin.create);
+router.post('/login',isNotLoggedIn,passportlogin.create);
+
+router.get('/logout', isLoggedIn, (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.status(200).send({ result: "test", msg: "mytest." });
+});
 
 router.get('/kakao', passport.authenticate('kakao'));
 
