@@ -88,7 +88,7 @@ app.use((req, res, next) => {
 });
 passportConfig(passport);
 app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.session());
 
 // app.use((req,res,next)=>{
 //   res.header('Access-Control-Expose-Headers','Set-Cookie');
