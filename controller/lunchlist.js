@@ -18,6 +18,7 @@ getlunchlist = async (req, res) => {
         { model: lunchdata, as: "locations" },
         { model: applicant, include: [{ model: users }] },
       ],
+      where: { private: false },
       offset: offset,
       limit: 12,
       order: [["date", "DESC"]],

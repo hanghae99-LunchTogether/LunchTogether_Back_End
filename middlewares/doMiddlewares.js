@@ -17,6 +17,11 @@ module.exports = async (req, res, next) => {
       res.status(401).send({ result: "fail", msg: "비정상 접근 헤더확인 요망" });
       return;
     }
+    if(token == 'null'){
+      res.locals.user = undefined;
+      next();
+      return;
+    }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
       const query = "select * from users LEFT join bookmarks on users.userid = bookmarks.userid where users.userid = :userid;";
@@ -47,9 +52,8 @@ module.exports = async (req, res, next) => {
       console.log('로컬 유저는?', res.locals.user.nickname);
     } else {
       res.locals.user = undefined;
-      logger.error('/middleware 토큰 없음');
-      res.status(401).send({ result: "fail", msg: "토큰이 없음. 토큰재발급 요망 " });
-      return;
+      // logger.error('/middleware 토큰 없음');
+      // res.status(401).send({ result: "fail", msg: "토큰이 없음. 토큰재발급 요망 " });
     }
     next();
   } catch (error) {
