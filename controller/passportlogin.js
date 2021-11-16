@@ -12,15 +12,18 @@ exports.create = function (req, res, next) {
       if (!user) {
         return res.status(400).send({ result: "fail", msg: info.message });
       }
+<<<<<<< HEAD
       return req.login(user, (loginError) => {
+=======
+      return req.login(user,{ session: false }, (loginError) => {
+>>>>>>> baebee604b0c739af71449bf726ad5245793c8f8
         if (loginError) {
           console.error(loginError);
           return next(loginError);
         }
         const token = jwt.sign(
           {
-            id: user["userid"],
-            nickname: user["nickname"],
+            id: user["userid"]
           },
           process.env.SECRET_KEY
         );
@@ -35,3 +38,27 @@ exports.create = function (req, res, next) {
     }
   )(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 };
+
+
+
+
+
+exports.kakao = function async (req, res){
+  try {
+    console.log("여기서 테스트 한번 합시다.");
+    console.log(req.session);
+    const user = req.user;
+    const token = jwt.sign({ id: user["userid"] }, process.env.TOKEN_KEY);
+    const data = { user: user };
+    res.status(200).send({
+      message: "로그인에 성공하였습니다.",
+      data: data,
+      token: token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "알 수 없는 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+    });
+  }
+}

@@ -1,5 +1,6 @@
 const passport = require("passport");
 const KakaoStrategy = require("passport-kakao").Strategy;
+const axios = require("axios");
 
 const {
   users,
@@ -18,27 +19,31 @@ module.exports = () => {
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
-        callbackURL: "/auth/kakao/callback",
+        callbackURL: "http://localhost:3000/kakao/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log("kakao profile", profile);
         try {
+          const res = await axios.get(`https://kapi.kakao.com/v2/user/me`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
           const exUser = await users.findOne({
-            where: { snsId: profile.id, provider: "kakao" },
+            where: { userid: profile.id, username: "카카오유저" },
           });
           if (exUser) {
             done(null, exUser);
           } else {
             const newUser = await users.create({
-              email: profile._json && profile._json.kakao_account_email,
-              nick: profile.displayName,
-              snsId: profile.id,
-              provider: "kakao",
+              email: res.data.kakao_account.email,
+              nickname: res.data.properties.nickname,
+              userid: res.data.id,
+              username: "카카오유저",
             });
             done(null, newUser);
           }
         } catch (error) {
-          console.error(error);
+          console.log(error);
           done(error);
         }
       }
