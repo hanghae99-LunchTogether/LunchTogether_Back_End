@@ -16,7 +16,7 @@ const {
 module.exports = () => {
   passport.use(new KakaoStrategy({
     clientID: process.env.KAKAO_ID,
-    callbackURL: '/auth/kakao/callback',
+    callbackURL: '/kakao/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     console.log('kakao profile', profile);
     try {
@@ -24,6 +24,7 @@ module.exports = () => {
         where: { userid: profile.id, username: '카카오유저' },
       });
       if (exUser) {
+        console.log("여기까지 온듯???")
         done(null, exUser);
       } else {
         const newUser = await users.create({
@@ -32,6 +33,7 @@ module.exports = () => {
           userid: profile.id,
           username: '카카오유저',
         });
+        console.log("여기까지 온듯")
         done(null, newUser);
       }
     } catch (error) {
