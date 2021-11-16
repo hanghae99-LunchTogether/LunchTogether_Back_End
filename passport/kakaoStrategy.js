@@ -17,7 +17,7 @@ const {
 module.exports = () => {
   passport.use(new KakaoStrategy({
     clientID: process.env.KAKAO_ID,
-    callbackURL: 'http://localhost:3000/kakao/callback',
+    callbackURL: dododomein+'/kakao/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const res = await axios.get(`https://kapi.kakao.com/v2/user/me`, {
