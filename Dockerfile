@@ -1,8 +1,14 @@
-FROM node:6 
-COPY package.json /src/package.json 
-RUN cd /src/; npm install 
-COPY . /src 
+FROM node:12
+WORKDIR /src
+COPY package*.json ./
+RUN npm install 
+COPY . .
 EXPOSE 3000 
-WORKDIR /src 
 CMD node index.js
+
+
+
+FROM nginx 
+COPY nginx.conf /etc/nginx/nginx.conf
+
 
