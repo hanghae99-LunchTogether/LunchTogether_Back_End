@@ -19,7 +19,7 @@ const http = require("http");
 const httpServer = http.createServer(app);
 // const httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(80, () => {
+httpServer.listen(3000, () => {
   console.log(new Date().toLocaleString());
   console.log("HTTP Server running on port 80");
 });
