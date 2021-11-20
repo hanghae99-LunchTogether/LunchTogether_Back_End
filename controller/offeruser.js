@@ -160,11 +160,34 @@ offerconfirmed = async (req, res) => {
 };
 
 
+test = async (req, res) => {
+  try {
+    await lunchdata.findAll({
+      attributes: ['id',
+          [
+          sequelize.fn('ST_Distance',
+              sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', "37.498777145173", "127.029090699483")),
+          'distance'
+          ],
+      ],
+      order : [[sequelize.literal('distance')]]
+      
+      }).then(async (store) =>{
+        console.log(store)
+        res.status(200).send(store)
+      })
+      
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(error)
+  }
+};
 
 
 
 module.exports = {
     postlunchlist:postlunchlist,
-    offerconfirmed: offerconfirmed
+    offerconfirmed: offerconfirmed,
+    test:test
   };
   
