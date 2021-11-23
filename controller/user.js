@@ -255,11 +255,10 @@ getuser = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    const data = { user: users };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send({user:users});
   } catch (error) {
     logger.error(error);
     console.log(error);
