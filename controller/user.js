@@ -652,8 +652,10 @@ getdeuser = async (req, res) => {
         model: bookmarks
       }]
     });
+    const booklist = []
     for(a of book){
       a.dataValues.isbook = true;
+      booklist.push(book.dataValues.lunchid)
     }
     const offered =await lunchs.findAll({
       where: [
@@ -683,13 +685,13 @@ getdeuser = async (req, res) => {
       }]
     });
     for(i of owned){
-      if(book.dataValues.lunchid.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     for(i of applied){
-      if(book.dataValues.lunchid.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     for(i of offered){
-      if(book.dataValues.lunchid.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     const lunch = {
       owned: owned,
