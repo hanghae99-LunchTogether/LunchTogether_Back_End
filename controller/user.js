@@ -625,7 +625,7 @@ getdeuser = async (req, res) => {
       ],
       where: { targetusers: userloc.userid },
     })
-    const book =await lunchs.findAll({
+    const book = await lunchs.findAll({
       where: [
         {'$bookmarks.userid$': userloc.userid },
       ],
@@ -683,13 +683,13 @@ getdeuser = async (req, res) => {
       }]
     });
     for(i of owned){
-      if(userloc.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+      if(book.dataValues.lunchid.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     for(i of applied){
-      if(userloc.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+      if(book.dataValues.lunchid.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     for(i of offered){
-      if(userloc.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+      if(book.dataValues.lunchid.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     const lunch = {
       owned: owned,
