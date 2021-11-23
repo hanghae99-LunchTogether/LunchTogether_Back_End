@@ -69,11 +69,7 @@ postlunchlist = async (req, res) => {
       offerusers: offerusers,
     };
     logger.info("POST /offer");
-    return res.status(200).send({
-      result: "success",
-      msg: "점약 약속" + userid + "에게 신청 성공",
-      data: data,
-    });
+    return res.status(200).send(lunch);
   } catch (err) {
     logger.error(err);
     console.log(err);
@@ -87,7 +83,6 @@ postlunchlist = async (req, res) => {
 
 offerconfirmed = async (req, res) => {
   const { confirmed } = req.body;
-  console.log(req.body);
   const comment = "거절상태 입니다..."
   const { lunchid } = req.params;
   const user = res.locals.user;
@@ -125,11 +120,7 @@ offerconfirmed = async (req, res) => {
     if (confirmed) {
       applicants.update({ confirmed: true });
       logger.info("patch /offer/confirmed/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "제안 승인 성공",
-        applicant: applicants,
-      });
+      return res.status(200).send(applicants);
     } else {
       if (!comment) {
         logger.error("patch /offer/confirmed/:lunchid 거절사유 없음");
@@ -143,11 +134,7 @@ offerconfirmed = async (req, res) => {
         comments: comment,
       });
       logger.info("patch /offer/confirmed/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "제안 거절 성공",
-        applicant: applicants,
-      });
+      return res.status(200).send(applicants);
     }
   } catch (error) {
     logger.error(error);

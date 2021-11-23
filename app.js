@@ -12,29 +12,30 @@ dotenv.config();
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
-// app.use(function (req, res, next) {
-//   if(!req.secure){
-//     res.redirect("https://"+req.headers["host"] + req.url)
-//     console.log('리다이렉트..!')
-//   }
-//   else{
-//     next();
-//   }
-// })
+app.use(function (req, res, next) {
+  if(!req.secure){
+    res.redirect("https://"+req.headers["host"] + req.url)
+    console.log('리다이렉트..!')
+  }
+  else{
+    next();
+  }
+})
 
 const sessionMiddleware = session({
   resave: false,
   saveUninitialized: true,
   secret: process.env.COOKIE_SECRET,
-  secure: false,
+  secure: true,
   httpOnly: true,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: "lax",
-    secure: false
+    sameSite: "none",
+    secure: true
   },
 });
+//    domain : "lebania.shop"  
 app.use(sessionMiddleware);
 const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
@@ -48,6 +49,8 @@ const corsOptions = {
   origin : true,
   credentials: true
 };
+
+
 app.use(cors(corsOptions));
 
 app.set("view engine", "html");
@@ -88,7 +91,10 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+// app.use((req,res,next)=>{
+//   res.header('Access-Control-Expose-Headers','Set-Cookie');
+//   next();
+// })
 
 app.use("/", [Router]);
 

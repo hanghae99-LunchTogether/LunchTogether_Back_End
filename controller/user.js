@@ -255,11 +255,10 @@ getuser = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    const data = { user: users };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(users[0]);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -378,18 +377,16 @@ upusers = async (req, res) => {
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
-
-    data = { user: user };
     logger.info("patch /myProfile");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 수정완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
     return res
       .status(401)
-      .send({ result: "fail", msg: "유저정보 조회실패", error: error });
+      .send(error);
   }
 };
 
@@ -486,7 +483,7 @@ getotheruser = async (req, res) => {
       }]
     });
     for(a of book){
-      a.isbook = true;
+      a.dataValues.isbook = true;
     }
     const offered =await lunchs.findAll({
       where: [
@@ -524,11 +521,10 @@ getotheruser = async (req, res) => {
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
-    const data = { user: user };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -625,7 +621,7 @@ getdeuser = async (req, res) => {
       ],
       where: { targetusers: userloc.userid },
     })
-    const book =await lunchs.findAll({
+    const book = await lunchs.findAll({
       where: [
         {'$bookmarks.userid$': userloc.userid },
       ],
@@ -652,8 +648,10 @@ getdeuser = async (req, res) => {
         model: bookmarks
       }]
     });
+    const booklist = [];
     for(a of book){
-      a.isbook = true;
+      a.dataValues.isbook = true;
+      booklist.push(a.dataValues.lunchid)
     }
     const offered =await lunchs.findAll({
       where: [
@@ -682,7 +680,15 @@ getdeuser = async (req, res) => {
         model: useroffer,
       }]
     });
-
+    for(i of owned){
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
+    for(i of applied){
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
+    for(i of offered){
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
     const lunch = {
       owned: owned,
       applied: applied,
@@ -691,11 +697,10 @@ getdeuser = async (req, res) => {
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
-    const data = { user: user };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
