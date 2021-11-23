@@ -39,13 +39,14 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1|| !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
-    }
-  },
+  // origin: function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1|| !origin) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
+  //   }
+  // },
+  origin : true,
   credentials: true
 };
 

@@ -485,6 +485,9 @@ getotheruser = async (req, res) => {
         model: bookmarks
       }]
     });
+    for(a of book){
+      a.isbook = true;
+    }
     const offered =await lunchs.findAll({
       where: [
         {'$useroffers.userid$': userid },
@@ -649,6 +652,9 @@ getdeuser = async (req, res) => {
         model: bookmarks
       }]
     });
+    for(a of book){
+      a.isbook = true;
+    }
     const offered =await lunchs.findAll({
       where: [
         {'$useroffers.userid$': userloc.userid },
