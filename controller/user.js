@@ -377,18 +377,16 @@ upusers = async (req, res) => {
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
-
-    data = { user: user };
     logger.info("patch /myProfile");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 수정완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
     return res
       .status(401)
-      .send({ result: "fail", msg: "유저정보 조회실패", error: error });
+      .send(error);
   }
 };
 
