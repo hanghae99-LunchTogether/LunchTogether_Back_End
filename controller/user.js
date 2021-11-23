@@ -258,7 +258,7 @@ getuser = async (req, res) => {
     logger.info("GET /main");
     return res
       .status(200)
-      .send({user:users});
+      .send(users[0]);
   } catch (error) {
     logger.error(error);
     console.log(error);
