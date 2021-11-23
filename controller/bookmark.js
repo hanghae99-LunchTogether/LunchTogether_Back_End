@@ -120,7 +120,7 @@ bookmarkget = async (req, res) => {
       }]
     });
     for(a of book){
-      a.isbook = true;
+      a.dataValues.isbook = true;
     }
     logger.info("GET /book/:lunchid");
     return res.status(200).send({

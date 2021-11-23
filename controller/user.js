@@ -486,7 +486,7 @@ getotheruser = async (req, res) => {
       }]
     });
     for(a of book){
-      a.isbook = true;
+      a.dataValues.isbook = true;
     }
     const offered =await lunchs.findAll({
       where: [
@@ -653,7 +653,7 @@ getdeuser = async (req, res) => {
       }]
     });
     for(a of book){
-      a.isbook = true;
+      a.dataValues.isbook = true;
     }
     const offered =await lunchs.findAll({
       where: [
