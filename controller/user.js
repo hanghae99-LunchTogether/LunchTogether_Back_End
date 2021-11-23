@@ -655,7 +655,7 @@ getdeuser = async (req, res) => {
     const booklist = []
     for(a of book){
       a.dataValues.isbook = true;
-      booklist.push(book.dataValues.lunchid)
+      // booklist.push(book.dataValues.lunchid)
     }
     const offered =await lunchs.findAll({
       where: [
