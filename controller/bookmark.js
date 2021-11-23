@@ -119,6 +119,9 @@ bookmarkget = async (req, res) => {
         model: bookmarks
       }]
     });
+    for(a of book){
+      a.isbook = true;
+    }
     logger.info("GET /book/:lunchid");
     return res.status(200).send({
       result: "success",
