@@ -524,11 +524,10 @@ getotheruser = async (req, res) => {
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
-    const data = { user: user };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -701,11 +700,10 @@ getdeuser = async (req, res) => {
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
-    const data = { user: user };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
