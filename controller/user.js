@@ -684,15 +684,15 @@ getdeuser = async (req, res) => {
         model: useroffer,
       }]
     });
-    for(i of owned){
-      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
-    }
-    for(i of applied){
-      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
-    }
-    for(i of offered){
-      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
-    }
+    // for(i of owned){
+    //   if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    // }
+    // for(i of applied){
+    //   if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    // }
+    // for(i of offered){
+    //   if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    // }
     const lunch = {
       owned: owned,
       applied: applied,
