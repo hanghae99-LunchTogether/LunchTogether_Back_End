@@ -682,7 +682,15 @@ getdeuser = async (req, res) => {
         model: useroffer,
       }]
     });
-
+    for(i of owned){
+      if(user.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
+    for(i of applied){
+      if(user.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
+    for(i of offered){
+      if(user.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
     const lunch = {
       owned: owned,
       applied: applied,
