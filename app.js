@@ -12,15 +12,15 @@ dotenv.config();
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
-app.use(function (req, res, next) {
-  if(!req.secure){
-    res.redirect("https://"+req.headers["host"] + req.url)
-    console.log('리다이렉트..!')
-  }
-  else{
-    next();
-  }
-})
+// app.use(function (req, res, next) {
+//   if(!req.secure){
+//     res.redirect("https://"+req.headers["host"] + req.url)
+//     console.log('리다이렉트..!')
+//   }
+//   else{
+//     next();
+//   }
+// })
 
 const sessionMiddleware = session({
   resave: false,
@@ -39,13 +39,14 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1|| !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
-    }
-  },
+  // origin: function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1|| !origin) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
+  //   }
+  // },
+  origin : true,
   credentials: true
 };
 

@@ -10,22 +10,14 @@ exports.isNotLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
     next();
   } else {
-<<<<<<< HEAD
-    const message = encodeURIComponent("로그인한 상태입니다.");
-    // res.status(200).send({
-    //     result: "success",
-    //     msg: "로그인한 상태입니다." });
-    res.redirect(`/?error=${message}`);
-=======
-    console.log(req.user)
+    console.log(req.user);
     // const message = encodeURIComponent("로그인한 상태입니다.");
-    res.status(200).send({msg:"로그인 되있음요~!", user : req.user});
+    res.status(200).send({ msg: "로그인 되있음요~!", user: req.user });
     // res.status(200).send({
     //     result: "success",
     //     msg: "로그인 완료.",
     //     token: token,
     //     data: data,
     //   });
->>>>>>> baebee604b0c739af71449bf726ad5245793c8f8
   }
 };

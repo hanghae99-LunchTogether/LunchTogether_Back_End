@@ -288,11 +288,7 @@ applicantgetme = async (req, res) => {
       });
     } else {
       logger.info("GET /applicant");
-      return res.status(200).send({
-        result: "success",
-        msg: "신청한 점약 목록 조회 확인...!",
-        applicants: applicants,
-      });
+      return res.status(200).send(applicants);
     }
   } catch (error) {
     logger.error(error);
@@ -339,11 +335,7 @@ applicantgetthor = async (req, res) => {
       });
     } else {
       logger.info("GET /applicant");
-      return res.status(200).send({
-        result: "success",
-        msg: "신청한 점약 목록 조회 확인...!",
-        applicants: applicants,
-      });
+      return res.status(200).send(applicants);
     }
   } catch (error) {
     logger.error(error);

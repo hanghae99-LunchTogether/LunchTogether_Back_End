@@ -69,11 +69,7 @@ spoonpost = async (req, res) => {
         { where: { userid: targetuserid } }
       );
       logger.info("POST /book/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "평가 성공!",
-        review: userre,
-      });
+      return res.status(200).send(userre);
     }
   } catch (err) {
     logger.error(err);
@@ -105,11 +101,7 @@ spoonget = async (req, res) => {
       });
     }
     logger.info("GET /spoon");
-    return res.status(200).send({
-      result: "success",
-      msg: "유저 리뷰 요청 완료",
-      data: userspoon,
-    });
+    return res.status(200).send(userspoon);
   } catch (err) {
     logger.error(err);
     return res.status(400).send({

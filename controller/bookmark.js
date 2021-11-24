@@ -84,11 +84,7 @@ bookmarkpost = async (req, res) => {
         ],
       });
       logger.info("POST /book/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "북마크 추가 성공",
-        book: book,
-      });
+      return res.status(200).send(book);
     }
   } catch (err) {
     logger.error(err);
@@ -130,12 +126,11 @@ bookmarkget = async (req, res) => {
         },
       ],
     });
+    for(a of book){
+      a.dataValues.isbook = true;
+    }
     logger.info("GET /book/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "북마크 가져오기 성공",
-      bookmarks: book,
-    });
+    return res.status(200).send(book);
   } catch (err) {
     logger.error(err);
     return res.status(400).send({

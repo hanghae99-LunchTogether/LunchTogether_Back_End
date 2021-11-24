@@ -24,11 +24,7 @@ commentget = async (req, res) => {
       });
     } else {
       logger.info("GET /comment/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "댓글 불러오기 성공",
-        comment: comment,
-      });
+      return res.status(200).send(comment);
     }
   } catch (err) {
     logger.error(err);
@@ -70,11 +66,7 @@ commentpost = async (req, res) => {
       });
     }
     logger.info("POST /comment/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "댓글 작성 성공",
-      comment: createdcomment,
-    });
+    return res.status(200).send(createdcomment);
   } catch (err) {
     logger.error(err);
     return res.status(400).send({
