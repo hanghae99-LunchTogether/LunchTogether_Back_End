@@ -12,4 +12,4 @@ const signUpSchema = Joi.object({
   password: Joi.string().min(8).max(16).regex(passwordRegExp).required(),
 });
 
-export default signUpSchema;
+module.exports = signUpSchema;
