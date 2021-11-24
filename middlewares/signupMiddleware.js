@@ -1,5 +1,5 @@
 const signUpSchema = require("../validations/signup.js");
-const { logger } = require("../logger/logger.js");
+const { logger } = require("../config/logger"); //로그
 
 module.exports = async (req, res, next) => {
   const { nickname, email, password, confirmPassword } = req.body;
