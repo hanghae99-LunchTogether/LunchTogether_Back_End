@@ -285,7 +285,7 @@ upusers = async (req, res) => {
     job,
     snsurl,
     image,
-  } = req.body.profile;
+  } = req.body;
   console.log(
     username,
     email,
