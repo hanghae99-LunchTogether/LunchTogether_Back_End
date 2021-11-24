@@ -1,7 +1,7 @@
-import signUpSchema from "../validations/signup.js";
-import { logger } from "../logger/logger.js";
+const signUpSchema = require("../validations/signup.js");
+const { logger } = require("../logger/logger.js");
 
-export const validateSignUp = async (req, res, next) => {
+module.exports = async (req, res, next) => {
   const { nickname, email, password, confirmPassword } = req.body;
 
   try {
@@ -9,7 +9,6 @@ export const validateSignUp = async (req, res, next) => {
       nickname,
       email,
       password,
-      confirmPassword,
     });
     console.log(value);
     next();
