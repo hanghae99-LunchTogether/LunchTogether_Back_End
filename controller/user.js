@@ -307,7 +307,7 @@ upusers = async (req, res) => {
   //     .status(401)
   //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
   //   }
-  // let locationid;
+  let locationid;
   // if (req.file) {
   //   console.log("파일은 담기고있는가?", req.file.location);
   // }
