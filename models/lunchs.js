@@ -47,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: false,
       },
-      duration: {
-        type: DataTypes.INTEGER,
+      end: {
+        type: DataTypes.BOOLEAN,
         required: false,
       },
       confirmed: {
