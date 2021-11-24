@@ -26,27 +26,31 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: true,
   secret: process.env.COOKIE_SECRET,
-  secure: false,
+  secure: true,
   httpOnly: true,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: "lax",
-    secure: false
+    sameSite: "none",
+    secure: true
   },
 });
+//    domain : "lebania.shop"  
 app.use(sessionMiddleware);
 const whitelist = [process.env.testlocal,process.env.mainlocal, process.env.dododomein];
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1|| !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
-    }
-  },
+  // origin: function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1|| !origin) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error("아.. 좀 비켜봐 넌 안되 나가."));
+  //   }
+  // },
+  origin : true,
   credentials: true
 };
+
+
 app.use(cors(corsOptions));
 
 app.set("view engine", "html");
@@ -87,7 +91,10 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+// app.use((req,res,next)=>{
+//   res.header('Access-Control-Expose-Headers','Set-Cookie');
+//   next();
+// })
 
 app.use("/", [Router]);
 

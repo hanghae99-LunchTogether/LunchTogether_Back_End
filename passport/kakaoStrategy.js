@@ -15,6 +15,7 @@ const {
 } = require("../models");
 
 module.exports = () => {
+<<<<<<< HEAD
   passport.use(
     new KakaoStrategy(
       {
@@ -46,6 +47,31 @@ module.exports = () => {
           console.log(error);
           done(error);
         }
+=======
+  passport.use(new KakaoStrategy({
+    clientID: process.env.KAKAO_ID,
+    callbackURL: process.env.dododomein+'/kakao/callback',
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const res = await axios.get(`https://kapi.kakao.com/v2/user/me`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          } 
+        })
+      const exUser = await users.findOne({
+        where: { userid: profile.id, username: '카카오유저' },
+      });
+      if (exUser) {
+        done(null, exUser);
+      } else {
+        const newUser = await users.create({
+          email: res.data.kakao_account.email,
+          nickname: res.data.properties.nickname,
+          userid: res.data.id,
+          username: '카카오유저',
+        });
+        done(null, newUser);
+>>>>>>> ee12fa62cb4ea785eab02afde7bf4b007eaf0f6b
       }
     )
   );
