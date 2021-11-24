@@ -271,7 +271,6 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(res)
   const {
     username,
     email,
@@ -286,7 +285,7 @@ upusers = async (req, res) => {
     job,
     snsurl,
     image,
-  } = req.body;
+  } = req.body.profile;
   console.log(
     username,
     email,
