@@ -32,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
       },
       date: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         required: false,
       },
       time: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         required: false,
       },
       location: {
