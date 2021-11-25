@@ -6,13 +6,13 @@ module.exports = async() =>{
     console.log('스케줄러 시작');
     try {
         
-        const jdate = new Date(dodate);
-        console.log(new Date(dodate));
+        // const jdate = new Date(dodate);
+        // console.log(new Date(dodate));
         const today = new Date();
         const targets = await lunchs.findAll({
             where:{
                 end: false,
-                date: {[Op.lte]:today},
+                date: {[Op.lte]: today},
             }
         })
         targets.forEach( async(target) => {
