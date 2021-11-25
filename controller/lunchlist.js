@@ -1,4 +1,5 @@
 const { lunchs, sequelize, users, lunchdata, applicant } = require("../models");
+const ment = require('moment');
 const { logger } = require("../config/logger"); //로그
 const scheule = require("node-schedule");
 require("date-utils");
@@ -122,11 +123,17 @@ postlunchlist = async (req, res) => {
       private: false,
       bk_num: 0,
     });
-    const theend = new Date(date);
-    scheule.scheduleJob(theend, async()=>{
+    // const theend = new Date(date);
+    const dodate = ment(date);
+    const jdate = new Date(dodate);
+    console.log(new Date(dodate));
+    console.log(new Date());
+    console.log(dodate.format('YYYY-MM-DD HH:mm:ss'))
+    scheule.scheduleJob(jdate, async()=>{
+      console.log("시작합니다.",lunch.lunchid)
       const endlunch = await lunchs.update(
-        { where:{lunchid: lunch.lunchid} },
-        {duration : 1}  
+        { duration : 1 },
+        { where:{lunchid: lunch.lunchid} }
       )
     })
     logger.info("POST /lunchPost");
