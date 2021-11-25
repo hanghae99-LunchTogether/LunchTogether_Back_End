@@ -118,7 +118,7 @@ postlunchlist = async (req, res) => {
       location: locations.id,
       time: time,
       membernum: membernum,
-      duration: 0,
+      end: false,
       confirmed: false,
       private: false,
       bk_num: 0,
@@ -132,7 +132,7 @@ postlunchlist = async (req, res) => {
     scheule.scheduleJob(jdate, async()=>{
       console.log("시작합니다.",lunch.lunchid)
       const endlunch = await lunchs.update(
-        { duration : 1 },
+        { end : true },
         { where:{lunchid: lunch.lunchid} }
       )
     })
@@ -151,10 +151,10 @@ postlunchlist = async (req, res) => {
 updatelunchlist = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
-  const { title, content, date, locations, membernum, duration } = req.body;
+  const { title, content, date, locations, membernum } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
-  console.log(title, content, date, locations, membernum, duration);
+  console.log(title, content, date, locations, membernum);
   try {
     let querys = "UPDATE lunchs SET";
     querys = querys + " updatedAt = now(),";
@@ -184,7 +184,6 @@ updatelunchlist = async (req, res) => {
     }
     if (time) querys = querys + " time = :time,";
     if (membernum) querys = querys + " membernum = :membernum,";
-    if (duration) querys = querys + " duration = :duration,";
 
     querys = querys.slice(0, -1);
 
@@ -198,7 +197,6 @@ updatelunchlist = async (req, res) => {
         location: locations.id,
         time: time,
         membernum: membernum,
-        duration: duration,
         userid: user.userid,
       },
       type: sequelize.QueryTypes.UPDATE,

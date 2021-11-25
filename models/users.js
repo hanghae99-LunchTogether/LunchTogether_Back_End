@@ -89,6 +89,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "users",
+      logging: false
     }
   );
   users.associate = function (models) {

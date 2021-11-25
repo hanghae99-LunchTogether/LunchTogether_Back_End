@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: false,
       },
-      duration: {
+      end: {
         type: DataTypes.BOOLEAN,
         required: false,
       },
@@ -72,6 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "lunchs",
+      logging: false
     }
   );
 

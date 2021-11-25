@@ -40,8 +40,8 @@ module.exports = {
       membernum: {
         type: Sequelize.STRING,
       },
-      duration: {
-        type: Sequelize.INTEGER,
+      end: {
+        type: Sequelize.BOOLEAN,
       },
       confirmed:{
         type: Sequelize.BOOLEAN,
