@@ -1,6 +1,7 @@
 const { lunchs, sequelize, users, lunchdata, applicant } = require("../models");
+const ment = require('moment');
 const { logger } = require("../config/logger"); //로그
-
+const scheule = require("node-schedule");
 require("date-utils");
 
 getlunchlist = async (req, res) => {
@@ -80,7 +81,7 @@ detaillunchpost = async (req, res) => {
 
 postlunchlist = async (req, res) => {
   const user = res.locals.user;
-  const { title, content, date, locations, membernum, duration } = req.body;
+  const { title, content, date, locations, membernum } = req.body;
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   console.log(
@@ -88,8 +89,7 @@ postlunchlist = async (req, res) => {
     "코맨트" + content,
     "날짜" + date,
     "위치" + locations,
-    "맴버수" + membernum,
-    "몇시간" + duration
+    "맴버수" + membernum
   );
   try {
     //쿼리문 해석 .. lunchdata에 해당 객체를 넣는데 lunchdata DB안에 해당객체의 id값이 존재하는 경우 넣지 않는다.
@@ -118,11 +118,24 @@ postlunchlist = async (req, res) => {
       location: locations.id,
       time: time,
       membernum: membernum,
-      duration: duration,
+      duration: 0,
       confirmed: false,
       private: false,
       bk_num: 0,
     });
+    // const theend = new Date(date);
+    const dodate = ment(date);
+    const jdate = new Date(dodate);
+    console.log(new Date(dodate));
+    console.log(new Date());
+    console.log(dodate.format('YYYY-MM-DD HH:mm:ss'))
+    scheule.scheduleJob(jdate, async()=>{
+      console.log("시작합니다.",lunch.lunchid)
+      const endlunch = await lunchs.update(
+        { duration : 1 },
+        { where:{lunchid: lunch.lunchid} }
+      )
+    })
     logger.info("POST /lunchPost");
     return res.status(200).send(lunch);
   } catch (err) {

@@ -11,5 +11,4 @@ const signUpSchema = Joi.object({
     .required(),
   password: Joi.string().min(8).max(16).regex(passwordRegExp).required(),
 });
-
 module.exports = signUpSchema;

@@ -19,14 +19,10 @@ bookmarkpost = async (req, res) => {
       where: { userid: user.userid, lunchid: lunchid },
       default: doc,
     });
-    console.log(created);
-    console.log("asddddddddddddddddddd");
     if (!created) {
       const a = await bookmarks.destroy({
         where: { lunchid: lunchid, userid: user.userid },
       });
-      console.log(a);
-      console.log("asddddddddddddddddddd");
       if (a) {
         const query =
           "UPDATE lunchs SET bk_num = bk_num - 1 WHERE lunchid = :lunchid;";

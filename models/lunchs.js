@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         required: false,
       },
       duration: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BOOLEAN,
         required: false,
       },
       confirmed: {
