@@ -29,7 +29,7 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   
     socket.on('disconnect', () => {
-      const user = removeUser(socket.id);
+      // const user = removeUser(socket.id);
   
       if(user) {
         io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
