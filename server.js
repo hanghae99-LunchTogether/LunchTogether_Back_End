@@ -32,7 +32,7 @@ const test = httpServer.listen(80, () => {
   console.log("HTTP Server running on port 80");
 });
 
-webSocket(test, app, sessionMiddleware);
+webSocket(app, sessionMiddleware);
 
 //혹시모를 예전 서버코드
 // const webSocket = require("./soket");
