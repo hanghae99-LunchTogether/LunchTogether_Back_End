@@ -2,7 +2,8 @@ const signUpSchema = require("../validations/signup.js");
 const { logger } = require("../config/logger");
 
 module.exports = async (req, res, next) => {
-  const { nickname, email, password, confirmPassword } = req.body;
+  const { nickname, email, password} = req.body;
+  console.log(nickname, email, password);
 
   try {
     const value = await signUpSchema.validateAsync({
