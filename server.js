@@ -2,34 +2,35 @@ const { app, sessionMiddleware } = require("./app");
 const webSocket = require("./soket");
 const port = process.env.EXPRESS_PORT;
 ("use strict");
-const fs = require("fs");
 const http = require("http");
-const https = require("https");
+if (process.env.TEST_POST) {
+  const fs = require("fs");
+  const https = require("https");
 
-const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem", "utf8");
-const certificate = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem", "utf8")
-const ca = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem", "utf8")
+  const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem","utf8");
+  const certificate = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/cert.pem","utf8");
+  const ca = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/fullchain.pem","utf8");
 
-const credentials = {
+  const credentials = {
     key: privateKey,
     cert: certificate,
-    ca: ca
-};
+    ca: ca,
+  };
+  const httpsServer = https.createServer(credentials, app);
+  const server = httpsServer.listen(443, () => {
+    console.log(new Date().toLocaleString());
+    console.log(`HTTPS -- listening on port 443 ...`);
+  });
+
+  webSocket(server, app, sessionMiddleware);
+}
 
 const httpServer = http.createServer(app);
-const httpsServer = https.createServer(credentials, app);
 
 const test = httpServer.listen(80, () => {
   console.log(new Date().toLocaleString());
   console.log("HTTP Server running on port 80");
 });
-
-const server = httpsServer.listen(443, ()=>{
-    console.log((new Date()).toLocaleString());
-    console.log(`HTTPS -- listening on port 443 ...`);
-})
-
-webSocket(server, app, sessionMiddleware);
 
 webSocket(test, app, sessionMiddleware);
 

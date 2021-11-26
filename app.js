@@ -12,15 +12,17 @@ dotenv.config();
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
-app.use(function (req, res, next) {
-  if(!req.secure){
-    res.redirect("https://"+req.headers["host"] + req.url)
-    console.log('리다이렉트..!')
-  }
-  else{
-    next();
-  }
-})
+if(process.env.TEST_POST){
+  app.use(function (req, res, next) {
+    if(!req.secure){
+      res.redirect("https://"+req.headers["host"] + req.url)
+      console.log('리다이렉트..!')
+    }
+    else{
+      next();
+    }
+  })
+}
 
 const sessionMiddleware = session({
   resave: false,
