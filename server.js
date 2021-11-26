@@ -3,7 +3,7 @@ const webSocket = require("./soket");
 const port = process.env.EXPRESS_PORT;
 ("use strict");
 const http = require("http");
-if (process.env.TEST_POST) {
+if (!process.env.TEST_PORT) {
   const fs = require("fs");
   const https = require("https");
 

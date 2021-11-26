@@ -12,7 +12,7 @@ dotenv.config();
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
-if(process.env.TEST_POST){
+if(!process.env.TEST_PORT){
   app.use(function (req, res, next) {
     if(!req.secure){
       res.redirect("https://"+req.headers["host"] + req.url)
