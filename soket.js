@@ -14,6 +14,32 @@ module.exports = (server, app, sessionMiddleware) => {
     sessionMiddleware(socket.request, socket.request.res, next);
   });
 
+  io.on('connect', (socket) => {
+    socket.on('join', ({ name, room }, callback) => {
+      socket.emit("message", "server메세지")
+    });
+  
+    socket.on('sendMessage', (message, callback) => {
+      console.log("메세지 받앗어요.", message);
+      setTimeout(() => {
+        console.log("메세지 보냈어요.")
+        socket.emit("message", "server메세지")
+      }, 2000);
+    });
+  
+    socket.on('disconnect', () => {
+      const user = removeUser(socket.id);
+  
+      if(user) {
+        io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
+        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+      }
+    })
+  });
+
+
+
+
   room.on('connection', (socket, next) => {
     console.log('room 네임스페이스에 접속');
 
