@@ -31,8 +31,6 @@ const server = httpsServer.listen(443, ()=>{
 
 webSocket(server, app, sessionMiddleware);
 
-webSocket(app, sessionMiddleware);
-
 //혹시모를 예전 서버코드
 // const webSocket = require("./soket");
 // const http =require('http');
