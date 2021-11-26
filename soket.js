@@ -29,6 +29,7 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   
     socket.on('disconnect', () => {
+      console.log("연결종료")
       // const user = removeUser(socket.id);
   
       // if(user) {
