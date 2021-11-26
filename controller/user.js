@@ -271,7 +271,6 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(req.body);
   const {
     username,
     email,
@@ -285,7 +284,8 @@ upusers = async (req, res) => {
     introduction,
     job,
     snsurl,
-  } = req.body.profile;
+    image,
+  } = req.body;
   console.log(
     username,
     email,
@@ -297,7 +297,8 @@ upusers = async (req, res) => {
     company,
     introduction,
     job,
-    snsurl
+    snsurl,
+    image
   );
   // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
   // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
@@ -307,19 +308,20 @@ upusers = async (req, res) => {
   //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
   //   }
   let locationid;
-  if (req.file) {
-    console.log("파일은 담기고있는가?", req.file.location);
-  }
+  // if (req.file) {
+  //   console.log("파일은 담기고있는가?", req.file.location);
+  // }
   try {
-    let originalUrl;
+    // let originalUrl;
     let querys = "UPDATE users SET ";
     if (username) querys = querys + " username = :username,";
     if (nickname) querys = querys + " nickname = :nickname,";
     if (email) querys = querys + " email = :email,";
-    if (req.file) {
-      querys = querys + " image = :image,";
-      originalUrl = req.file.location;
-    }
+    // if (req.file) {
+    //   querys = querys + " image = :image,";
+    //   originalUrl = req.file.location;
+    // }
+    if (image) querys = querys + " image = :image,";
     if (mbti) querys = querys + " mbti = :mbti,";
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
@@ -358,7 +360,7 @@ upusers = async (req, res) => {
         username: username,
         nickname: nickname,
         email: email,
-        image: originalUrl,
+        image: image,
         mbti: mbti,
         gender: gender,
         introduction: introduction,

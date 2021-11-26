@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "usersReviews",
+      logging: false
     }
   );
   usersReviews.associate = function (models) {

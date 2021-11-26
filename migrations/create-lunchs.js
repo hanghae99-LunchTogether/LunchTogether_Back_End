@@ -25,10 +25,10 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       date: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
       },
       time:{
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
       },
       location: {
         type: Sequelize.INTEGER,
@@ -40,8 +40,8 @@ module.exports = {
       membernum: {
         type: Sequelize.STRING,
       },
-      duration: {
-        type: Sequelize.INTEGER,
+      end: {
+        type: Sequelize.BOOLEAN,
       },
       confirmed:{
         type: Sequelize.BOOLEAN,

@@ -32,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
       },
       date: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         required: false,
       },
       time: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         required: false,
       },
       location: {
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         required: false,
       },
-      duration: {
+      end: {
         type: DataTypes.BOOLEAN,
         required: false,
       },
@@ -72,6 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "lunchs",
+      logging: false
     }
   );
 
