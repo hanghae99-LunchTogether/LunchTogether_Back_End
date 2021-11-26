@@ -8,19 +8,20 @@ module.exports = (server, app, sessionMiddleware) => {
   app.set('io', io);
   const room = io.of('/room');
   const chat = io.of('/chat');
+  const test = io.of('/test');
 
   io.use((socket, next) => {
     cookieParser(process.env.COOKIE_SECRET)(socket.request, socket.request.res, next);
     sessionMiddleware(socket.request, socket.request.res, next);
   });
 
-  io.on('connect', (socket) => {
+  test.on('connect', (socket) => {
     console.log("연결 됫네")
     socket.on('join', ({ name, room }, callback) => {
       socket.emit("message", "server메세지")
     });
   
-    socket.on('sendMessage', (message, callback) => {
+    socket.on('sendMessage', (message) => {
       console.log("메세지 받앗어요.", message);
       setTimeout(() => {
         console.log("메세지 보냈어요.")
@@ -30,12 +31,6 @@ module.exports = (server, app, sessionMiddleware) => {
   
     socket.on('disconnect', () => {
       console.log("연결종료")
-      // const user = removeUser(socket.id);
-  
-      // if(user) {
-      //   io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-      //   io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
-      // }
     })
   });
 
