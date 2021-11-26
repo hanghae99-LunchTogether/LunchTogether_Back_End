@@ -15,6 +15,7 @@ module.exports = (server, app, sessionMiddleware) => {
   });
 
   io.on('connect', (socket) => {
+    console.log("연결 됫네")
     socket.on('join', ({ name, room }, callback) => {
       socket.emit("message", "server메세지")
     });
