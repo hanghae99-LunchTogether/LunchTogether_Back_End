@@ -6,7 +6,7 @@ const cookie = require('cookie-signature');
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' });
   app.set('io', io);
-  const room = io.of('/room');
+  const room = io.of('/rooms');
   const chat = io.of('/chat');
   const test = io.of('/test');
 
