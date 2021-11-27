@@ -29,7 +29,7 @@ httpServer.listen(80, () => {
 //     console.log(`HTTPS -- listening on port 443 ...`);
 // })
 
-// webSocket(server, app, sessionMiddleware);
+webSocket(httpServer, app, sessionMiddleware);
 
 // webSocket(server, app, sessionMiddleware);
 

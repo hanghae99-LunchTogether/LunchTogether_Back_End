@@ -1,6 +1,7 @@
 const SocketIO = require('socket.io');
 const axios = require('axios');
-const cookieParser = require('cookie-parser');
+var ios = require("express-socket.io-session");
+// const cookieParser = require('cookie-parser');
 const cookie = require('cookie-signature');
 
 module.exports = (server, app, sessionMiddleware) => {
@@ -8,12 +9,7 @@ module.exports = (server, app, sessionMiddleware) => {
   app.set('io', io);
   const room = io.of('/room');
   const chat = io.of('/chat');
-
-  io.use((socket, next) => {
-    cookieParser(process.env.COOKIE_SECRET)(socket.request, socket.request.res, next);
-    sessionMiddleware(socket.request, socket.request.res, next);
-  });
-
+  chat.use(ios(sessionMiddleware, { autoSave:true }));
   room.on('connection', (socket, next) => {
     console.log('room 네임스페이스에 접속');
 
@@ -24,7 +20,8 @@ module.exports = (server, app, sessionMiddleware) => {
 
   chat.on('connection', (socket) => {
     console.log('chat 네임스페이스에 접속');
-    const req = socket.request;
+    const req = socket.handshake;
+    console.log(req);
     const { headers: { referer } } = req;
     const roomId = referer
       .split('/')[referer.split('/').length - 1]
@@ -41,11 +38,9 @@ module.exports = (server, app, sessionMiddleware) => {
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;
       if (userCount === 0) { // 유저가 0명이면 방 삭제
-        const signedCookie = cookie.sign(req.signedCookies['connect.sid'], process.env.COOKIE_SECRET);
-        const connectSID = `${signedCookie}`;
-        axios.delete(`https://lebania.shop/room/${roomId}`, {
+        axios.delete(`http://localhost/room/${roomId}`, {
           headers: {
-            Cookie: `connect.sid=s%3A${connectSID}`
+            Cookie: socket.handshake.headers.cookie
           } 
         })
           .then(() => {
