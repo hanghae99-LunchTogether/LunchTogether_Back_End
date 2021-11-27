@@ -4,7 +4,9 @@ const cookieParser = require('cookie-parser');
 const cookie = require('cookie-signature');
 
 module.exports = (server, app, sessionMiddleware) => {
-  const io = SocketIO(server, { path: '/socket.io' });
+  const io = SocketIO(server, { path: '/socket.io' },{cors: {
+    origin: '*',
+  }});
   app.set('io', io);
   const room = io.of('/rooms');
   const chat = io.of('/chat');
