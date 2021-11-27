@@ -12,10 +12,10 @@ module.exports = (server, app, sessionMiddleware) => {
   const chat = io.of('/chat');
   const test = io.of('/test');
 
-  // io.use((socket, next) => {
-  //   cookieParser(process.env.COOKIE_SECRET)(socket.request, socket.request.res, next);
-  //   sessionMiddleware(socket.request, socket.request.res, next);
-  // });
+  io.use((socket, next) => {
+    cookieParser(process.env.COOKIE_SECRET)(socket.request, socket.request.res, next);
+    sessionMiddleware(socket.request, socket.request.res, next);
+  });
 
   test.on('connection', (socket) => {
     socket.emit("message","서버에서 메세지");
