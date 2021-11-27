@@ -17,7 +17,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/room', (req, res) => {
-  res.render('/test/room', { title: 'GIF 채팅방 생성' });
+  res.render('room', { title: 'GIF 채팅방 생성' });
 });
 
 router.post('/room', async (req, res, next) => {
@@ -52,7 +52,7 @@ router.get('/room/:id', async (req, res, next) => {
       return res.redirect('/test/?error=허용 인원이 초과하였습니다.');
     }
     const chats = await Chat.findAll({ where: { room: room.dataValues.id }})
-    return res.render('/test/chat', {
+    return res.render('chat', {
       room,
       title: room.title,
       chats,
