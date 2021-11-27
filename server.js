@@ -2,11 +2,11 @@ const { app, sessionMiddleware } = require("./app");
 const webSocket = require("./soket");
 const port = process.env.EXPRESS_PORT;
 ("use strict");
-
+const http = require("http");
 
 if(!process.env.TEST_PORT){
   const fs = require("fs");
-  const http = require("http");
+ 
   const https = require("https");
 
   const privateKey = fs.readFileSync("/etc/letsencrypt/live/lebania.shop/privkey.pem", "utf8");
