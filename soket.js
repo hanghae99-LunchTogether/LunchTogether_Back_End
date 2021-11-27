@@ -16,9 +16,9 @@ module.exports = (server, app, sessionMiddleware) => {
   const test = io.of('/test');
 
   test.on('connection', (socket) => {
-    socket.emit("message","서버에서 메세지");
+    
     socket.on('join', ({ name, room }, callback) => {
-      socket.to("message").emit("서버에서 메세지");
+      socket.emit("message","서버에서 메세지");
     });
   
     socket.on('sendMessage', (message) => {
