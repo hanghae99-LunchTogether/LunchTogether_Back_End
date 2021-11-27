@@ -12,6 +12,7 @@ dotenv.config();
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
+const schedule = require('./middlewares/schedule')
 if(!process.env.TEST_PORT){
   app.use(function (req, res, next) {
     if(!req.secure){
@@ -90,7 +91,7 @@ app.use((req, res, next) => {
 passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-
+schedule();  ///여기서 스케줄복구
 // app.use((req,res,next)=>{
 //   res.header('Access-Control-Expose-Headers','Set-Cookie');
 //   next();
