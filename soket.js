@@ -5,14 +5,41 @@ var ios = require("express-socket.io-session");
 const cookie = require('cookie-signature');
 
 module.exports = (server, app, sessionMiddleware) => {
-  const io = SocketIO(server, { path: '/socket.io' });
+  const io = SocketIO(server, { path: '/socket.io' },{cors: {
+    origin: '*',
+  }});
   app.set('io', io);
-  const room = io.of('/room');
+  const room = io.of('/rooms');
   const chat = io.of('/chat');
   chat.use(ios(sessionMiddleware, { autoSave:true }));
-  room.on('connection', (socket, next) => {
-    console.log('room 네임스페이스에 접속');
 
+  const test = io.of('/test');
+
+  test.on('connection', (socket) => {
+    socket.emit("message","서버에서 메세지");
+    socket.on('join', ({ name, room }, callback) => {
+      socket.to("message").emit("서버에서 메세지");
+    });
+  
+    socket.on('sendMessage', (message) => {
+      console.log("메세지 받앗어요.", message);
+      setTimeout(() => {
+        console.log("메세지 보냈어요.")
+        socket.emit("message","서버에서 메세지");
+      }, 2000);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log("연결종료")
+    })
+  });
+
+
+
+
+  room.on('connection', (socket) => {
+    console.log('room 네임스페이스에 접속');
+    
     socket.on('disconnect', () => {
       console.log('room 네임스페이스 접속 해제');
     });
@@ -60,4 +87,5 @@ module.exports = (server, app, sessionMiddleware) => {
       socket.to(data.room).emit(data);
     });
   });
+
 };

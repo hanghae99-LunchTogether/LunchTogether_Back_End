@@ -9,7 +9,8 @@ const fs = require('fs');
 router.get('/', async (req, res, next) => {
   try {
     const rooms = await Room.findAll({});
-    res.render('main', { rooms, title: 'GIF 채팅방' });
+    // res.render('main', { rooms, title: 'GIF 채팅방' });
+    res.render('index');
   } catch (error) {
     console.error(error);
     next(error);
@@ -29,8 +30,8 @@ router.post('/room', async (req, res, next) => {
       password: req.body.password,
     });
     const io = req.app.get('io');
-    io.of('/room').emit('newRoom', newRoom);
-    res.redirect(`/room/${newRoom.id}?password=${req.body.password}`);
+    io.of('/rooms').emit('newRoom', newRoom);
+    res.redirect(`/test/room/${newRoom.id}?password=${req.body.password}`);
   } catch (error) {
     console.error(error);
     next(error);
@@ -42,14 +43,14 @@ router.get('/room/:id', async (req, res, next) => {
     const room = await Room.findOne({where:{ id: req.params.id }});
     const io = req.app.get('io');
     if (!room) {
-      return res.redirect('/?error=존재하지 않는 방입니다.');
+      return res.redirect('/test/?error=존재하지 않는 방입니다.');
     }
     if (room.password && room.password !== req.query.password) {
-      return res.redirect('/?error=비밀번호가 틀렸습니다.');
+      return res.redirect('/test/?error=비밀번호가 틀렸습니다.');
     }
     const { rooms } = io.of('/chat').adapter;
     if (rooms && rooms[req.params.id] && room.max <= rooms[req.params.id].length) {
-      return res.redirect('/?error=허용 인원이 초과하였습니다.');
+      return res.redirect('/test/?error=허용 인원이 초과하였습니다.');
     }
     const chats = await Chat.findAll({ where: { room: room.dataValues.id }})
     return res.render('chat', {
@@ -70,7 +71,7 @@ router.delete('/room/:id', async (req, res, next) => {
     await Chat.destroy({where: {id: req.params.id}});
     res.send('ok');
     setTimeout(() => {
-      req.app.get('io').of('/room').emit('removeRoom', req.params.id);
+      req.app.get('io').of('/rooms').emit('removeRoom', req.params.id);
     }, 2000);
   } catch (error) {
     console.error(error);

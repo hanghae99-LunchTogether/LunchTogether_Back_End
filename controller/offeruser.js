@@ -69,11 +69,7 @@ postlunchlist = async (req, res) => {
       offerusers: offerusers,
     };
     logger.info("POST /offer");
-    return res.status(200).send({
-      result: "success",
-      msg: "점약 약속" + userid + "에게 신청 성공",
-      data: data,
-    });
+    return res.status(200).send(lunch);
   } catch (err) {
     logger.error(err);
     console.log(err);
@@ -84,7 +80,101 @@ postlunchlist = async (req, res) => {
   }
 };
 
+
+offerconfirmed = async (req, res) => {
+  const { confirmed } = req.body;
+  const comment = "거절상태 입니다..."
+  const { lunchid } = req.params;
+  const user = res.locals.user;
+  try {
+    const applicants = await useroffer.findOne({
+      include: [
+        {
+          model: users,
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: lunchs,
+          include: [
+            { model: lunchdata, as: "locations" },
+            {
+              model: users,
+              as: "host",
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+        },
+      ],
+      where: { lunchid: lunchid, userid: user.userid },
+    });
+
+    if (!applicants) {
+      logger.error("해당 글이 존재하지 않습니다. 또는 해당 제안받은자가 없습니다.");
+      return res.status(400).send({
+        result: "fail",
+        msg: "승인 변경 실패 해당약속이 존재 하지 않습니다. 또는 해당 제안받은자가 없습니다.",
+      });
+    } 
+    if (confirmed) {
+      applicants.update({ confirmed: true });
+      logger.info("patch /offer/confirmed/:lunchid");
+      return res.status(200).send(applicants);
+    } else {
+      if (!comment) {
+        logger.error("patch /offer/confirmed/:lunchid 거절사유 없음");
+        return res.status(400).send({
+          result: "fail",
+          msg: "신청자 변경 실패 거절 사유가 존재하지 않습니다.",
+        });
+      }
+      applicants.update({
+        confirmed: false,
+        comments: comment,
+      });
+      logger.info("patch /offer/confirmed/:lunchid");
+      return res.status(200).send(applicants);
+    }
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+    return res.status(400).send({
+      result: "fail",
+      msg: "제안 변경 실패",
+    });
+  }
+};
+
+
+test = async (req, res) => {
+  try {
+    await lunchdata.findAll({
+      attributes: ['id',
+          [
+          sequelize.fn('ST_Distance',
+              sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', "37.498777145173", "127.029090699483")),
+          'distance'
+          ],
+      ],
+      order : [[sequelize.literal('distance')]]
+      
+      }).then(async (store) =>{
+        console.log(store)
+        res.status(200).send(store)
+      })
+      
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(error)
+  }
+};
+
+
+
 module.exports = {
     postlunchlist:postlunchlist,
+    offerconfirmed: offerconfirmed,
+    test:test
   };
   

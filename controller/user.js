@@ -255,11 +255,10 @@ getuser = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     });
-    const data = { user: users };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(users[0]);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -272,7 +271,6 @@ getuser = async (req, res) => {
 //유저세부정보 수정
 upusers = async (req, res) => {
   const userloc = res.locals.user;
-  console.log(req.body);
   const {
     username,
     email,
@@ -286,7 +284,8 @@ upusers = async (req, res) => {
     introduction,
     job,
     snsurl,
-  } = req.body.profile;
+    image,
+  } = req.body;
   console.log(
     username,
     email,
@@ -298,7 +297,8 @@ upusers = async (req, res) => {
     company,
     introduction,
     job,
-    snsurl
+    snsurl,
+    image
   );
   // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
   // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
@@ -308,19 +308,20 @@ upusers = async (req, res) => {
   //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
   //   }
   let locationid;
-  if (req.file) {
-    console.log("파일은 담기고있는가?", req.file.location);
-  }
+  // if (req.file) {
+  //   console.log("파일은 담기고있는가?", req.file.location);
+  // }
   try {
-    let originalUrl;
+    // let originalUrl;
     let querys = "UPDATE users SET ";
     if (username) querys = querys + " username = :username,";
     if (nickname) querys = querys + " nickname = :nickname,";
     if (email) querys = querys + " email = :email,";
-    if (req.file) {
-      querys = querys + " image = :image,";
-      originalUrl = req.file.location;
-    }
+    // if (req.file) {
+    //   querys = querys + " image = :image,";
+    //   originalUrl = req.file.location;
+    // }
+    if (image) querys = querys + " image = :image,";
     if (mbti) querys = querys + " mbti = :mbti,";
     if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
@@ -359,7 +360,7 @@ upusers = async (req, res) => {
         username: username,
         nickname: nickname,
         email: email,
-        image: originalUrl,
+        image: image,
         mbti: mbti,
         gender: gender,
         introduction: introduction,
@@ -378,18 +379,16 @@ upusers = async (req, res) => {
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
-
-    data = { user: user };
     logger.info("patch /myProfile");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 수정완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
     return res
       .status(401)
-      .send({ result: "fail", msg: "유저정보 조회실패", error: error });
+      .send(error);
   }
 };
 
@@ -485,6 +484,9 @@ getotheruser = async (req, res) => {
         model: bookmarks
       }]
     });
+    for(a of book){
+      a.dataValues.isbook = true;
+    }
     const offered =await lunchs.findAll({
       where: [
         {'$useroffers.userid$': userid },
@@ -521,11 +523,10 @@ getotheruser = async (req, res) => {
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
-    const data = { user: user };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -622,7 +623,7 @@ getdeuser = async (req, res) => {
       ],
       where: { targetusers: userloc.userid },
     })
-    const book =await lunchs.findAll({
+    const book = await lunchs.findAll({
       where: [
         {'$bookmarks.userid$': userloc.userid },
       ],
@@ -649,6 +650,11 @@ getdeuser = async (req, res) => {
         model: bookmarks
       }]
     });
+    const booklist = [];
+    for(a of book){
+      a.dataValues.isbook = true;
+      booklist.push(a.dataValues.lunchid)
+    }
     const offered =await lunchs.findAll({
       where: [
         {'$useroffers.userid$': userloc.userid },
@@ -676,7 +682,15 @@ getdeuser = async (req, res) => {
         model: useroffer,
       }]
     });
-
+    for(i of owned){
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
+    for(i of applied){
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
+    for(i of offered){
+      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    }
     const lunch = {
       owned: owned,
       applied: applied,
@@ -685,11 +699,10 @@ getdeuser = async (req, res) => {
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
-    const data = { user: user };
     logger.info("GET /main");
     return res
       .status(200)
-      .send({ result: "success", msg: "유저정보 조회 완료", data: data });
+      .send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);

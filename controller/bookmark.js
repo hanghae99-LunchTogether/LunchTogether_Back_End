@@ -1,4 +1,11 @@
-const { bookmarks, users, lunchs, sequelize, lunchdata, applicant } = require("../models");
+const {
+  bookmarks,
+  users,
+  lunchs,
+  sequelize,
+  lunchdata,
+  applicant,
+} = require("../models");
 const { logger } = require("../config/logger"); //로그
 require("date-utils");
 
@@ -13,7 +20,9 @@ bookmarkpost = async (req, res) => {
       default: doc,
     });
     if (!created) {
-      const a = await bookmarks.destroy({ where: { lunchid: lunchid, userid: user.userid } }); // 특정 데이터만 삭제
+      const a = await bookmarks.destroy({
+        where: { lunchid: lunchid, userid: user.userid },
+      });
       if (a) {
         const query =
           "UPDATE lunchs SET bk_num = bk_num - 1 WHERE lunchid = :lunchid;";
@@ -28,7 +37,7 @@ bookmarkpost = async (req, res) => {
           result: "success",
           msg: "북마크 삭제 성공",
         });
-      }else{
+      } else {
         logger.error(err);
         return res.status(400).send({
           result: "fail",
@@ -44,10 +53,8 @@ bookmarkpost = async (req, res) => {
         },
         type: sequelize.QueryTypes.UPDATE,
       });
-      const book =await lunchs.findAll({
-        where: [
-          {'$bookmarks.bookmarkid$': bookmark.dataValues.bookmarkid },
-        ],
+      const book = await lunchs.findAll({
+        where: [{ "$bookmarks.bookmarkid$": bookmark.dataValues.bookmarkid }],
         include: [
           { model: lunchdata, as: "locations" },
           {
@@ -68,15 +75,12 @@ bookmarkpost = async (req, res) => {
             exclude: ["lunchid", "userid"],
           },
           {
-          model: bookmarks
-        }]
+            model: bookmarks,
+          },
+        ],
       });
       logger.info("POST /book/:lunchid");
-      return res.status(200).send({
-        result: "success",
-        msg: "북마크 추가 성공",
-        book: book,
-      });
+      return res.status(200).send(book);
     }
   } catch (err) {
     logger.error(err);
@@ -93,9 +97,7 @@ bookmarkget = async (req, res) => {
   const user = res.locals.user;
   try {
     const book = await lunchs.findAll({
-      where: [
-        {'$bookmarks.userid$': user.userid },
-      ],
+      where: [{ "$bookmarks.userid$": user.userid }],
       include: [
         { model: lunchdata, as: "locations" },
         {
@@ -116,15 +118,15 @@ bookmarkget = async (req, res) => {
           exclude: ["lunchid", "userid"],
         },
         {
-        model: bookmarks
-      }]
+          model: bookmarks,
+        },
+      ],
     });
+    for(a of book){
+      a.dataValues.isbook = true;
+    }
     logger.info("GET /book/:lunchid");
-    return res.status(200).send({
-      result: "success",
-      msg: "북마크 가져오기 성공",
-      bookmarks: book,
-    });
+    return res.status(200).send(book);
   } catch (err) {
     logger.error(err);
     return res.status(400).send({
@@ -139,7 +141,9 @@ bookmarkdele = async (req, res) => {
   const { lunchid } = req.params;
   const user = res.locals.user;
   try {
-    const a = await bookmarks.destroy({ where: { lunchid: lunchid, userid: user.userid } }); // 특정 데이터만 삭제
+    const a = await bookmarks.destroy({
+      where: { lunchid: lunchid, userid: user.userid },
+    }); // 특정 데이터만 삭제
     console.log(a);
     if (a) {
       const query =
@@ -155,7 +159,7 @@ bookmarkdele = async (req, res) => {
         result: "success",
         msg: "북마크 삭제 성공",
       });
-    }else{
+    } else {
       logger.error(err);
       return res.status(400).send({
         result: "fail",

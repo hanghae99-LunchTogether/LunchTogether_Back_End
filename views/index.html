@@ -9,13 +9,14 @@
 <div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  const socket = io.connect('https://lebania.shop', {
+  const socket = io.connect('https://lebania.shop/test', {
     path: '/socket.io',
     transports: ['websocket'],
   });
-  socket.on('news', function (data) {
+  socket.on('message', function (data) {
     console.log(data);
-    socket.emit('reply', 'Hello Node.JS');
+    console.log("메세지 보낸다.")
+    socket.emit('sendMessage', 'Hello Node.JS');
   });
 </script>
 </body>
