@@ -2,10 +2,11 @@ const signUpSchema = require("../validations/signup.js");
 const { logger } = require("../config/logger");
 
 module.exports = async (req, res, next) => {
-  const { nickname, email, password} = req.body;
+  const { nickname, email, password } = req.body;
   console.log(nickname, email, password);
 
   try {
+    // joi스키마 미들웨어 방식
     const value = await signUpSchema.validateAsync({
       nickname,
       email,
