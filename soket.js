@@ -20,14 +20,14 @@ module.exports = (server, app, sessionMiddleware) => {
   test.on('connection', (socket) => {
     console.log("연결 됫네")
     socket.on('join', ({ name, room }, callback) => {
-      socket.emit("message", "server메세지")
+      socket.to("message").emit("서버에서 메세지");
     });
   
     socket.on('sendMessage', (message) => {
       console.log("메세지 받앗어요.", message);
       setTimeout(() => {
         console.log("메세지 보냈어요.")
-        socket.emit("message", "server메세지")
+        socket.to("message").emit("서버에서 매세지");
       }, 2000);
     });
   
