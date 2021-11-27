@@ -37,7 +37,7 @@ module.exports = (server, app, sessionMiddleware) => {
 
 
 
-  room.on('connection', (socket, next) => {
+  room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
     
     socket.on('disconnect', () => {

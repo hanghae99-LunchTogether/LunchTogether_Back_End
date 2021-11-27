@@ -12,17 +12,17 @@ dotenv.config();
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
-// if(!process.env.TEST_PORT){
-//   app.use(function (req, res, next) {
-//     if(!req.secure){
-//       res.redirect("https://"+req.headers["host"] + req.url)
-//       console.log('리다이렉트..!')
-//     }
-//     else{
-//       next();
-//     }
-//   })
-// }
+if(!process.env.TEST_PORT){
+  app.use(function (req, res, next) {
+    if(!req.secure){
+      res.redirect("https://"+req.headers["host"] + req.url)
+      console.log('리다이렉트..!')
+    }
+    else{
+      next();
+    }
+  })
+}
 
 const sessionMiddleware = session({
   resave: false,
@@ -83,9 +83,7 @@ app.use(cookieParser(process.env.SECRET_KEY));
 app.use((req, res, next) => {
   if (!req.session.color) {
     const colorHash = new ColorHash();
-    console.log(colorHash);
     req.session.color = colorHash.hex(req.sessionID);
-    console.log(req.session.color);
   }
   next();
 });
