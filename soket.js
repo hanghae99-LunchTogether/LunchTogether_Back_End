@@ -66,7 +66,7 @@ module.exports = (server, app, sessionMiddleware) => {
       if (userCount === 0) { // 유저가 0명이면 방 삭제
         const signedCookie = cookie.sign(req.signedCookies['connect.sid'], process.env.COOKIE_SECRET);
         const connectSID = `${signedCookie}`;
-        axios.delete(`https://lebania.shop/room/${roomId}`, {
+        axios.delete(`https://lebania.shop/test/room/${roomId}`, {
           headers: {
             Cookie: `connect.sid=s%3A${connectSID}`
           } 

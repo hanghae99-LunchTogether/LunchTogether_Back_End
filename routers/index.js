@@ -9,8 +9,8 @@ const applicantRouter = require("./applicant");
 const bookRouter = require("./bookmark");
 const soket = require("./soket");
 const offer = require("./offer");
-const test = require("./test")
-router.use("/", [userRouter,test]);
+const passport = require("./passportlog")
+router.use("/", [userRouter,passport]);
 router.use("/comment", [commRouter]);
 router.use("/lunchpost", [lunchRouter]);
 router.use("/spoon", [userReview]);
