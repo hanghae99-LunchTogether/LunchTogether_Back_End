@@ -27,7 +27,7 @@ module.exports = (server, app, sessionMiddleware) => {
       console.log("메세지 받앗어요.", message);
       setTimeout(() => {
         console.log("메세지 보냈어요.")
-        socket.to("message").emit("서버에서 매세지");
+        socket.emit("message","서버에서 메세지");
       }, 2000);
     });
   
