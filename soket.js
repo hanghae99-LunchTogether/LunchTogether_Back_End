@@ -10,6 +10,7 @@ module.exports = (server, app, sessionMiddleware) => {
   }});
   app.set('io', io);
   const room = io.of('/rooms');
+  room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
   chat.use(ios(sessionMiddleware, { autoSave:true }));
 
@@ -39,7 +40,7 @@ module.exports = (server, app, sessionMiddleware) => {
 
   room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
-    
+    console.log(socket.handshake)
     socket.on('disconnect', () => {
       console.log('room 네임스페이스 접속 해제');
     });
@@ -48,7 +49,6 @@ module.exports = (server, app, sessionMiddleware) => {
   chat.on('connection', (socket) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.handshake;
-    console.log(req);
     const { headers: { referer } } = req;
     const roomId = referer
       .split('/')[referer.split('/').length - 1]
