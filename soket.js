@@ -10,24 +10,23 @@ module.exports = (server, app, sessionMiddleware) => {
   }});
   app.set('io', io);
   const room = io.of('/rooms');
-  room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
   chat.use(ios(sessionMiddleware, { autoSave:true }));
 
   const test = io.of('/test');
 
   test.on('connection', (socket) => {
-    
+    socket.emit("message","서버에서 메세지");
     socket.on('join', ({ name, room }, callback) => {
-      socket.emit("message","서버에서 메세지");
+      socket.to("message").emit("서버에서 메세지");
     });
   
     socket.on('sendMessage', (message) => {
       console.log("메세지 받앗어요.", message);
-      // setTimeout(() => {
-      //   console.log("메세지 보냈어요.")
-      //   socket.emit("message","서버에서 메세지");
-      // }, 2000);
+      setTimeout(() => {
+        console.log("메세지 보냈어요.")
+        socket.emit("message","서버에서 메세지");
+      }, 2000);
     });
   
     socket.on('disconnect', () => {
@@ -40,8 +39,7 @@ module.exports = (server, app, sessionMiddleware) => {
 
   room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
-    const req = socket.handshake;
-    console.log(req)
+    
     socket.on('disconnect', () => {
       console.log('room 네임스페이스 접속 해제');
     });
@@ -50,6 +48,7 @@ module.exports = (server, app, sessionMiddleware) => {
   chat.on('connection', (socket) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.handshake;
+    console.log(req);
     const { headers: { referer } } = req;
     const roomId = referer
       .split('/')[referer.split('/').length - 1]
@@ -66,7 +65,7 @@ module.exports = (server, app, sessionMiddleware) => {
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;
       if (userCount === 0) { // 유저가 0명이면 방 삭제
-        axios.delete(`https://lebania.shop/test/room/${roomId}`, {
+        axios.delete(`http://localhost/room/${roomId}`, {
           headers: {
             Cookie: socket.handshake.headers.cookie
           } 
