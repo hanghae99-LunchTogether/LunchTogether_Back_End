@@ -9,8 +9,8 @@ const fs = require('fs');
 router.get('/', async (req, res, next) => {
   try {
     const rooms = await Room.findAll({});
-    // res.render('main', { rooms, title: 'GIF 채팅방' });
-    res.render('index');
+    res.render('main', { rooms, title: 'GIF 채팅방' });
+    // res.render('index');
   } catch (error) {
     console.error(error);
     next(error);
