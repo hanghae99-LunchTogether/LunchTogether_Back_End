@@ -65,7 +65,7 @@ module.exports = (server, app, sessionMiddleware) => {
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;
       if (userCount === 0) { // 유저가 0명이면 방 삭제
-        axios.delete(`http://localhost/room/${roomId}`, {
+        axios.delete(`https://lebania.shop/room/${roomId}`, {
           headers: {
             Cookie: socket.handshake.headers.cookie
           } 
