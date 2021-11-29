@@ -14,7 +14,7 @@ module.exports = (server, app, sessionMiddleware) => {
   }});
   io.use(function(socket, next){
     // Wrap the express middleware
-    sessionMiddleware(socket.request, {}, next);
+    sessionMiddleware(socket.request, socket.request.res, next);
   })
   app.set('io', io);
   io.adapter(redis(redisClient));
