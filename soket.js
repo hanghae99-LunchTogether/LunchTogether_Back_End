@@ -9,6 +9,9 @@ module.exports = (server, app, sessionMiddleware) => {
     origin: '*',
   }});
   app.set('io', io);
+  io.use(function(socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+  });
   const room = io.of('/rooms');
   room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
