@@ -447,6 +447,7 @@ getotheruser = async (req, res) => {
             },
           ],
           exclude: ["lunchid", "userid"],
+          required: false,
         },]
     });
     const usersReview = await usersReviews.findAll({
@@ -589,6 +590,7 @@ getdeuser = async (req, res) => {
               },
             },
           ],
+          required: false,
           exclude: ["lunchid", "userid"],
         },]
     });
