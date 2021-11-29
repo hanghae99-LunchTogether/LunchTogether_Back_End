@@ -18,7 +18,7 @@ exports.isNotLoggedIn = (req, res, next) => {
       },
       process.env.SECRET_KEY
     );
-    const data = { user: user };
+    const data = { user: req.user };
     res.status(200).send({ msg: "로그인 되있음요~!", data:data, token:token });
     // res.status(200).send({
     //     result: "success",
