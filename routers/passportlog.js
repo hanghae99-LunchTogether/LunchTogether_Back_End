@@ -11,7 +11,7 @@ router.post("/login", isNotLoggedIn, passportlogin.create);
 router.get("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
-  res.redirect("/");
+  res.send("로그인 완료!!");
 });
 
 router.get("/kakao", passport.authenticate("kakao"));
