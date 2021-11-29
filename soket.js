@@ -64,8 +64,8 @@ module.exports = (server, app, sessionMiddleware) => {
 
   chat.on('connection', (socket) => {
     console.log('chat 네임스페이스에 접속');
-    // const req = socket.handshake;
-    const req = socket.request;
+    const req = socket.handshake;
+    // const req = socket.request;
     // console.log(req);
     const { headers: { referer } } = req;
     const roomId = referer
