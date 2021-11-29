@@ -33,7 +33,7 @@ module.exports = (server, app, sessionMiddleware) => {
   const room = io.of('/rooms');
   room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
-  // chat.use(ios(sessionMiddleware, { autoSave:true }));
+  chat.use(ios(sessionMiddleware, { autoSave:true }));
 
   const test = io.of('/test');
 
@@ -61,7 +61,7 @@ module.exports = (server, app, sessionMiddleware) => {
 
   room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
-    const req = socket.handshake;
+    const req = socket.handshake.passport;
     console.log(req);
     socket.on('disconnect', () => {
       console.log('room 네임스페이스 접속 해제');
