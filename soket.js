@@ -12,15 +12,19 @@ module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' },{cors: {
     origin: '*',
   }});
+  io.use(function(socket, next){
+    // Wrap the express middleware
+    sessionMiddleware(socket.request, {}, next);
+  })
   app.set('io', io);
   io.adapter(redis(redisClient));
   // io.use(function(socket, next) {
   //   sessionMiddleware(socket.request, socket.request.res, next);
   // });
   const room = io.of('/rooms');
-  room.use(ios(sessionMiddleware, { autoSave:true }));
+  // room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
-  chat.use(ios(sessionMiddleware, { autoSave:true }));
+  // chat.use(ios(sessionMiddleware, { autoSave:true }));
 
   const test = io.of('/test');
 
@@ -57,7 +61,8 @@ module.exports = (server, app, sessionMiddleware) => {
 
   chat.on('connection', (socket) => {
     console.log('chat 네임스페이스에 접속');
-    const req = socket.handshake;
+    // const req = socket.handshake;
+    const req = socket.request;
     // console.log(req);
     const { headers: { referer } } = req;
     const roomId = referer
