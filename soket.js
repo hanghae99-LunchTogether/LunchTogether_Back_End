@@ -38,7 +38,7 @@ module.exports = (server, app, sessionMiddleware) => {
   const test = io.of('/userin');
   test.use(ios(sessionMiddleware, { autoSave:true }));
   test.on('connection', (socket) => {
-    socket.emit("message","서버에서 메세지");
+    // socket.emit("message","서버에서 메세지");
     socket.on('join', (massage) => {
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
       socket.to("message").emit(socket.handshake.session.passport.user+"접속확인");
