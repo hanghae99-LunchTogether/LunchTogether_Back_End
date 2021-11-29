@@ -12,7 +12,7 @@ module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' },{cors: {
     origin: '*',
   }});
-  io.use(ios(sessionMiddleware, { autoSave:true }));
+  // io.use(ios(sessionMiddleware, { autoSave:true }));
   // io.adapter(redis({
   //   host: process.env.Redisend,
   //   port: process.env.RedisPort,
@@ -31,7 +31,7 @@ module.exports = (server, app, sessionMiddleware) => {
   //   sessionMiddleware(socket.request, socket.request.res, next);
   // });
   const room = io.of('/rooms');
-  // room.use(ios(sessionMiddleware, { autoSave:true }));
+  room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
   // chat.use(ios(sessionMiddleware, { autoSave:true }));
 
