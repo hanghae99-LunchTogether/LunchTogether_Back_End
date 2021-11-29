@@ -44,7 +44,7 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   
     socket.on('sendMessage', (message) => {
-      console.log("메세지 받앗어요.", socket.handshake.session.passport);
+      console.log("메세지 받앗어요.", socket.handshake.session);
       setTimeout(() => {
         console.log("메세지 보냈어요.")
         socket.emit("message","서버에서 메세지");
