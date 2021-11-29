@@ -36,7 +36,7 @@ module.exports = (server, app, sessionMiddleware) => {
   chat.use(ios(sessionMiddleware, { autoSave:true }));
 
   const test = io.of('/test');
-
+  test.use(ios(sessionMiddleware, { autoSave:true }));
   test.on('connection', (socket) => {
     socket.emit("message","서버에서 메세지");
     socket.on('join', ({ name, room }, callback) => {
@@ -44,11 +44,11 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   
     socket.on('sendMessage', (message) => {
-      console.log("메세지 받앗어요.", message);
-      // setTimeout(() => {
-      //   console.log("메세지 보냈어요.")
-      //   socket.emit("message","서버에서 메세지");
-      // }, 2000);
+      console.log("메세지 받앗어요.", socket.handshake.session.passport);
+      setTimeout(() => {
+        console.log("메세지 보냈어요.")
+        socket.emit("message","서버에서 메세지");
+      }, 2000);
     });
   
     socket.on('disconnect', () => {
