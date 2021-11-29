@@ -7,7 +7,7 @@ const fs = require('fs');
 
 router.get('/test',async(req,res)=>{
   console.log(req.session);
-  res.send(req.user);
+  res.send(req.sessionID);
 })
 
 router.get('/', async (req, res, next) => {
