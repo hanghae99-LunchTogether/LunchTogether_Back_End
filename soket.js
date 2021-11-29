@@ -41,7 +41,7 @@ module.exports = (server, app, sessionMiddleware) => {
   room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
     const req = socket.handshake;
-    console.log(req.isAuthenticated());
+    // console.log(req.isAuthenticated());
     socket.on('disconnect', () => {
       console.log('room 네임스페이스 접속 해제');
     });
