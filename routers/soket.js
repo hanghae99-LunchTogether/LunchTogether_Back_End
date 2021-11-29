@@ -5,6 +5,9 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+router.get('/test',async(req,res)=>{
+  res.send(req);
+})
 
 router.get('/', async (req, res, next) => {
   try {
