@@ -6,7 +6,8 @@ const path = require('path');
 const fs = require('fs');
 
 router.get('/test',async(req,res)=>{
-  res.send(JSON.parse(req));
+  console.log(req.session);
+  res.send(req.user);
 })
 
 router.get('/', async (req, res, next) => {
