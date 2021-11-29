@@ -51,6 +51,7 @@
     "passport-jwt": "^4.0.0",
     "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
+    "redis": "^4.0.0",
     "request": "^2.88.2",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.3.0",
