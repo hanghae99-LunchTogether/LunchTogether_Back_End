@@ -23,10 +23,10 @@ module.exports = (server, app, sessionMiddleware) => {
   //   sessionMiddleware(socket.request, socket.request.res, next);
   // })
   app.set('io', io);
-  io.adapter(redis({
-    host: process.env.Redisend,
-    port: process.env.Redispassword
-  }));
+  // io.adapter(redis({
+  //   host: process.env.Redisend,
+  //   port: process.env.Redispassword
+  // }));
   // io.use(function(socket, next) {
   //   sessionMiddleware(socket.request, socket.request.res, next);
   // });
