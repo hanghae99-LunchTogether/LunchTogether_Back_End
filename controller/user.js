@@ -428,7 +428,7 @@ getotheruser = async (req, res) => {
     });
     const applied = await lunchs.findAll({
       where : [
-        {lunchid:{[Op.in]: sequelize.literal('(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = 1964619424)')} },
+        {lunchid:{[Op.in]: sequelize.literal(`(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userid})`)} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -572,7 +572,7 @@ getdeuser = async (req, res) => {
 
     const applied = await lunchs.findAll({
       where : [
-        {lunchid:{[Op.in]: sequelize.literal('(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = 1964619424)')} },
+        {lunchid:{[Op.in]: sequelize.literal(`(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userloc.userid})`)} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
