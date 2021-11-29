@@ -426,22 +426,9 @@ getotheruser = async (req, res) => {
       ],
       where: { userid: userid },
     });
-    const listaa =await lunchs.findAll({
-      where: [
-        {'$applicants.userid$': userid },
-      ],
-      include: [
-        {
-          model: applicant
-        },]
-    });
-    let applist = []
-    listaa.forEach(async(target) => { 
-      applist.push(target.lunchid)
-    })
     const applied = await lunchs.findAll({
       where : [
-        {lunchid:{[Op.in]: applist} },
+        {lunchid:{[Op.in]: sequelize.literal('(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = 1964619424)')} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -582,23 +569,10 @@ getdeuser = async (req, res) => {
       ],
       where: { userid: userloc.userid },
     });
-    
-    const listaa =await lunchs.findAll({
-      where: [
-        {'$applicants.userid$': userid },
-      ],
-      include: [
-        {
-          model: applicant
-        },]
-    });
-    let applist = []
-    listaa.forEach(async(target) => { 
-      applist.push(target.lunchid)
-    })
+
     const applied = await lunchs.findAll({
       where : [
-        {lunchid:{[Op.in]: applist} },
+        {lunchid:{[Op.in]: sequelize.literal('(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = 1964619424)')} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
