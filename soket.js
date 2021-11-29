@@ -35,20 +35,20 @@ module.exports = (server, app, sessionMiddleware) => {
   const chat = io.of('/chat');
   chat.use(ios(sessionMiddleware, { autoSave:true }));
 
-  const test = io.of('/test');
+  const test = io.of('/userin');
   test.use(ios(sessionMiddleware, { autoSave:true }));
   test.on('connection', (socket) => {
     socket.emit("message","서버에서 메세지");
-    socket.on('join', ({ name, room }, callback) => {
-      socket.to("message").emit("서버에서 메세지");
+    socket.on('join', (massage) => {
+      socket.to("message").emit(socket.handshake.session.passport.user+"접속확인");
     });
   
     socket.on('sendMessage', (message) => {
       console.log("메세지 받앗어요.", socket.handshake.session);
-      // setTimeout(() => {
-      //   console.log("메세지 보냈어요.")
-      //   socket.emit("message","서버에서 메세지");
-      // }, 2000);
+      setTimeout(() => {
+        console.log("메세지 보냈어요.")
+        socket.emit("message",socket.handshake.session.passport.user+"접속확인");
+      }, 2000);
     });
   
     socket.on('disconnect', () => {
@@ -63,6 +63,7 @@ module.exports = (server, app, sessionMiddleware) => {
     console.log('room 네임스페이스에 접속');
     const req = socket.handshake.session.passport.user;
     console.log(req);
+    console.log(socket)
     socket.on('disconnect', () => {
       console.log('room 네임스페이스 접속 해제');
     });
@@ -74,6 +75,7 @@ module.exports = (server, app, sessionMiddleware) => {
     // const req = socket.request;
     // console.log(req);
     const { headers: { referer } } = req;
+    console.log(referer);
     const roomId = referer
       .split('/')[referer.split('/').length - 1]
       .replace(/\?.+/, '');
