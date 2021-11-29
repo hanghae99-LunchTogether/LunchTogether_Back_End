@@ -12,19 +12,22 @@ module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' },{cors: {
     origin: '*',
   }});
-  io.use(function(socket, next){
-    // Wrap the express middleware
-    sessionMiddleware(socket.request, socket.request.res, next);
-  })
+  // io.use(function(socket, next){
+  //   // Wrap the express middleware
+  //   sessionMiddleware(socket.request, socket.request.res, next);
+  // })
   app.set('io', io);
-  io.adapter(redis(redisClient));
+  io.adapter(redis({
+    host: process.env.Redisend,
+    port: process.env.Redispassword
+  }));
   // io.use(function(socket, next) {
   //   sessionMiddleware(socket.request, socket.request.res, next);
   // });
   const room = io.of('/rooms');
-  // room.use(ios(sessionMiddleware, { autoSave:true }));
+  room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
-  // chat.use(ios(sessionMiddleware, { autoSave:true }));
+  chat.use(ios(sessionMiddleware, { autoSave:true }));
 
   const test = io.of('/test');
 
