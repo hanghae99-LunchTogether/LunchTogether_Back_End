@@ -3,7 +3,7 @@ const redis = require('redis');
 
 
 const redisClient = redis.createClient({
-    url: `redis://${process.env.Redisend}:${RedisPort}`,
+    url: `redis://${process.env.Redisend}:${process.env.RedisPort}`,
     password: process.env.Redispassword
 });
 
