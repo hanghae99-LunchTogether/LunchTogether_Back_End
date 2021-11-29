@@ -9,6 +9,7 @@ const {
   bookmarks,
   useroffer
 } = require("../models");
+const { Op } = require('sequelize');
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -425,9 +426,22 @@ getotheruser = async (req, res) => {
       ],
       where: { userid: userid },
     });
-    const applied =await lunchs.findAll({
+    const listaa =await lunchs.findAll({
       where: [
         {'$applicants.userid$': userid },
+      ],
+      include: [
+        {
+          model: applicant
+        },]
+    });
+    let applist = []
+    listaa.forEach(async(target) => { 
+      applist.push(target.lunchid)
+    })
+    const applied = await lunchs.findAll({
+      where : [
+        {lunchid:{[Op.in]: applist} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -447,9 +461,8 @@ getotheruser = async (req, res) => {
             },
           ],
           exclude: ["lunchid", "userid"],
-          required: false,
         },]
-    });
+    })
     const usersReview = await usersReviews.findAll({
       include: [
         { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
@@ -569,9 +582,23 @@ getdeuser = async (req, res) => {
       ],
       where: { userid: userloc.userid },
     });
-    const applied =await lunchs.findAll({
+    
+    const listaa =await lunchs.findAll({
       where: [
-        {'$applicants.userid$': userloc.userid },
+        {'$applicants.userid$': userid },
+      ],
+      include: [
+        {
+          model: applicant
+        },]
+    });
+    let applist = []
+    listaa.forEach(async(target) => { 
+      applist.push(target.lunchid)
+    })
+    const applied = await lunchs.findAll({
+      where : [
+        {lunchid:{[Op.in]: applist} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -590,10 +617,9 @@ getdeuser = async (req, res) => {
               },
             },
           ],
-          required: false,
           exclude: ["lunchid", "userid"],
         },]
-    });
+    })
 
 
     const usersReview = await usersReviews.findAll({
