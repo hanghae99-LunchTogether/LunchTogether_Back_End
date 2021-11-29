@@ -12,6 +12,11 @@ module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' },{cors: {
     origin: '*',
   }});
+  io.adapter(redis({
+    host: process.env.Redisend,
+    port: process.env.RedisPort,
+    password: process.env.Redispassword
+  }));
   // io.use(function(socket, next){
   //   // Wrap the express middleware
   //   sessionMiddleware(socket.request, socket.request.res, next);
