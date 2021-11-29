@@ -11,8 +11,14 @@ exports.isNotLoggedIn = (req, res, next) => {
     next();
   } else {
     console.log(req);
-    // const message = encodeURIComponent("로그인한 상태입니다.");
-    res.status(200).send({ msg: "로그인 되있음요~!", user: req.user });
+    const token = jwt.sign(
+      {
+        id: req.user["userid"],
+      },
+      process.env.SECRET_KEY
+    );
+    const data = { user: user };
+    res.status(200).send({ msg: "로그인 되있음요~!", data:data, token:token });
     // res.status(200).send({
     //     result: "success",
     //     msg: "로그인 완료.",
