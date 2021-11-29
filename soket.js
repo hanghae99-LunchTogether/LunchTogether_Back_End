@@ -3,15 +3,20 @@ const axios = require('axios');
 var ios = require("express-socket.io-session");
 // const cookieParser = require('cookie-parser');
 const cookie = require('cookie-signature');
+const redisClient = require('./config/redis');
+const redis = require('socket.io-redis');
+
+
 
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' },{cors: {
     origin: '*',
   }});
   app.set('io', io);
-  io.use(function(socket, next) {
-    sessionMiddleware(socket.request, socket.request.res, next);
-  });
+  io.adapter(redis(redisClient));
+  // io.use(function(socket, next) {
+  //   sessionMiddleware(socket.request, socket.request.res, next);
+  // });
   const room = io.of('/rooms');
   room.use(ios(sessionMiddleware, { autoSave:true }));
   const chat = io.of('/chat');
