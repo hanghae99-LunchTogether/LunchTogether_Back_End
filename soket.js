@@ -41,6 +41,7 @@ module.exports = (server, app, sessionMiddleware) => {
     console.log("클라이언트 연결")
     const redis = redisClient;
     let userid;
+    console.log(socket.handshake.session);
         
     // socket.emit("message","서버에서 메세지");
     socket.on('join', (massage) => {
