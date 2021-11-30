@@ -419,7 +419,7 @@ getotheruser = async (req, res) => {
         },
       ],
       where: { userid: userid },
-      order: [["date", "ASC"]],
+      order: [["date", "DESC"]],
     });
     const applied = await lunchs.findAll({
       where: [
@@ -451,7 +451,7 @@ getotheruser = async (req, res) => {
           exclude: ["lunchid", "userid"],
         },
       ],
-      order: [["date", "ASC"]],
+      order: [["date", "DESC"]],
     });
     const usersReview = await usersReviews.findAll({
       include: [
@@ -468,7 +468,7 @@ getotheruser = async (req, res) => {
         { model: lunchs },
       ],
       where: { targetusers: userid },
-      order: [["date", "ASC"]],
+      order: [["date", "DESC"]],
     });
     const book = await lunchs.findAll({
       where: [{ "$bookmarks.userid$": userid }],
@@ -495,7 +495,7 @@ getotheruser = async (req, res) => {
           model: bookmarks,
         },
       ],
-      order: [["date", "ASC"]],
+      order: [["date", "DESC"]],
     });
     for (a of book) {
       a.dataValues.isbook = true;
@@ -525,7 +525,7 @@ getotheruser = async (req, res) => {
           model: useroffer,
         },
       ],
-      order: [["date", "ASC"]],
+      order: [["date", "DESC"]],
     });
 
     const lunch = {
