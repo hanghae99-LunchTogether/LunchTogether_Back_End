@@ -1,5 +1,12 @@
-const { lunchs, sequelize, users, lunchdata, applicant ,useroffer} = require("../models");
-const ment = require('moment');
+const {
+  lunchs,
+  sequelize,
+  users,
+  lunchdata,
+  applicant,
+  useroffer,
+} = require("../models");
+const ment = require("moment");
 const { logger } = require("../config/logger"); //로그
 const scheule = require("node-schedule");
 require("date-utils");
@@ -10,23 +17,38 @@ getlunchlist = async (req, res) => {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
     let offset = 0;
-    if(pageNum > 1){
+    if (pageNum > 1) {
       offset = 12 * (pageNum - 1);
     }
     const lunch = await lunchs.findAll({
       include: [
-        { model: users, as: "host" ,attributes: { exclude: ["location", "password", "salt", "gender"]}},
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
         { model: lunchdata, as: "locations" },
-        { model: applicant, include: [{ model: users ,attributes: { exclude: ["location", "password", "salt", "gender"] }}] },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+        },
       ],
       where: { private: false },
       offset: offset,
       limit: 12,
-      order: [["date", "DESC"]],
+      order: [["date", "ASC"]],
     });
-    if(user){
-      for(i of lunch){
-        if(user.book.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    if (user) {
+      for (i of lunch) {
+        if (user.book.includes(i.dataValues.lunchid))
+          i.dataValues.isbook = true;
         console.log(i.dataValues.lunchid);
       }
     }
@@ -47,10 +69,34 @@ detaillunchpost = async (req, res) => {
   try {
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, as: "host" ,attributes: { exclude: ["location", "password", "salt", "gender"]}},
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
         { model: lunchdata, as: "locations" },
-        { model: applicant, include: [{ model: users ,attributes: { exclude: ["location", "password", "salt", "gender"]}}] },
-        { model: useroffer, include: [{ model: users ,attributes: { exclude: ["location", "password", "salt", "gender"]}}] }
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+        },
+        {
+          model: useroffer,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt", "gender"],
+              },
+            },
+          ],
+        },
       ],
       where: { lunchid: lunchid },
     });
@@ -129,14 +175,14 @@ postlunchlist = async (req, res) => {
     const jdate = new Date(dodate);
     console.log(new Date(dodate));
     console.log(new Date());
-    console.log(dodate.format('YYYY-MM-DD HH:mm:ss'))
-    scheule.scheduleJob(jdate, async()=>{
-      console.log("시작합니다.",lunch.lunchid)
+    console.log(dodate.format("YYYY-MM-DD HH:mm:ss"));
+    scheule.scheduleJob(jdate, async () => {
+      console.log("시작합니다.", lunch.lunchid);
       const endlunch = await lunchs.update(
-        { end : true },
-        { where:{lunchid: lunch.lunchid} }
-      )
-    })
+        { end: true },
+        { where: { lunchid: lunch.lunchid } }
+      );
+    });
     logger.info("POST /lunchPost");
     return res.status(200).send(lunch);
   } catch (err) {
@@ -204,7 +250,11 @@ updatelunchlist = async (req, res) => {
     });
     const lunchDetail = await lunchs.findOne({
       include: [
-        { model: users, as: "host" ,attributes: { exclude: ["location", "password", "salt", "gender"]}},
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
         { model: lunchdata, as: "locations" },
       ],
       where: { lunchid: lunchid },
@@ -252,9 +302,21 @@ privatelunch = async (req, res) => {
 
   const lunchDetail = await lunchs.findOne({
     include: [
-      { model: users, as: "host" ,attributes: { exclude: ["location", "password", "salt", "gender"]}},
+      {
+        model: users,
+        as: "host",
+        attributes: { exclude: ["location", "password", "salt", "gender"] },
+      },
       { model: lunchdata, as: "locations" },
-      { model: applicant, include: [{ model: users ,attributes: { exclude: ["location", "password", "salt", "gender"]}}] },
+      {
+        model: applicant,
+        include: [
+          {
+            model: users,
+            attributes: { exclude: ["location", "password", "salt", "gender"] },
+          },
+        ],
+      },
     ],
     where: { lunchid: lunchid, userid: user.userid },
   });
@@ -315,9 +377,21 @@ confirmedlunch = async (req, res) => {
 
   const lunchDetail = await lunchs.findOne({
     include: [
-      { model: users, as: "host" ,attributes: { exclude: ["location", "password", "salt", "gender"]}},
+      {
+        model: users,
+        as: "host",
+        attributes: { exclude: ["location", "password", "salt", "gender"] },
+      },
       { model: lunchdata, as: "locations" },
-      { model: applicant, include: [{ model: users ,attributes: { exclude: ["location", "password", "salt", "gender"]}}] },
+      {
+        model: applicant,
+        include: [
+          {
+            model: users,
+            attributes: { exclude: ["location", "password", "salt", "gender"] },
+          },
+        ],
+      },
     ],
     where: { lunchid: lunchid, userid: user.userid },
   });
@@ -375,9 +449,21 @@ bookmarklunch = async (req, res) => {
 
   const lunchDetail = await lunchs.findOne({
     include: [
-      { model: users, as: "host" ,attributes: { exclude: ["location", "password", "salt", "gender"]}},
+      {
+        model: users,
+        as: "host",
+        attributes: { exclude: ["location", "password", "salt", "gender"] },
+      },
       { model: lunchdata, as: "locations" },
-      { model: applicant, include: [{ model: users ,attributes: { exclude: ["location", "password", "salt", "gender"]}}] },
+      {
+        model: applicant,
+        include: [
+          {
+            model: users,
+            attributes: { exclude: ["location", "password", "salt", "gender"] },
+          },
+        ],
+      },
     ],
     where: { lunchid: lunchid },
   });
