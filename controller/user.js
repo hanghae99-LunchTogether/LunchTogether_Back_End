@@ -19,6 +19,7 @@ const path = require("path"); //경로지정
 const fs = require("fs");
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 const { logger } = require("../config/logger"); //로그
+const passport = require("passport");
 
 AWS.config.update({
   //보안자격증명 액세스 키 설정해야 s3 bucket 접근이 가능하다.
@@ -221,10 +222,19 @@ loginkakao = async (req, res) => {
       type: sequelize.QueryTypes.INSERT,
     });
     const users = {
-      id: id,
-      nickname: nickname,
+      id: id
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
+    req.login(isuser => {
+      const token = jwt.sign(users, process.env.SECRET_KEY);
+      const data = { user: isuser };
+      return res.status(200).send({
+        result: "success",
+        msg: "로그인 완료.",
+        token: token,
+        data: data,
+      })
+    })
 
     logger.info("POST /login");
     return res.status(200).send({
