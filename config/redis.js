@@ -22,7 +22,7 @@ redisClient.on('error', function(err) {
 
 });
 
-redisClient.hSet('users', 15544, 55555);
+redisClient.hset('users', 15544, 55555);
 
 
 
