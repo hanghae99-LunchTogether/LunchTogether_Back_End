@@ -60,6 +60,8 @@ module.exports = (server, app, sessionMiddleware) => {
           console.log(obj)
           test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
         })
+      }else{
+        test.to(obj).emit("message","로그인 안됬음..!");
       }
       // test.to(socket.id).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
     });
