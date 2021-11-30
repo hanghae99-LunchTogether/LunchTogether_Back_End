@@ -43,7 +43,7 @@ getlunchlist = async (req, res) => {
       where: { private: false, end: false },
       offset: offset,
       limit: 12,
-      order: [["date"]],
+      order: [["date","ASC"]],
     });
     if (user) {
       for (i of lunch) {
