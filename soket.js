@@ -59,7 +59,7 @@ module.exports = (server, app, sessionMiddleware) => {
             test.to("message").emit("연결실패..!")
           }
           console.log(obj)
-          const notices = notice.findAll({where: { userid: userid }})
+          const notices = await notice.findAll({where: { userid: userid }})
           // test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
           test.to(obj).emit("message", notices );
         })
