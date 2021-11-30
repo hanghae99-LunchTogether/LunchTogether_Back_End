@@ -49,7 +49,7 @@ module.exports = (server, app, sessionMiddleware) => {
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
       // socket.emit("message",socket.handshake.session.passport.user+"접속확인"+massage);
       console.log(socket.handshake.session);
-      if(socket.handshake.session.passport.user){
+      if(socket.handshake.session.passport){
         userid = socket.handshake.session.passport.user
         redis.hset('users', userid, socket.id);
         redis.hget('users', userid, function(err, obj){
