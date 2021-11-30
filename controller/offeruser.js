@@ -74,15 +74,15 @@ postlunchlist = async (req, res) => {
     await redisClient.hget('users', userid, function (err , data) {
       console.log(data);
       if(data){
-        const offerdata = {host: user.nickname, lunch: lunch}
+        const offerdata = { kind : "offer", sender : user.nickname}
         req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
       }
     })
     notice.create({
       userid: userid,
       kind : "offer",
-      message : "테스트 알림입니다..!",
-      nickname : user.nickname
+      message : user.nickname+"제안했다네~~!",
+      sender : user.nickname
     })
     logger.info("POST /offer");
     return res.status(200).send(lunch);
@@ -135,6 +135,20 @@ offerconfirmed = async (req, res) => {
     } 
     if (confirmed) {
       applicants.update({ confirmed: true });
+      await redisClient.hget('users', applicants.dataValues.lunch.dataValues.host.dataValues.userid, function (err , data) {
+        if(err)console.log(err)
+        console.log(data);
+        if(data){
+          const isdata = {kind : "offercon", nickname : user.nickname}
+          req.app.get('io').of('/userin').to(data).emit('offercon', isdata);
+        }
+      })
+      notice.create({
+        userid: applicants.dataValues.lunch.dataValues.host.dataValues.userid,
+        kind : "offercon",
+        message : user.userid+"승인햇데~~!",
+        nickname : user.nickname
+      })
       logger.info("patch /offer/confirmed/:lunchid");
       return res.status(200).send(applicants);
     } else {
@@ -149,6 +163,21 @@ offerconfirmed = async (req, res) => {
         confirmed: false,
         comments: comment,
       });
+      // console.log(applicants.dataValues.lunch.dataValues.host.dataValues.userid);
+      await redisClient.hget('users', applicants.dataValues.lunch.dataValues.host.dataValues.userid, function (err , data) {
+        if(err)console.log(err)
+        console.log(data);
+        if(data){
+          const isdata = { kind : "offercon",nickname : user.nickname}
+          req.app.get('io').of('/userin').to(data).emit('offercon', isdata);
+        }
+      })
+      notice.create({
+        userid: applicants.dataValues.lunch.dataValues.host.dataValues.userid,
+        kind : "offercon",
+        message : user.userid+"거절했데~!",
+        nickname : user.nickname
+      })
       logger.info("patch /offer/confirmed/:lunchid");
       return res.status(200).send(applicants);
     }
@@ -188,30 +217,40 @@ test = async (req, res) => {
 
 dotest = async (req, res)=>{
   try {
-    const { userid ,sid} = req.body
+    const { userid ,sid , sender, kind} = req.body
+    if(!sender||!kind){
+      return res.send("sender, kind가 없습니다.")
+    }
     if(userid){
       await redisClient.hget('users', userid, function (err , data) {
         console.log(data);
         if(data){
-          const offerdata = { host: req.user.nickname , lunch: "테스트 성공입니다."}
-          req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
+          const offerdata = { sender: sender , kind: kind}
+          req.app.get('io').of('/userin').to(data).emit( kind, offerdata);
         }
       })
-      req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
-      res.status(200).send("잘되네요~!")
-    }
-    else{
-      req.app.get('io').of('/userin').to(sid).emit('offer', "test완료");
-      res.status(200).send("잘되네요~!")
       notice.create({
         userid: req.user.userid,
-        kind : "offer",
+        kind : kind,
         message : "테스트 알림입니다..!",
         nickname : req.user.nickname
       })
+      // req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
+      return res.status(200).send("잘되네요~!")
+    }
+    else{
+      const offerdata = { sender: sender , kind: kind}
+      req.app.get('io').of('/userin').to(sid).emit( kind, offerdata);
+      notice.create({
+        userid: req.user.userid,
+        kind : kind,
+        message : "테스트 알림입니다..!",
+        nickname : req.user.nickname
+      })
+      return res.status(200).send("잘되네요~!")
     }
   } catch (error) {
-    res.status(400).send(error);
+    return res.status(400).send(error);
   }
 }
 

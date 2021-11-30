@@ -1,6 +1,7 @@
-const { sequelize, applicant, users, lunchs, lunchdata } = require("../models");
+const { sequelize, applicant, users, lunchs, lunchdata , notice} = require("../models");
 const Op = sequelize.Op;
 const { logger } = require("../config/logger"); //로그
+const redisClient = require('../config/redis'); //레디스
 
 //점약 신청
 applicantpost = async (req, res) => {
@@ -32,6 +33,20 @@ applicantpost = async (req, res) => {
         include: [{ model: lunchs }],
         where: { userid: user.userid, lunchid: lunchid },
       });
+      await redisClient.hget('users', lunch.dataValues.userid, function (err , data) {
+        if(err)console.log(err)
+        console.log(data);
+        if(data){
+          const isdate = { kind : "apply",sender : user.nickname, message : user.userid+"신청햇데~!",}
+          req.app.get('io').of('/userin').to(data).emit('apply', isdate);
+        }
+      })
+      notice.create({
+        userid: applicants.dataValues.lunch.dataValues.host.dataValues.userid,
+        kind : "apply",
+        message : user.userid+"신청햇데~!",
+        sender : user.nickname
+      })
 
       logger.info("POST /applicant/:lunchid");
       return res.status(200).send({
@@ -220,6 +235,20 @@ applicantconfirmed = async (req, res) => {
     if (confirmed) {
       applicants.update({ confirmed: true });
       logger.info("patch /applicant/approved/:lunchid");
+      await redisClient.hget('users', userid, function (err , data) {
+        if(err)console.log(err)
+        console.log(data);
+        if(data){
+          const isdate = { kind : "confirm",sender : user.nickname, message : user.userid+"신청승인햇데~!",}
+          req.app.get('io').of('/userin').to(data).emit('confirm', isdate);
+        }
+      })
+      notice.create({
+        userid: userid,
+        kind : "confirm",
+        message : user.userid+"신청햇데~!",
+        sender : user.nickname
+      })
       return res.status(200).send({
         result: "success",
         msg: "신청자 승인 성공",
@@ -237,6 +266,20 @@ applicantconfirmed = async (req, res) => {
         confirmed: false,
         comments: comment,
       });
+      await redisClient.hget('users', userid, function (err , data) {
+        if(err)console.log(err)
+        console.log(data);
+        if(data){
+          const isdate = { kind : "confirm",sender : user.nickname, message : user.userid+"신청거절햇데~!",}
+          req.app.get('io').of('/userin').to(data).emit('confirm', isdate);
+        }
+      })
+      notice.create({
+        userid: userid,
+        kind : "confirm",
+        message : user.userid+"신청거절햇데~!",
+        sender : user.nickname
+      })
       logger.info("patch /applicant/approved/:lunchid");
       return res.status(200).send({
         result: "success",

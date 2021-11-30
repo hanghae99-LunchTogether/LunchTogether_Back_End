@@ -5,6 +5,7 @@ var ios = require("express-socket.io-session");
 const cookie = require('cookie-signature');
 const redisClient = require('./config/redis');
 const redis = require('socket.io-redis');
+const { notice } = require("../models");
 
 
 
@@ -58,7 +59,9 @@ module.exports = (server, app, sessionMiddleware) => {
             test.to("message").emit("연결실패..!")
           }
           console.log(obj)
-          test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
+          const notices =  await notice.findAll({where: { userid: userid }})
+          // test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
+          test.to(obj).emit("message", notices );
         })
       }else{
         test.to(socket.id).emit("message","로그인 안됬음..!");

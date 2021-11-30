@@ -20,7 +20,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      nickname: {
+      sender: {
         allowNull: false,
         type: Sequelize.STRING,
       },

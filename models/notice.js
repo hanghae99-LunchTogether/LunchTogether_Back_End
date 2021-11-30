@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.STRING,
       },
-      nickname: {
+      sender: {
         require: true,
         type: DataTypes.STRING,
       },
