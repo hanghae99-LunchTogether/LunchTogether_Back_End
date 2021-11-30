@@ -239,14 +239,14 @@ applicantconfirmed = async (req, res) => {
         if(err)console.log(err)
         console.log(data);
         if(data){
-          const isdate = { kind : "confirm",sender : user.nickname, message : user.userid+"신청승인햇데~!",}
+          const isdate = { kind : "confirmYes",sender : user.nickname, message : user.userid+"신청승인햇데~!",}
           req.app.get('io').of('/userin').to(data).emit('confirm', isdate);
         }
       })
       notice.create({
         userid: userid,
-        kind : "confirm",
-        message : user.userid+"신청햇데~!",
+        kind : "confirmYes",
+        message : user.userid+"신청승인햇데~!",
         sender : user.nickname
       })
       return res.status(200).send({
@@ -270,13 +270,13 @@ applicantconfirmed = async (req, res) => {
         if(err)console.log(err)
         console.log(data);
         if(data){
-          const isdate = { kind : "confirm",sender : user.nickname, message : user.userid+"신청거절햇데~!",}
+          const isdate = { kind : "confirmNo",sender : user.nickname, message : user.userid+"신청거절햇데~!",}
           req.app.get('io').of('/userin').to(data).emit('confirm', isdate);
         }
       })
       notice.create({
         userid: userid,
-        kind : "confirm",
+        kind : "confirmNo",
         message : user.userid+"신청거절햇데~!",
         sender : user.nickname
       })

@@ -139,13 +139,13 @@ offerconfirmed = async (req, res) => {
         if(err)console.log(err)
         console.log(data);
         if(data){
-          const isdata = {kind : "offercon", nickname : user.nickname}
+          const isdata = {kind : "offerconYes", nickname : user.nickname}
           req.app.get('io').of('/userin').to(data).emit('offercon', isdata);
         }
       })
       notice.create({
         userid: applicants.dataValues.lunch.dataValues.host.dataValues.userid,
-        kind : "offercon",
+        kind : "offerconYes",
         message : user.userid+"승인햇데~~!",
         nickname : user.nickname
       })
@@ -168,13 +168,13 @@ offerconfirmed = async (req, res) => {
         if(err)console.log(err)
         console.log(data);
         if(data){
-          const isdata = { kind : "offercon",nickname : user.nickname}
+          const isdata = { kind : "offerconNo",nickname : user.nickname}
           req.app.get('io').of('/userin').to(data).emit('offercon', isdata);
         }
       })
       notice.create({
         userid: applicants.dataValues.lunch.dataValues.host.dataValues.userid,
-        kind : "offercon",
+        kind : "offerconNo",
         message : user.userid+"거절했데~!",
         nickname : user.nickname
       })
