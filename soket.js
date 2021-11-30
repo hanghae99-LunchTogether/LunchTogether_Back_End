@@ -40,6 +40,7 @@ module.exports = (server, app, sessionMiddleware) => {
   test.on('connection', (socket) => {
     console.log("클라이언트 연결")
     const redis = redisClient;
+    let userid;
         
     // socket.emit("message","서버에서 메세지");
     socket.on('join', (massage) => {
@@ -47,9 +48,13 @@ module.exports = (server, app, sessionMiddleware) => {
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
       // socket.emit("message",socket.handshake.session.passport.user+"접속확인"+massage);
       if(socket.handshake.session.passport.user){
-        redis.hset('users', req, socket.id);
-        redis.hget('users', req, function(err, obj){
-          if(err)console.log(err)
+        userid = socket.handshake.session.passport.user
+        redis.hset('users', userid, socket.id);
+        redis.hget('users', userid, function(err, obj){
+          if(err){
+            console.log(err)
+            test.to("message").emit("연결실패..!")
+          }
           console.log(obj)
           test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
         })
@@ -66,6 +71,7 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   
     socket.on('disconnect', () => {
+      redisClient.hDel("users", userid);
       console.log("연결종료")
     })
   });
@@ -89,7 +95,7 @@ module.exports = (server, app, sessionMiddleware) => {
       }
     }
     socket.on('disconnect', () => {
-      redisClient.hDel("users", req, callback);
+      redisClient.hDel("users", req);
       console.log('room 네임스페이스 접속 해제');
     });
   });
