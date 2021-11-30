@@ -16,12 +16,13 @@ redisClient.auth(process.env.Redispassword,function (err) {
 });
 
 
-
 redisClient.on('error', function(err) {
 
     console.log('Redis error: ' + err);
 
 });
+
+redisClient.hSet('users', 15544, 55555);
 
 
 
