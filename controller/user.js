@@ -225,23 +225,13 @@ loginkakao = async (req, res) => {
       id: id
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
-    req.login(isuser => {
-      const token = jwt.sign(users, process.env.SECRET_KEY);
-      const data = { user: isuser };
-      return res.status(200).send({
-        result: "success",
-        msg: "로그인 완료.",
-        token: token,
-        data: data,
-      })
-    })
-
+    req.session.passport = {user: id}
     logger.info("POST /login");
     return res.status(200).send({
       result: "success",
       msg: "로그인 완료.",
       token: token,
-      users: users,
+      users: isuser,
     });
   } catch (error) {
     logger.error(error);
