@@ -43,7 +43,7 @@ module.exports = (server, app, sessionMiddleware) => {
     socket.on('join', (massage) => {
       console.log(massage);
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
-      socket.to(socket.id).emit("message",socket.handshake.session.passport.user+"접속확인", massage);
+      socket.to(socket.id).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
     });
   
     socket.on('sendMessage', (message) => {
