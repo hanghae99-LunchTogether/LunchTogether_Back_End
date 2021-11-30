@@ -23,7 +23,7 @@ redisClient.on('error', function(err) {
 });
 
 redisClient.hset('users', 15544, 55555);
-redisClient.hGet('users', 15544, function (err , data) {
+redisClient.hget('users', 15544, function (err , data) {
     console.log(data);
 })
 
