@@ -9,9 +9,13 @@ const ColorHash = require("color-hash").default;
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
+const redis = require('redis');
+const redisClient = require('./config/redis');
+const redisStore = require('connect-redis')(session);
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
+const schedule = require('./middlewares/schedule')
 if(!process.env.TEST_PORT){
   app.use(function (req, res, next) {
     if(!req.secure){
@@ -23,6 +27,11 @@ if(!process.env.TEST_PORT){
     }
   })
 }
+// const client = redis.redisClient({
+//   host: process.env.Redisend,
+//   port: process.env.RedisPort,
+//   password: process.env.Redispassword,
+// });
 
 const sessionMiddleware = session({
   resave: false,
@@ -36,6 +45,9 @@ const sessionMiddleware = session({
     sameSite: "none",
     secure: true
   },
+  store: new redisStore({
+      client: redisClient
+  })
 });
 //    domain : "lebania.shop"  
 app.use(sessionMiddleware);
@@ -83,20 +95,20 @@ app.use(cookieParser(process.env.SECRET_KEY));
 app.use((req, res, next) => {
   if (!req.session.color) {
     const colorHash = new ColorHash();
-    console.log(colorHash);
     req.session.color = colorHash.hex(req.sessionID);
-    console.log(req.session.color);
   }
   next();
 });
 passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-
+schedule();  ///여기서 스케줄복구
 // app.use((req,res,next)=>{
 //   res.header('Access-Control-Expose-Headers','Set-Cookie');
 //   next();
 // })
+
+
 
 app.use("/", [Router]);
 

@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>{{title}}</h1>
-  <a href="/" id="exit-btn">방 나가기</a>
+  <a href="/test" id="exit-btn">방 나가기</a>
   <fieldset>
     <legend>채팅 내용</legend>
     <div id="chat-list">
@@ -86,7 +86,7 @@
     document.querySelector('#chat-form').addEventListener('submit', function (e) {
       e.preventDefault();
       if (e.target.chat.value) {
-        axios.post('/room/{{room.id}}/chat', {
+        axios.post('/test/room/{{room.id}}/chat', {
           chat: this.chat.value,
         })
           .then(() => {
@@ -101,7 +101,7 @@
       console.log(e.target.files);
       const formData = new FormData();
       formData.append('gif', e.target.files[0]);
-      axios.post('/room/{{room.id}}/gif', formData)
+      axios.post('/test/room/{{room.id}}/gif', formData)
         .then(() => {
           e.target.file = null;
         })

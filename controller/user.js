@@ -9,6 +9,7 @@ const {
   bookmarks,
   useroffer
 } = require("../models");
+const { Op } = require('sequelize');
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -425,9 +426,9 @@ getotheruser = async (req, res) => {
       ],
       where: { userid: userid },
     });
-    const applied =await lunchs.findAll({
-      where: [
-        {'$applicants.userid$': userid },
+    const applied = await lunchs.findAll({
+      where : [
+        {lunchid:{[Op.in]: sequelize.literal(`(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userid})`)} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -448,7 +449,7 @@ getotheruser = async (req, res) => {
           ],
           exclude: ["lunchid", "userid"],
         },]
-    });
+    })
     const usersReview = await usersReviews.findAll({
       include: [
         { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
@@ -568,9 +569,10 @@ getdeuser = async (req, res) => {
       ],
       where: { userid: userloc.userid },
     });
-    const applied =await lunchs.findAll({
-      where: [
-        {'$applicants.userid$': userloc.userid },
+
+    const applied = await lunchs.findAll({
+      where : [
+        {lunchid:{[Op.in]: sequelize.literal(`(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userloc.userid})`)} },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -591,7 +593,7 @@ getdeuser = async (req, res) => {
           ],
           exclude: ["lunchid", "userid"],
         },]
-    });
+    })
 
 
     const usersReview = await usersReviews.findAll({

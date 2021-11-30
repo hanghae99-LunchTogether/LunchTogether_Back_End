@@ -33,11 +33,11 @@
     </tbody>
   </table>
   <div class="error-message">{{error}}</div>
-  <a href="/room">채팅방 생성</a>
+  <a href="/test/room">채팅방 생성</a>
 </fieldset>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  const socket = io.connect('https://lebania.shop/room', { // 네임스페이스
+  const socket = io.connect('https://lebania.shop/rooms', { // 네임스페이스
     path: '/socket.io',
   });
 
@@ -79,9 +79,9 @@
   function addBtnEvent(e) { // 방 입장 클릭 시
     if (e.target.dataset.password === 'true') {
       const password = prompt('비밀번호를 입력하세요');
-      location.href = '/room/' + e.target.dataset.id + '?password=' + password;
+      location.href = '/test/room/' + e.target.dataset.id + '?password=' + password;
     } else {
-      location.href = '/room/' + e.target.dataset.id;
+      location.href = '/test/room/' + e.target.dataset.id;
     }
   }
 

@@ -11,10 +11,14 @@ module.exports = async() =>{
         const today = new Date();
         const targets = await lunchs.findAll({
             where:{
-                end: false,
-                date: {[Op.lte]: today},
+                [Op.and]: [{
+                    date: {[Op.lte]: today}
+                }, {
+                    [Op.or]:[{end: false},{end:null}]
+                }],
             }
         })
+        console.log(targets[0]);
         targets.forEach( async(target) => {
             await lunchs.update(
                 {
