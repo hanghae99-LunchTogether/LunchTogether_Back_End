@@ -40,9 +40,8 @@ module.exports = (server, app, sessionMiddleware) => {
     // socket.emit("message","서버에서 메세지");
     socket.on('join', (massage) => {
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
-      socket.to("message").emit(socket.handshake.session.passport.user+"접속확인", massage);
+      socket.to(socket.id).emit("message",socket.handshake.session.passport.user+"접속확인", massage);
     });
-  
     socket.on('sendMessage', (message) => {
       console.log("메세지 받앗어요.", socket.handshake.session);
       // setTimeout(() => {

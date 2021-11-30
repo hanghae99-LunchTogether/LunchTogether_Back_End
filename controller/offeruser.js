@@ -7,7 +7,8 @@ const {
   applicant,
 } = require("../models");
 const { logger } = require("../config/logger"); //로그
-const { get } = require("https");
+const redisClient = require('../config/redis');
+
 require("date-utils");
 
 postlunchlist = async (req, res) => {
@@ -69,7 +70,13 @@ postlunchlist = async (req, res) => {
       lunch: lunch,
       offerusers: offerusers,
     };
-    req.app.get('io').of('/userin').emit('removeRoom', req.params.id);
+    redisClient.hget('users', userid, function (err , data) {
+      console.log(data);
+      if(data){
+        const offerdata = {host: user.nickname, lunch: lunch}
+        req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
+      }
+    })
     logger.info("POST /offer");
     return res.status(200).send(lunch);
   } catch (err) {
