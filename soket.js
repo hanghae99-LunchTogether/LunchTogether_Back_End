@@ -73,7 +73,9 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   
     socket.on('disconnect', () => {
-      redisClient.hdel("users", userid);
+      if(userid){
+        redisClient.hdel("users", userid);
+      }
       console.log("연결종료")
     })
   });
