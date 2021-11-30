@@ -467,8 +467,7 @@ getotheruser = async (req, res) => {
         },
         { model: lunchs },
       ],
-      where: { targetusers: userid },
-      order: [["date", "DESC"]],
+      where: { targetusers: userid }
     });
     const book = await lunchs.findAll({
       where: [{ "$bookmarks.userid$": userid }],
