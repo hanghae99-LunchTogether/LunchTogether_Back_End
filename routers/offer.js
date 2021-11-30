@@ -7,6 +7,6 @@ const { postlunchlist ,offerconfirmed, test, dotest} = require("../controller/of
 router.route("/:userid").post(authMiddleware, postlunchlist);
 router.route("/confirmed/:lunchid").patch(authMiddleware, offerconfirmed);
 router.route("/").get(test);
-router.route("/test").post(passmid.isLoggedIn, dotest)
+router.route("/test/test").post(passmid.isLoggedIn, dotest)
 
 module.exports = router;
