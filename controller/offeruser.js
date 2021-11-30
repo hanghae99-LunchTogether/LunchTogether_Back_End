@@ -204,10 +204,10 @@ dotest = async (req, res)=>{
       req.app.get('io').of('/userin').to(sid).emit('offer', "test완료");
       res.status(200).send("잘되네요~!")
       notice.create({
-        userid: userid,
+        userid: req.user.userid,
         kind : "offer",
         message : "테스트 알림입니다..!",
-        nickname : user.nickname
+        nickname : req.user.nickname
       })
     }
   } catch (error) {
