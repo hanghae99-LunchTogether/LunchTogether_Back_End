@@ -59,9 +59,12 @@ module.exports = (server, app, sessionMiddleware) => {
             test.to("message").emit("연결실패..!")
           }
           console.log(obj)
-          const notices = await notice.findAll({where: { userid: userid }})
+          notice.findAll({where: { userid: userid }}).then((data)=>{
+            test.to(obj).emit("message", data );
+          }).catch(
+            test.to(obj).emit("message", "DB연결에러 문의")
+          )
           // test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
-          test.to(obj).emit("message", notices );
         })
       }else{
         test.to(socket.id).emit("message","로그인 안됬음..!");
