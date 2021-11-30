@@ -7,6 +7,7 @@ const redisClient = require('./config/redis');
 const redis = require('socket.io-redis');
 
 
+
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' },{cors: {
     origin: '*',
@@ -39,6 +40,7 @@ module.exports = (server, app, sessionMiddleware) => {
   test.on('connection', (socket) => {
     // socket.emit("message","서버에서 메세지");
     socket.on('join', (massage) => {
+      console.log(massage);
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
       socket.to("message").emit(socket.handshake.session.passport.user+"접속확인", massage);
     });
