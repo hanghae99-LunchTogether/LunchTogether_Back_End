@@ -63,14 +63,16 @@ module.exports = (server, app, sessionMiddleware) => {
     console.log('room 네임스페이스에 접속');
     console.log(socket.handshake.session);
     if(socket.handshake.session.passport){
-      const req = socket.handshake.session.passport.user;
-      console.log(req);
-      const redis = redisClient;
-      redis.hset('users', req, socket.io);
-      redis.hget('users', req,function(err, obj){
-        if(err)console.log(err)
-        console.log(obj)
-      })
+      if(socket.handshake.session.passport.user){
+        const req = socket.handshake.session.passport.user;
+        console.log(req);
+        const redis = redisClient;
+        redis.hset('users', req, socket.io);
+        redis.hget('users', req,function(err, obj){
+          if(err)console.log(err)
+          console.log(obj)
+        })
+      }
     }
     socket.on('disconnect', () => {
       redisClient.hDel("users", req, callback);
