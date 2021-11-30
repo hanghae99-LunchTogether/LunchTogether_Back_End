@@ -200,6 +200,7 @@ dotest = async (req, res)=>{
 module.exports = {
     postlunchlist:postlunchlist,
     offerconfirmed: offerconfirmed,
-    test:test
+    test:test,
+    dotest:dotest
   };
   
