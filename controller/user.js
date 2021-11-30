@@ -7,9 +7,9 @@ const {
   usersReviews,
   lunchdata,
   bookmarks,
-  useroffer
+  useroffer,
 } = require("../models");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
@@ -143,11 +143,11 @@ signup = async (req, res) => {
 
 login = async (req, res) => {
   const { email, password } = req.body;
-  if(!email){
+  if (!email) {
     logger.error("해당 유저 이메일 잘못됨");
-      return res
-        .status(400)
-        .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
+    return res
+      .status(400)
+      .send({ result: "fail", msg: "이메일이 잘못되었습니다." });
   }
   try {
     const query = "select * from users where email = :email";
@@ -257,9 +257,7 @@ getuser = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     });
     logger.info("GET /main");
-    return res
-      .status(200)
-      .send(users[0]);
+    return res.status(200).send(users[0]);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -381,15 +379,11 @@ upusers = async (req, res) => {
       where: { userid: userloc.userid },
     });
     logger.info("patch /myProfile");
-    return res
-      .status(200)
-      .send(user);
+    return res.status(200).send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
-    return res
-      .status(401)
-      .send(error);
+    return res.status(401).send(error);
   }
 };
 
@@ -425,10 +419,17 @@ getotheruser = async (req, res) => {
         },
       ],
       where: { userid: userid },
+      order: [["ASC"]],
     });
     const applied = await lunchs.findAll({
-      where : [
-        {lunchid:{[Op.in]: sequelize.literal(`(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userid})`)} },
+      where: [
+        {
+          lunchid: {
+            [Op.in]: sequelize.literal(
+              `(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userid})`
+            ),
+          },
+        },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -448,20 +449,29 @@ getotheruser = async (req, res) => {
             },
           ],
           exclude: ["lunchid", "userid"],
-        },]
-    })
+        },
+      ],
+      order: [["ASC"]],
+    });
     const usersReview = await usersReviews.findAll({
       include: [
-        { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
-        { model: users, as: "target", attributes: { exclude: ["location", "password", "salt", "gender"]},},
-        { model: lunchs }
+        {
+          model: users,
+          as: "rater",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: users,
+          as: "target",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        { model: lunchs },
       ],
       where: { targetusers: userid },
-    })
-    const book =await lunchs.findAll({
-      where: [
-        {'$bookmarks.userid$': userid },
-      ],
+      order: [["ASC"]],
+    });
+    const book = await lunchs.findAll({
+      where: [{ "$bookmarks.userid$": userid }],
       include: [
         { model: lunchdata, as: "locations" },
         {
@@ -482,16 +492,15 @@ getotheruser = async (req, res) => {
           exclude: ["lunchid", "userid"],
         },
         {
-        model: bookmarks
-      }]
+          model: bookmarks,
+        },
+      ],
     });
-    for(a of book){
+    for (a of book) {
       a.dataValues.isbook = true;
     }
-    const offered =await lunchs.findAll({
-      where: [
-        {'$useroffers.userid$': userid },
-      ],
+    const offered = await lunchs.findAll({
+      where: [{ "$useroffers.userid$": userid }],
       include: [
         { model: lunchdata, as: "locations" },
         {
@@ -512,22 +521,22 @@ getotheruser = async (req, res) => {
           exclude: ["lunchid", "userid"],
         },
         {
-        model: useroffer,
-      }]
+          model: useroffer,
+        },
+      ],
+      order: [["ASC"]],
     });
-    
+
     const lunch = {
       owned: owned,
       applied: applied,
       bookmarked: book,
-      offered:offered
+      offered: offered,
     };
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
     logger.info("GET /main");
-    return res
-      .status(200)
-      .send(user);
+    return res.status(200).send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -571,8 +580,14 @@ getdeuser = async (req, res) => {
     });
 
     const applied = await lunchs.findAll({
-      where : [
-        {lunchid:{[Op.in]: sequelize.literal(`(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userloc.userid})`)} },
+      where: [
+        {
+          lunchid: {
+            [Op.in]: sequelize.literal(
+              `(select lunchs.lunchid from lunchs inner join applicants on lunchs.lunchid = applicants.lunchid AND applicants.userid = ${userloc.userid})`
+            ),
+          },
+        },
       ],
       include: [
         { model: lunchdata, as: "locations" },
@@ -592,15 +607,20 @@ getdeuser = async (req, res) => {
             },
           ],
           exclude: ["lunchid", "userid"],
-        },]
-    })
-
+        },
+      ],
+    });
 
     const usersReview = await usersReviews.findAll({
       include: [
-        { model: users, as: "rater", attributes: { exclude: ["location", "password", "salt", "gender"]},},
         {
-          model: lunchs,include: [
+          model: users,
+          as: "rater",
+          attributes: { exclude: ["location", "password", "salt", "gender"] },
+        },
+        {
+          model: lunchs,
+          include: [
             {
               model: users,
               as: "host",
@@ -621,14 +641,12 @@ getdeuser = async (req, res) => {
               ],
             },
           ],
-        }
+        },
       ],
       where: { targetusers: userloc.userid },
-    })
+    });
     const book = await lunchs.findAll({
-      where: [
-        {'$bookmarks.userid$': userloc.userid },
-      ],
+      where: [{ "$bookmarks.userid$": userloc.userid }],
       include: [
         { model: lunchdata, as: "locations" },
         {
@@ -649,18 +667,17 @@ getdeuser = async (req, res) => {
           exclude: ["lunchid", "userid"],
         },
         {
-        model: bookmarks
-      }]
+          model: bookmarks,
+        },
+      ],
     });
     const booklist = [];
-    for(a of book){
+    for (a of book) {
       a.dataValues.isbook = true;
-      booklist.push(a.dataValues.lunchid)
+      booklist.push(a.dataValues.lunchid);
     }
-    const offered =await lunchs.findAll({
-      where: [
-        {'$useroffers.userid$': userloc.userid },
-      ],
+    const offered = await lunchs.findAll({
+      where: [{ "$useroffers.userid$": userloc.userid }],
       include: [
         { model: lunchdata, as: "locations" },
         {
@@ -681,17 +698,18 @@ getdeuser = async (req, res) => {
           exclude: ["lunchid", "userid"],
         },
         {
-        model: useroffer,
-      }]
+          model: useroffer,
+        },
+      ],
     });
-    for(i of owned){
-      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    for (i of owned) {
+      if (booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
-    for(i of applied){
-      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    for (i of applied) {
+      if (booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
-    for(i of offered){
-      if(booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
+    for (i of offered) {
+      if (booklist.includes(i.dataValues.lunchid)) i.dataValues.isbook = true;
     }
     const lunch = {
       owned: owned,
@@ -702,9 +720,7 @@ getdeuser = async (req, res) => {
     user.dataValues.lunchs = lunch;
     user.dataValues.usersReviews = usersReview;
     logger.info("GET /main");
-    return res
-      .status(200)
-      .send(user);
+    return res.status(200).send(user);
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -719,14 +735,14 @@ testusers = async (req, res) => {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
     let offset = 0;
-    if(pageNum > 1){
+    if (pageNum > 1) {
       offset = 12 * (pageNum - 1);
     }
     const user = await users.findAll({
       attributes: { exclude: ["location", "password", "salt", "gender"] },
       include: [{ model: locationdata, as: "locations" }],
       offset: offset,
-      limit: 12
+      limit: 12,
     });
     logger.info("GET /usertest");
     return res
