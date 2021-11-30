@@ -5,8 +5,6 @@ var ios = require("express-socket.io-session");
 const cookie = require('cookie-signature');
 const redisClient = require('./config/redis');
 const redis = require('socket.io-redis');
-const { createAdapter } = require("@socket.io/redis-adapter");
-
 
 
 module.exports = (server, app, sessionMiddleware) => {
@@ -67,8 +65,8 @@ module.exports = (server, app, sessionMiddleware) => {
     console.log(req);
     if(req){
       const redis = redisClient;
-      redis.hSet('users', req, socket.io);
-      redis.hGet('users', req,function(err, obj){
+      redis.hset('users', req, socket.io);
+      redis.hget('users', req,function(err, obj){
         if(err)console.log(err)
         console.log(obj)
       })
