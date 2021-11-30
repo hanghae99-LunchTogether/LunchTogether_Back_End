@@ -65,9 +65,9 @@ module.exports = (server, app, sessionMiddleware) => {
     if(socket.handshake.session.passport){
       if(socket.handshake.session.passport.user){
         const req = socket.handshake.session.passport.user;
-        console.log(req);
+        console.log(req, socket.id);
         const redis = redisClient;
-        redis.hset('users', req, socket.io);
+        redis.hset('users', req, socket.id);
         redis.hget('users', req,function(err, obj){
           if(err)console.log(err)
           console.log(obj)
