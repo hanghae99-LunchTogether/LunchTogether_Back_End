@@ -39,12 +39,22 @@ module.exports = (server, app, sessionMiddleware) => {
   test.use(ios(sessionMiddleware, { autoSave:true }));
   test.on('connection', (socket) => {
     console.log("클라이언트 연결")
+    const redis = redisClient;
+        
     // socket.emit("message","서버에서 메세지");
     socket.on('join', (massage) => {
       console.log(massage);
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
       // socket.emit("message",socket.handshake.session.passport.user+"접속확인"+massage);
-      test.to(socket.id).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
+      if(socket.handshake.session.passport.user){
+        redis.hset('users', req, socket.id);
+        redis.hget('users', req, function(err, obj){
+          if(err)console.log(err)
+          console.log(obj)
+          test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
+        })
+      }
+      // test.to(socket.id).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
     });
   
     socket.on('sendMessage', (message) => {
