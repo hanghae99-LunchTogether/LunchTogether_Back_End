@@ -5,7 +5,7 @@ var ios = require("express-socket.io-session");
 const cookie = require('cookie-signature');
 const redisClient = require('./config/redis');
 const redis = require('socket.io-redis');
-const { notice } = require("../models");
+const { notice } = require("./models");
 
 
 
