@@ -5,6 +5,7 @@ const {
   users,
   lunchdata,
   applicant,
+  notice
 } = require("../models");
 const { logger } = require("../config/logger"); //로그
 const redisClient = require('../config/redis');
@@ -76,6 +77,12 @@ postlunchlist = async (req, res) => {
         const offerdata = {host: user.nickname, lunch: lunch}
         req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
       }
+    })
+    notice.create({
+      userid: userid,
+      kind : "offer",
+      message : "테스트 알림입니다..!",
+      nickname : user.nickname
     })
     logger.info("POST /offer");
     return res.status(200).send(lunch);
@@ -196,6 +203,12 @@ dotest = async (req, res)=>{
     else{
       req.app.get('io').of('/userin').to(sid).emit('offer', "test완료");
       res.status(200).send("잘되네요~!")
+      notice.create({
+        userid: userid,
+        kind : "offer",
+        message : "테스트 알림입니다..!",
+        nickname : user.nickname
+      })
     }
   } catch (error) {
     res.status(400).send(error);
