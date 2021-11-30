@@ -62,7 +62,7 @@ module.exports = (server, app, sessionMiddleware) => {
   room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
     console.log(socket.handshake.session);
-    if(socket.handshake.session.passport.user){
+    if(socket.handshake.session.passport){
       const req = socket.handshake.session.passport.user;
       console.log(req);
       const redis = redisClient;
