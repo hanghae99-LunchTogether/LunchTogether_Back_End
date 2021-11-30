@@ -181,16 +181,22 @@ test = async (req, res) => {
 
 dotest = async (req, res)=>{
   try {
-    const { userid } = req.body
-    await redisClient.hget('users', userid, function (err , data) {
-      console.log(data);
-      if(data){
-        const offerdata = { host: req.user.nickname , lunch: "테스트 성공입니다."}
-        req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
-      }
-    })
-    req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
-    res.status(200).send("잘되네요~!")
+    const { userid ,sid} = req.body
+    if(userid){
+      await redisClient.hget('users', userid, function (err , data) {
+        console.log(data);
+        if(data){
+          const offerdata = { host: req.user.nickname , lunch: "테스트 성공입니다."}
+          req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
+        }
+      })
+      req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
+      res.status(200).send("잘되네요~!")
+    }
+    else{
+      req.app.get('io').of('/userin').to(sid).emit('offer', "test완료");
+      res.status(200).send("잘되네요~!")
+    }
   } catch (error) {
     res.status(400).send(error);
   }
