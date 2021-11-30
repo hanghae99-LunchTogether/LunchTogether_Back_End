@@ -11,7 +11,7 @@ exports.isNotLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
     next();
   } else {
-    console.log(req);
+    // console.log(req);
     const token = jwt.sign(
       {
         id: req.user["userid"],
