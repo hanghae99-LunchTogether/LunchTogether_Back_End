@@ -47,6 +47,7 @@ module.exports = (server, app, sessionMiddleware) => {
       console.log(massage);
       // redisClient.hset("inneruser",socket.handshake.session.passport.user)
       // socket.emit("message",socket.handshake.session.passport.user+"접속확인"+massage);
+      console.log(socket.handshake.session);
       if(socket.handshake.session.passport.user){
         userid = socket.handshake.session.passport.user
         redis.hset('users', userid, socket.id);
