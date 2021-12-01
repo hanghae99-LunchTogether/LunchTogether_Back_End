@@ -230,7 +230,7 @@ dotest = async (req, res)=>{
         }
       })
       notice.create({
-        userid: req.user.userid,
+        userid: userid,
         kind : kind,
         message : "테스트 알림입니다..!",
         nickname : req.user.nickname
