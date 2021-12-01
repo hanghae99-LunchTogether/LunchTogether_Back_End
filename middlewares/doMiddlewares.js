@@ -24,7 +24,7 @@ module.exports = async (req, res, next) => {
     }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
-      const query = "select * from users LEFT join bookmarks on users.userid = bookmarks.userid where users.userid = :userid;";
+      const query = "select users.userid, bookmarks.lunchid, locationdata.x, locationdata.y, users.nickname, users.email from users LEFT join bookmarks on users.userid = bookmarks.userid left join locationdata on users.location = locationdata.id where users.userid = :userid;"
       console.log(id);
       const users = await sequelize.query(query, {
         replacements: {
