@@ -214,7 +214,12 @@ loginkakao = async (req, res) => {
       kakaoid: id
     };
     const [user, created] = await users.findOrCreate({
-      where: { kakaoid: id },
+      where: { email: "카카오 유저 입니다.",
+      password: "카카오 유저 입니다.",
+      nickname: nickname,
+      salt: "카카오 유저 입니다.",
+      image: image,
+      kakaoid: id },
       default: doc,
     });
     // const query =
