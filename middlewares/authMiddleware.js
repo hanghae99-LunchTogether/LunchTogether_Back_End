@@ -31,6 +31,7 @@ module.exports = async (req, res, next) => {
           .send({ result: "fail", msg: "해당토큰이 변조됨 다시발급요망" });
         return;
       }
+      console.log(user);
       const user = {
         userid: users[0]["userid"],
         email: users[0]["email"],
