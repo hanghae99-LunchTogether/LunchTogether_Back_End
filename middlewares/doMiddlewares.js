@@ -48,7 +48,6 @@ module.exports = async (req, res, next) => {
         y: users[0].y,
         book: userbookmark
       };
-      console.log(user)
       res.locals.user = user;
       console.log('로컬 유저는?', res.locals.user.nickname);
     } else {
