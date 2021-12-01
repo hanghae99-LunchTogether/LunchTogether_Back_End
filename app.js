@@ -9,9 +9,9 @@ const ColorHash = require("color-hash").default;
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
-const redis = require('redis');
-const redisClient = require('./config/redis');
-const redisStore = require('connect-redis')(session);
+// const redis = require('redis');
+// const redisClient = require('./config/redis');
+// const redisStore = require('connect-redis')(session);
 const Router = require("./routers");
 const app = express();
 const passportConfig = require('./passport');
@@ -45,9 +45,9 @@ const sessionMiddleware = session({
     sameSite: "none",
     secure: true
   },
-  store: new redisStore({
-      client: redisClient
-  })
+  // store: new redisStore({
+  //     client: redisClient
+  // })
 });
 //    domain : "lebania.shop"  
 app.use(sessionMiddleware);
