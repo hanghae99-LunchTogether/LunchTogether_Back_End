@@ -194,21 +194,34 @@ offerconfirmed = async (req, res) => {
 
 test = async (req, res) => {
   try {
-    await lunchdata.findAll({
-      attributes: ['id',
-          [
-          sequelize.fn('ST_Distance',
-              sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', "37.498777145173", "127.029090699483")),
-          'distance'
+    const x = 127.0276, y = 37.498;
+    const lunch = await lunchs.findAll({
+      include: [
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt"] },
+        },
+        { model: lunchdata, as: "locations",
+          attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+            [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt"],
+              },
+            },
           ],
+        },
       ],
-      order : [[sequelize.literal('distance')]]
-      
-      }).then(async (store) =>{
-        console.log(store)
-        res.status(200).send(store)
-      })
-      
+      where: { private: false, end: false },
+      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
+    });
+    return res.status(200).send(lunch)
   } catch (error) {
     console.log(error)
     res.status(400).send(error)
