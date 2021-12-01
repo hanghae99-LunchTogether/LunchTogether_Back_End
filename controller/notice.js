@@ -21,7 +21,7 @@ noticedele = async (req, res) => {
     const user = res.locals.user;
     try {
         await notice.destroy({ where: { userid: user.userid }})
-        logger.error(err);
+        logger.info("delete /user/norice 완료");
         return res.status(200).send({
         result: "success",
         msg: "알림 모두 삭제 완료",
