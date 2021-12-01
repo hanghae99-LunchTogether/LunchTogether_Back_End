@@ -49,9 +49,9 @@ getlunchlist = async (req, res) => {
         },
       ],
       where: { private: false, end: false },
+      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
       offset: offset,
       limit: 12,
-      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
     });
     if (user) {
       for (i of lunch) {
