@@ -62,7 +62,7 @@ module.exports = (server, app, sessionMiddleware) => {
           notice.findAll({where: { userid: userid }}).then((data)=>{
             test.to(obj).emit("message", data );
           }).catch(
-            test.to(obj).emit("message", "DB연결에러 문의")
+            // test.to(obj).emit("message", "DB연결에러 문의")
           )
           // test.to(obj).emit("message",socket.handshake.session.passport.user+"접속확인"+ massage);
         })
