@@ -13,6 +13,11 @@ require("date-utils");
 
 getlunchlist = async (req, res) => {
   const user = res.locals.user;
+  let x, y;
+  if(user){
+    x = user.x;
+    y = user.y;
+  }
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
