@@ -49,8 +49,8 @@ getlunchlist = async (req, res) => {
         },
       ],
       where: { private: false, end: false },
-      // offset: offset,
-      // limit: 12,
+      offset: offset,
+      limit: 12,
       order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
     });
     if (user) {
