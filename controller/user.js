@@ -232,10 +232,10 @@ loginkakao = async (req, res) => {
     // });
     console.log(user);
     const isuser = {
-      id: user.userid
+      id: user.dataValues.userid
     };
-    const token = jwt.sign(users, process.env.SECRET_KEY);
-    req.session.passport = { user: isuser.userid }
+    const token = jwt.sign(isuser, process.env.SECRET_KEY);
+    req.session.passport = { user: user.dataValues.userid }
     logger.info("POST /login");
     return res.status(200).send({
       result: "success",
