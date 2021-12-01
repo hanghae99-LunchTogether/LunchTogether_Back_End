@@ -13,7 +13,7 @@ require("date-utils");
 
 getlunchlist = async (req, res) => {
   const user = res.locals.user;
-  let x, y;
+  let x = 127.0276, y = 37.498;
   if(user){
     x = user.x;
     y = user.y;
@@ -32,7 +32,10 @@ getlunchlist = async (req, res) => {
           as: "host",
           attributes: { exclude: ["location", "password", "salt"] },
         },
-        { model: lunchdata, as: "locations" },
+        { model: lunchdata, as: "locations",
+          attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+            [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
+        },
         {
           model: applicant,
           include: [
@@ -48,7 +51,7 @@ getlunchlist = async (req, res) => {
       where: { private: false, end: false },
       offset: offset,
       limit: 12,
-      order: [["date","ASC"]],
+      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
     });
     if (user) {
       for (i of lunch) {
