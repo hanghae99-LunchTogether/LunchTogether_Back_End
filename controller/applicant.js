@@ -42,7 +42,7 @@ applicantpost = async (req, res) => {
         }
       })
       notice.create({
-        userid: applicants.dataValues.lunch.dataValues.host.dataValues.userid,
+        userid: lunch.dataValues.userid,
         kind : "apply",
         message : user.userid+"신청햇데~!",
         sender : user.nickname
