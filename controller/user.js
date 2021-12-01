@@ -205,23 +205,34 @@ loginkakao = async (req, res) => {
   const { image, nickname, id } = req.body;
   try {
     console.log(image, nickname, id);
-    const query =
-      "insert into users (kakaoid,email,password,nickname,salt,image, createdAt) select :kakaoid,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
-    const isuser = await sequelize.query(query, {
-      replacements: {
-        email: "카카오 유저 입니다.",
-        password: "카카오 유저 입니다.",
-        nickname: nickname,
-        salt: "카카오 유저 입니다.",
-        image: image,
-        kakaoid: id,
-      },
-      type: sequelize.QueryTypes.INSERT,
+    const doc = { 
+      email: "카카오 유저 입니다.",
+      password: "카카오 유저 입니다.",
+      nickname: nickname,
+      salt: "카카오 유저 입니다.",
+      image: image,
+      kakaoid: id
+    };
+    const [user, created] = await users.findOrCreate({
+      where: { kakaoid: id },
+      default: doc,
     });
-    console.log(isuser);
-    
-    const users = {
-      id: isuser.userid
+    // const query =
+    //   "insert into users (kakaoid,email,password,nickname,salt,image, createdAt) select :kakaoid,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
+    // const isuser = await sequelize.query(query, {
+    //   replacements: {
+    //     email: "카카오 유저 입니다.",
+    //     password: "카카오 유저 입니다.",
+    //     nickname: nickname,
+    //     salt: "카카오 유저 입니다.",
+    //     image: image,
+    //     kakaoid: id,
+    //   },
+    //   type: sequelize.QueryTypes.INSERT,
+    // });
+    console.log(user);
+    const isuser = {
+      id: user.userid
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
     req.session.passport = { user: isuser.userid }
