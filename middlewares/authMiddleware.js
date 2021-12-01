@@ -17,6 +17,7 @@ module.exports = async (req, res, next) => {
     }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
+      console.log("토큰 에러확인" ,id)
       const query = "select * from users where userid = :userid";
       const users = await sequelize.query(query, {
         replacements: {
@@ -24,14 +25,13 @@ module.exports = async (req, res, next) => {
         },
         type: sequelize.QueryTypes.SELECT,
       });
-      if (!users) {
+      if (!users.length) {
         logger.error("/middleware 토큰 변조됨");
         res
           .status(401)
           .send({ result: "fail", msg: "해당토큰이 변조됨 다시발급요망" });
         return;
       }
-      console.log(user);
       const user = {
         userid: users[0]["userid"],
         email: users[0]["email"],

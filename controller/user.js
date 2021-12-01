@@ -218,11 +218,13 @@ loginkakao = async (req, res) => {
       },
       type: sequelize.QueryTypes.INSERT,
     });
+    console.log(isuser);
+    
     const users = {
-      id: id
+      id: isuser.userid
     };
     const token = jwt.sign(users, process.env.SECRET_KEY);
-    req.session.passport = {user: id}
+    req.session.passport = { user: isuser.userid }
     logger.info("POST /login");
     return res.status(200).send({
       result: "success",
