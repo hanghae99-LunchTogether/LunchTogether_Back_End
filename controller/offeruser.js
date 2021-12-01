@@ -233,7 +233,7 @@ dotest = async (req, res)=>{
         userid: userid,
         kind : kind,
         message : "테스트 알림입니다..!",
-        nickname : sender
+        sender : sender
       })
       // req.app.get('io').of('/userin').to(data).emit('offer', offerdata);
       return res.status(200).send("잘되네요~!")
@@ -245,7 +245,7 @@ dotest = async (req, res)=>{
         userid: req.user.userid,
         kind : kind,
         message : "테스트 알림입니다..!",
-        nickname : req.user.nickname
+        sender : req.user.nickname
       })
       return res.status(200).send("잘되네요~!")
     }
