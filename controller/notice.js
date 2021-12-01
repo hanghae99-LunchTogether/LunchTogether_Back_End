@@ -27,6 +27,7 @@ noticedele = async (req, res) => {
         msg: "알림 모두 삭제 완료",
         });
     } catch (error) {
+        console.log(error)
         return res.status(400).send({
             result: "fail",
             msg: "알림 모두 삭제 실패",
