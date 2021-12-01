@@ -206,7 +206,7 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id);
     const query =
-      "insert into users (username,email,password,nickname,salt,image, createdAt) select :username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
+      "insert into users (email,password,nickname,salt,image, createdAt) select :email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
     const isuser = sequelize.query(query, {
       replacements: {
         email: "카카오 유저 입니다.",
