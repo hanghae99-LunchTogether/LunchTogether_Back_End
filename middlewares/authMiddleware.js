@@ -17,7 +17,6 @@ module.exports = async (req, res, next) => {
     }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
-      console.log("토큰 에러확인" ,id)
       const query = "select * from users where userid = :userid";
       const users = await sequelize.query(query, {
         replacements: {
@@ -39,7 +38,6 @@ module.exports = async (req, res, next) => {
         userimage: users[0]["image"],
       };
       res.locals.user = user;
-      console.log(user);
       console.log("로컬 유저는?", res.locals.user.nickname);
     } else {
       res.locals.user = undefined;

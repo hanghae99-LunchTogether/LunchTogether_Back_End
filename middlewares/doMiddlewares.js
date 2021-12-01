@@ -25,7 +25,6 @@ module.exports = async (req, res, next) => {
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
       const query = "select users.userid, bookmarks.lunchid, locationdata.x, locationdata.y, users.nickname, users.email from users LEFT join bookmarks on users.userid = bookmarks.userid left join locationdata on users.location = locationdata.id where users.userid = :userid;"
-      console.log(id);
       const users = await sequelize.query(query, {
         replacements: {
           userid: id,
@@ -41,11 +40,12 @@ module.exports = async (req, res, next) => {
         res.status(401).send({ result: "fail", msg: "해당토큰이 변조됨 다시발급요망" }); 
         return ; 
       }
-      console.log(users)
       const user = {
         userid: users[0]['userid'],
         email: users[0]['email'],
         nickname: users[0]['nickname'],
+        x: users[0].x,
+        y: users[0].y,
         book: userbookmark
       };
       console.log(user)
