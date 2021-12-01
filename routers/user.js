@@ -8,7 +8,7 @@ const upload = require("../utils/s3");
 const notice = require('../controller/notice')
 
 router.route("/login").get(authmiddleware, controller.getuser);
-router.route("/signup").post(controller.signup);
+router.route("/signup").post(signupmiddleware, controller.signup);
 router.route("/checkemail").post(controller.checkemail);
 router.route("/checknickname").post(controller.checknickname);
 router
