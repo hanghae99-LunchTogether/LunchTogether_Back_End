@@ -148,7 +148,7 @@ applicantget = async (req, res) => {
       include: [
         {
           model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -158,7 +158,7 @@ applicantget = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -200,7 +200,7 @@ applicantconfirmed = async (req, res) => {
       include: [
         {
           model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -210,7 +210,7 @@ applicantconfirmed = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -305,7 +305,7 @@ applicantgetme = async (req, res) => {
       include: [
         {
           model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -315,7 +315,7 @@ applicantgetme = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -351,7 +351,7 @@ applicantgetthor = async (req, res) => {
       include: [
         {
           model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -361,7 +361,7 @@ applicantgetthor = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],

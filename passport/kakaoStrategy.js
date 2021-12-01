@@ -37,8 +37,7 @@ module.exports = () => {
             const newUser = await users.create({
               email: res.data.kakao_account.email,
               nickname: res.data.properties.nickname,
-              userid: res.data.id,
-              username: "카카오유저",
+              kakaoid: res.data.id
             });
             done(null, newUser);
           }

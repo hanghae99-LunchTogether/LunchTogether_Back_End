@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         required: true,
       },
-      username: {
-        type: DataTypes.STRING,
-        require: true,
+      kakaoid: {
+        type: DataTypes.INTEGER,
+        require: false,
       },
       email: {
         type: DataTypes.STRING,
@@ -48,10 +48,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      gender: {
-        type: DataTypes.STRING,
-        require: false,
-      },
       introduction: {
         type: DataTypes.STRING,
         require: false,
@@ -65,10 +61,6 @@ module.exports = (sequelize, DataTypes) => {
         require: false,
       },
       dislikemenu: {
-        type: DataTypes.STRING,
-        require: false,
-      },
-      company: {
         type: DataTypes.STRING,
         require: false,
       },

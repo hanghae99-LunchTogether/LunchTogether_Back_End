@@ -207,17 +207,15 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id);
     const query =
-      "insert into users (userid,username,email,password,nickname,salt,image, createdAt) select :userid,:username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where userid = :userid);";
+      "insert into users (username,email,password,nickname,salt,image, createdAt) select :username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
     const isuser = sequelize.query(query, {
       replacements: {
-        userid: id,
-        username: "카카오 유저",
-        email: "카카오 이메일",
-        password: "카카오 로그인 유저",
+        email: "카카오 유저 입니다.",
+        password: "카카오 유저 입니다.",
         nickname: nickname,
-        salt: "카카오 유저",
+        salt: "카카오 유저 입니다.",
         image: image,
-        userid: id,
+        kakaoid: id,
       },
       type: sequelize.QueryTypes.INSERT,
     });
@@ -249,7 +247,7 @@ getuser = async (req, res) => {
   const user = res.locals.user;
   try {
     const query =
-      "select userid,email,nickname,image,mbti,introduction,likemenu,dislikemenu,company,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
+      "select userid,nickname,image,mbti,introduction,likemenu,dislikemenu,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
         userid: user.userid,
@@ -271,41 +269,28 @@ getuser = async (req, res) => {
 upusers = async (req, res) => {
   const userloc = res.locals.user;
   const {
-    username,
     email,
     nickname,
     likemenu,
     dislikemenu,
     mbti,
-    gender,
     locations,
-    company,
     introduction,
     job,
     snsurl,
     image,
   } = req.body;
   console.log(
-    username,
     email,
     nickname,
     likemenu,
     dislikemenu,
     mbti,
-    gender,
-    company,
     introduction,
     job,
     snsurl,
     image
   );
-  // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
-  // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
-  //     logger.error("patch /myProfile 유저 정보 아무것도 없음");
-  //     return res
-  //     .status(401)
-  //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
-  //   }
   let locationid;
   // if (req.file) {
   //   console.log("파일은 담기고있는가?", req.file.location);
@@ -313,7 +298,6 @@ upusers = async (req, res) => {
   try {
     // let originalUrl;
     let querys = "UPDATE users SET ";
-    if (username) querys = querys + " username = :username,";
     if (nickname) querys = querys + " nickname = :nickname,";
     if (email) querys = querys + " email = :email,";
     // if (req.file) {
@@ -322,7 +306,6 @@ upusers = async (req, res) => {
     // }
     if (image) querys = querys + " image = :image,";
     if (mbti) querys = querys + " mbti = :mbti,";
-    if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
     if (locations) {
       console.log(locations);
@@ -348,7 +331,6 @@ upusers = async (req, res) => {
     }
     if (likemenu) querys = querys + " likemenu = :likemenu,";
     if (dislikemenu) querys = querys + " dislikemenu = :dislikemenu,";
-    if (company) querys = querys + " company = :company,";
     if (job) querys = querys + " job = :job,";
     if (snsurl) querys = querys + " snsurl = :snsurl,";
     querys = querys.slice(0, -1);
@@ -374,7 +356,7 @@ upusers = async (req, res) => {
       type: sequelize.QueryTypes.UPDATE,
     });
     const user = await users.findOne({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
@@ -392,7 +374,7 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userid },
     });
@@ -403,7 +385,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -411,7 +393,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -436,7 +418,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -444,7 +426,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -458,12 +440,12 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "rater",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: users,
           as: "target",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         { model: lunchs },
       ],
@@ -476,7 +458,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -484,7 +466,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -506,7 +488,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -514,7 +496,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -550,7 +532,7 @@ getdeuser = async (req, res) => {
   const userloc = res.locals.user;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
@@ -561,7 +543,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -569,7 +551,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -595,7 +577,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -603,7 +585,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -618,7 +600,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "rater",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -627,7 +609,7 @@ getdeuser = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
             { model: lunchdata, as: "locations" },
@@ -637,7 +619,7 @@ getdeuser = async (req, res) => {
                 {
                   model: users,
                   attributes: {
-                    exclude: ["location", "password", "salt", "gender"],
+                    exclude: ["location", "password", "salt"],
                   },
                 },
               ],
@@ -655,7 +637,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -663,7 +645,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -687,7 +669,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -695,7 +677,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -743,7 +725,7 @@ testusers = async (req, res) => {
       offset = 12 * (pageNum - 1);
     }
     const user = await users.findAll({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       offset: offset,
       limit: 12,

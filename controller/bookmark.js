@@ -60,7 +60,7 @@ bookmarkpost = async (req, res) => {
           {
             model: users,
             as: "host",
-            attributes: { exclude: ["location", "password", "salt", "gender"] },
+            attributes: { exclude: ["location", "password", "salt"] },
           },
           {
             model: applicant,
@@ -68,7 +68,7 @@ bookmarkpost = async (req, res) => {
               {
                 model: users,
                 attributes: {
-                  exclude: ["location", "password", "salt", "gender"],
+                  exclude: ["location", "password", "salt"],
                 },
               },
             ],
@@ -103,7 +103,7 @@ bookmarkget = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -111,7 +111,7 @@ bookmarkget = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],

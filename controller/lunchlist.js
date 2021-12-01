@@ -25,7 +25,7 @@ getlunchlist = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         { model: lunchdata, as: "locations" },
         {
@@ -34,7 +34,7 @@ getlunchlist = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -72,7 +72,7 @@ detaillunchpost = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         { model: lunchdata, as: "locations" },
         {
@@ -81,7 +81,7 @@ detaillunchpost = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -92,7 +92,7 @@ detaillunchpost = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -253,7 +253,7 @@ updatelunchlist = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         { model: lunchdata, as: "locations" },
       ],
@@ -305,7 +305,7 @@ privatelunch = async (req, res) => {
       {
         model: users,
         as: "host",
-        attributes: { exclude: ["location", "password", "salt", "gender"] },
+        attributes: { exclude: ["location", "password", "salt"] },
       },
       { model: lunchdata, as: "locations" },
       {
@@ -313,7 +313,7 @@ privatelunch = async (req, res) => {
         include: [
           {
             model: users,
-            attributes: { exclude: ["location", "password", "salt", "gender"] },
+            attributes: { exclude: ["location", "password", "salt"] },
           },
         ],
       },
@@ -380,7 +380,7 @@ confirmedlunch = async (req, res) => {
       {
         model: users,
         as: "host",
-        attributes: { exclude: ["location", "password", "salt", "gender"] },
+        attributes: { exclude: ["location", "password", "salt"] },
       },
       { model: lunchdata, as: "locations" },
       {
@@ -388,7 +388,7 @@ confirmedlunch = async (req, res) => {
         include: [
           {
             model: users,
-            attributes: { exclude: ["location", "password", "salt", "gender"] },
+            attributes: { exclude: ["location", "password", "salt"] },
           },
         ],
       },
@@ -452,7 +452,7 @@ bookmarklunch = async (req, res) => {
       {
         model: users,
         as: "host",
-        attributes: { exclude: ["location", "password", "salt", "gender"] },
+        attributes: { exclude: ["location", "password", "salt"] },
       },
       { model: lunchdata, as: "locations" },
       {
@@ -460,7 +460,7 @@ bookmarklunch = async (req, res) => {
         include: [
           {
             model: users,
-            attributes: { exclude: ["location", "password", "salt", "gender"] },
+            attributes: { exclude: ["location", "password", "salt"] },
           },
         ],
       },

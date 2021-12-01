@@ -11,7 +11,7 @@ commentget = async (req, res) => {
       include: [
         {
           model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
       ],
       where: { lunchid },
