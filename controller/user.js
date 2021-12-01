@@ -204,24 +204,41 @@ login = async (req, res) => {
 loginkakao = async (req, res) => {
   const { image, nickname, id } = req.body;
   try {
-    console.log(image, nickname, id);
-    const doc = { 
-      email: "카카오 유저 입니다.",
-      password: "카카오 유저 입니다.",
-      nickname: nickname,
-      salt: "카카오 유저 입니다.",
-      image: image,
-      kakaoid: id
-    };
-    const [user, created] = await users.findOrCreate({
-      where: { email: "카카오 유저 입니다.",
-      password: "카카오 유저 입니다.",
-      nickname: nickname,
-      salt: "카카오 유저 입니다.",
-      image: image,
-      kakaoid: id },
-      default: doc,
+    const exUser = await users.findOne({
+      where: { kakaoid: id },
     });
+    if (exUser) {
+      const isuser = {
+        id: exUser.dataValues.userid
+      };
+      const token = jwt.sign(isuser, process.env.SECRET_KEY);
+      req.session.passport = { user: exUser.dataValues.userid }
+      logger.info("POST /login");
+      return res.status(200).send({
+        result: "success",
+        msg: "로그인 완료.",
+        token: token,
+        users: exUser,
+      });
+    } else {
+      const newUser = await users.create({
+        image: image,
+        nickname: nickname,
+        kakaoid: id
+      });
+      const isuser = {
+        id: newUser.dataValues.userid
+      };
+      const token = jwt.sign(isuser, process.env.SECRET_KEY);
+      req.session.passport = { user: newUser.dataValues.userid }
+      logger.info("POST /login");
+      return res.status(200).send({
+        result: "success",
+        msg: "로그인 완료.",
+        token: token,
+        users: newUser,
+      });
+    }
     // const query =
     //   "insert into users (kakaoid,email,password,nickname,salt,image, createdAt) select :kakaoid,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
     // const isuser = await sequelize.query(query, {
@@ -235,19 +252,6 @@ loginkakao = async (req, res) => {
     //   },
     //   type: sequelize.QueryTypes.INSERT,
     // });
-    console.log(user);
-    const isuser = {
-      id: user.dataValues.userid
-    };
-    const token = jwt.sign(isuser, process.env.SECRET_KEY);
-    req.session.passport = { user: user.dataValues.userid }
-    logger.info("POST /login");
-    return res.status(200).send({
-      result: "success",
-      msg: "로그인 완료.",
-      token: token,
-      users: isuser,
-    });
   } catch (error) {
     logger.error(error);
     console.log(error);

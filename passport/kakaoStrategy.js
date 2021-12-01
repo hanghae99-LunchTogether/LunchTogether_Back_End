@@ -29,7 +29,7 @@ module.exports = () => {
             },
           });
           const exUser = await users.findOne({
-            where: { userid: profile.id, username: "카카오유저" },
+            where: { kakaoid: profile.id },
           });
           if (exUser) {
             done(null, exUser);
