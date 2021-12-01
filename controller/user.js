@@ -206,7 +206,7 @@ loginkakao = async (req, res) => {
   try {
     console.log(image, nickname, id);
     const query =
-      "insert into users (email,password,nickname,salt,image, createdAt) select :email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
+      "insert into users (kakaoid,email,password,nickname,salt,image, createdAt) select :kakaoid,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
     const isuser = sequelize.query(query, {
       replacements: {
         email: "카카오 유저 입니다.",
@@ -337,17 +337,14 @@ upusers = async (req, res) => {
     console.log("마지막으로 완성된 쿼리문", querys);
     const updateuser = await sequelize.query(querys, {
       replacements: {
-        username: username,
         nickname: nickname,
         email: email,
         image: image,
         mbti: mbti,
-        gender: gender,
         introduction: introduction,
         location: locationid,
         likemenu: likemenu,
         dislikemenu: dislikemenu,
-        company: company,
         job: job,
         snsurl: snsurl,
         userid: userloc.userid,
