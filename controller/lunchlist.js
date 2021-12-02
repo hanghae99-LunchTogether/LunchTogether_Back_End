@@ -34,10 +34,7 @@ getlunchlist = async (req, res) => {
           as: "host",
           attributes: { exclude: ["location", "password", "salt"] },
         },
-        { model: lunchdata, as: "locations",
-          attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
-            [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
-        },
+        { model: lunchdata, as: "locations"},
         {
           model: applicant,
           include: [
@@ -55,6 +52,8 @@ getlunchlist = async (req, res) => {
       offset: offset,
       limit: 12,
     });
+    //attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+    // [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
     //[sequelize.literal("`locations.distance` ASC"),
     const islunch = lunch.slice(offset-12,offset)
     if (user) {
