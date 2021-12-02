@@ -9,26 +9,18 @@ const { logger } = require("../config/logger"); //로그
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
-  const { targetuserid, spoon, comment, lunchid } = req.body;
+  const { reviews } = req.body;
   const user = res.locals.user;
-  if (user.userid == targetuserid) {
-    return res.status(400).send({
-      result: "fail",
-      msg: "본인이 본인을 평가하는건 아닌거같은데요...?",
-    });
-  }
-  console.log(
-    "타겟:",
-    targetuserid,
-    "몇점:",
-    spoon,
-    "코맨트:",
-    comment,
-    "몇번포스터?:",
-    lunchid
-  );
+  console.log( reviews );
   try {
     let sum = 0;
+    if(reviews.length){
+      logger.error("POST /book/:lunchid 리뷰 데이터를 안보냄");
+      return res.status(400).send({
+        result: "fail",
+        msg: "잘못된 요청 리뷰데이터를 보내지 않았습니다.",
+      });
+    }
     const islunch = await lunchs.findOne({ where: { lunchid: lunchid } });
     if (!islunch) {
       return res.status(400).send({

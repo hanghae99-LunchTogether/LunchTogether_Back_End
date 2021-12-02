@@ -457,17 +457,17 @@ getotheruser = async (req, res) => {
       include: [
         {
           model: users,
-          as: "rater",
+          as: "reviewer",
           attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: users,
-          as: "target",
+          as: "targetUser",
           attributes: { exclude: ["location", "password", "salt"] },
         },
         { model: lunchs },
       ],
-      where: { targetusers: userid }
+      where: { targetUserId: userid }
     });
     const book = await lunchs.findAll({
       where: [{ "$bookmarks.userid$": userid }],
@@ -617,7 +617,7 @@ getdeuser = async (req, res) => {
       include: [
         {
           model: users,
-          as: "rater",
+          as: "targetUser",
           attributes: { exclude: ["location", "password", "salt"] },
         },
         {
@@ -645,7 +645,7 @@ getdeuser = async (req, res) => {
           ],
         },
       ],
-      where: { targetusers: userloc.userid },
+      where: { targetUserId: userloc.userid },
     });
     const book = await lunchs.findAll({
       where: [{ "$bookmarks.userid$": userloc.userid }],

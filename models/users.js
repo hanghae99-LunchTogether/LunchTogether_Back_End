@@ -95,7 +95,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "userid",
     });
     models.users.hasMany(models.usersReviews, {
-      foreignKey: "userid",
+      foreignKey: "reviewerId",
       sourceKey: "userid",
     });
     models.users.hasMany(models.lunchs, {
@@ -103,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "userid",
     });
     models.users.hasMany(models.usersReviews, {
-      foreignKey: "targetusers",
+      foreignKey: "targetUserId",
       sourceKey: "userid",
     });
     models.users.hasMany(models.bookmarks, {
