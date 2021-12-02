@@ -48,7 +48,7 @@ getlunchlist = async (req, res) => {
         },
       ],
       where: { private: false, end: false },
-      order: ["date","ASC"],
+      order: [["date", "ASC"]],
       offset: offset,
       limit: 12,
     });
