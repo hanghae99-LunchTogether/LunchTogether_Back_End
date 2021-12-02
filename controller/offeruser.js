@@ -196,45 +196,41 @@ test = async (req, res) => {
   try {
     const x = 127.0276, y = 37.498;
     let pageNum = req.query.page
-    let offset = 0;
+    let offset = 12;
     if (pageNum > 1) {
-      offset = 12 * (pageNum - 1);
+      offset = 12 * (pageNum);
     }
     // [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']
     const lunch = await lunchs.findAll({
-      attributes:
-        [[ 
-        sequelize.fn('ST_Distance',
-        sequelize.fn('POINT', sequelize.col('`locations.y`'), 
-        sequelize.col('`locations.x`')), sequelize.fn('POINT', y, x)),'distance']],order: ["distance","ASC"],
-        include: [
-          { model: lunchdata, as: "locations" },
-          {
-            model: applicant,
-            include: [
-              {
-                model: users,
-                attributes: {
-                  exclude: ["location", "password", "salt", "gender"],
-                },
+      include: [
+        {
+          model: users,
+          as: "host",
+          attributes: { exclude: ["location", "password", "salt"] },
+        },
+        { model: lunchdata, as: "locations",
+          attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+            [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
+        },
+        {
+          model: applicant,
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: ["location", "password", "salt"],
               },
-            ],
-          },
-          {
-            model: users,
-            as: "host",
-            attributes: { exclude: ["location", "password", "salt", "gender"] },
-          },
-          
-          
-        ],
+            },
+          ],
+        },
+      ],
       where: { private: false, end: false },
-      offset: offset,
-      limit: 12,
-      order: [["date","ASC"]],
+      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
     });
+    console.log(offset)
+    const islunch = lunch.slice(offset-12,offset)
     //sequelize.literal("`locations.distance` ASC")
-    return res.status(200).send(lunch)
+    return res.status(200).send(islunch)
   } catch (error) {
     console.log(error)
     res.status(400).send(error)
