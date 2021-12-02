@@ -34,7 +34,13 @@ https://lunchfork.co.kr
 * Database: Amazon RDS (MySQL)   
 * Image Storage : AWS S3
 ## 📚 주요 라이브러리
-axios, class-validator, passport, multer, dotenv, helmet, cors, joi, socket.io, redis, swagger
+<img src="https://img.shields.io/badge/Axios-0.24.0-764ABC?style=flat-square&logo=Axios&logoColor=white"/> <img src="https://img.shields.io/badge/Passport-0.5.0-34E27A?style=flat-square&logo=Passport&logoColor=white"/> <img src="https://img.shields.io/badge/multer-1.4.3-F38658?style=flat-square&logo=multer&logoColor=white"/>
+<img src="https://img.shields.io/badge/dotenv-10.0.0-E5CE3D?style=flat-square&logo=dotenv&logoColor=white"/>
+<img src="https://img.shields.io/badge/Cors-2.8.5-F7D18B?style=flat-square&logo=Cors&logoColor=white"/>   
+<img src="https://img.shields.io/badge/Joi-17.4.2-E52C6D?style=flat-square&logo=Joi&logoColor=white"/>
+<img src="https://img.shields.io/badge/Socket.io-4.4.0-010101?style=flat-square&logo=Socket.io&logoColor=white"/>
+<img src="https://img.shields.io/badge/Redis-4.0.0-DC382D?style=flat-square&logo=Redis&logoColor=white"/>
+<img src="https://img.shields.io/badge/Swagger-2.12.2-85EA2D?style=flat-square&logo=Swagger&logoColor=white"/>
 
 ## ✨ 주요 기능
 1. 로그인
