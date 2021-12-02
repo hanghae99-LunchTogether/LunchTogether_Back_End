@@ -55,16 +55,16 @@ getlunchlist = async (req, res) => {
     //attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
     // [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
     //[sequelize.literal("`locations.distance` ASC"),
-    const islunch = lunch.slice(offset-12,offset)
+    // const islunch = lunch.slice(offset-12,offset)
     if (user) {
-      for (i of islunch) {
+      for (i of lunch) {
         if (user.book.includes(i.dataValues.lunchid))
           i.dataValues.isbook = true;
         
       }
     }
     logger.info("GET /lunchpost/");
-    return res.status(200).send(islunch);
+    return res.status(200).send(lunch);
   } catch (err) {
     logger.error(err);
     console.log(err);
