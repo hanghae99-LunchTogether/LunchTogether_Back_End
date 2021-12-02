@@ -21,9 +21,9 @@ getlunchlist = async (req, res) => {
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
-    let offset = 0;
-    if (pageNum > 1) {
-      offset = 12 * (pageNum - 1);
+    let offset = 12;
+    if (pageNum > 0) {
+      offset = 12 * (pageNum);
     }
     const lunch = await lunchs.findAll({
       include: [
@@ -53,15 +53,16 @@ getlunchlist = async (req, res) => {
       // offset: offset,
       // limit: 12,
     });
+    const islunch = lunch.slice(offset-12,offset)
     if (user) {
-      for (i of lunch) {
+      for (i of islunch) {
         if (user.book.includes(i.dataValues.lunchid))
           i.dataValues.isbook = true;
-        console.log(i.dataValues.lunchid);
+        
       }
     }
     logger.info("GET /lunchpost/");
-    return res.status(200).send(lunch);
+    return res.status(200).send(islunch);
   } catch (err) {
     logger.error(err);
     console.log(err);
