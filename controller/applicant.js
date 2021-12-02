@@ -233,7 +233,8 @@ applicantconfirmed = async (req, res) => {
       });
     }
     if (confirmed) {
-      applicants.update({ confirmed: true });
+      // applicants.update({ confirmed: true });
+      applicants.destroy({where: {userid: userid}})
       logger.info("patch /applicant/approved/:lunchid");
       await redisClient.hget('users', userid, function (err , data) {
         if(err)console.log(err)
