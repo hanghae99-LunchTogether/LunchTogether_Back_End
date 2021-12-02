@@ -755,7 +755,7 @@ allusers = async (req, res) => {
           [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] , }],
       offset: offset,
       limit: 12,
-      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
+      order: [sequelize.literal("`locations.distance` ASC")],
     });
     logger.info("GET /usertest");
     return res
