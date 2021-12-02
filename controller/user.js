@@ -741,6 +741,7 @@ allusers = async (req, res) => {
     x = user.x;
     y = user.y;
   }
+  console.log(x,y)
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
