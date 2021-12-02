@@ -738,8 +738,10 @@ allusers = async (req, res) => {
   const user = res.locals.user;
   let x = 127.0276, y = 37.498;
   if(user){
-    x = user.x;
-    y = user.y;
+    if(user.x,user.y){
+      x = user.x;
+      y = user.y;
+    }
   }
   console.log(x,y)
   try {
