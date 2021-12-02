@@ -23,9 +23,9 @@ getlunchlist = async (req, res) => {
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
-    let offset = 12;
-    if (pageNum > 0) {
-      offset = 12 * (pageNum);
+    let offset = 0;
+    if (pageNum > 1) {
+      offset = 12 * (pageNum-1);
     }
     const lunch = await lunchs.findAll({
       include: [
@@ -51,10 +51,11 @@ getlunchlist = async (req, res) => {
         },
       ],
       where: { private: false, end: false },
-      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
-      // offset: offset,
-      // limit: 12,
+      order: ["date","ASC"],
+      offset: offset,
+      limit: 12,
     });
+    //[sequelize.literal("`locations.distance` ASC"),
     const islunch = lunch.slice(offset-12,offset)
     if (user) {
       for (i of islunch) {
