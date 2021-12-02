@@ -11,7 +11,7 @@ const { logger } = require("../config/logger"); //로그
 spoonpost = async (req, res) => {
   const { reviews } = req.body;
   const user = res.locals.user;
-  console.log( reviews );
+  console.log( "리뷰데이터들",reviews );
   try {
     let sum = 0;
     if(reviews.length){
@@ -21,6 +21,8 @@ spoonpost = async (req, res) => {
         msg: "잘못된 요청 리뷰데이터를 보내지 않았습니다.",
       });
     }
+    const targetUserId = reviews[0].targetUserId
+    const lunchid = reviews[0].lunchid
     const islunch = await lunchs.findOne({ where: { lunchid: lunchid } });
     if (!islunch) {
       return res.status(400).send({
@@ -29,40 +31,31 @@ spoonpost = async (req, res) => {
       });
     }
     const all = await usersReviews.findAll({
-      where: { targetusers: targetuserid },
+      where: { targetUserId: targetUserId },
     });
-    const doc = {
-      userid: user.userid,
-      targetusers: targetuserid,
-      lunchid: lunchid,
-      spoon: spoon,
-      comments: comment,
-    };
+    // const doc = {
+    //   reviewerId: reviewerId,
+    //   targetUserId: targetUserId,
+    //   lunchid: lunchid,
+    //   spoon: spoon,
+    //   comment: comment,
+    // };
     function findisuser(element) {
       sum = sum + element.dataValues.spoon;
-      if (
-        element.dataValues.targetusers === targetuserid &&
-        element.dataValues.lunchid === lunchid
-      ) {
-        return true;
-      }
+      return true;
     }
     const isusers = all.filter(findisuser);
-    if (isusers.length) {
-      return res.status(400).send({
-        result: "fail",
-        msg: "평가를 벌써 하셧네요..",
-      });
-    } else {
-      const userre = await usersReviews.create(doc);
-      const issum = (sum + spoon) / (all.length + 1);
-      users.update(
-        { mannerStatus: issum },
-        { where: { userid: targetuserid } }
-      );
-      logger.info("POST /book/:lunchid");
-      return res.status(200).send(userre);
-    }
+    reviews.forEach((target)=>{
+      sum = sum + target.spoon;
+    })
+    const userre = await usersReviews.bulkCreate(reviews);
+    const issum = (sum) / (all.length + reviews.length);
+    users.update(
+      { mannerStatus: issum },
+      { where: { userid: targetUserId } }
+    );
+    logger.info("POST /book/:lunchid");
+    return res.status(200).send(userre);
   } catch (err) {
     logger.error(err);
     console.log(err);
@@ -78,7 +71,7 @@ spoonget = async (req, res) => {
   const { userid } = req.params;
   try {
     const query =
-      "select  a.mannerStatus as totalmanner, usersReviews.reviewid , usersReviews.spoon , usersReviews.comments , a.nickname as writeuser, a.image as writeuserimage, a.mannerStatus as writeusermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetusers = :userid;";
+      "select  a.mannerStatus as totalmanner, usersReviews.reviewerId , usersReviews.spoon , usersReviews.comment , a.nickname as reviewer, a.image as reviewerimage, a.mannerStatus as reviewermanner, lunchs.* from usersReviews inner join users AS a on usersReviews.userid = a.userid inner join lunchs on lunchs.lunchid = usersReviews.lunchid where usersReviews.targetUserId = :userid;";
     const userspoon = await sequelize.query(query, {
       replacements: {
         userid: userid,
