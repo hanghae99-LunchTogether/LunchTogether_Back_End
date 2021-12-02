@@ -68,11 +68,11 @@ axios, class-validator, passport, multer, dotenv, helmet, cors, joi, socket.io, 
 * sharp 라이브러리를 사용하여 사진을 압축하여 원본과 함께 저장하였습니다. 사용자에게 더 빠르게 페이지를 보여줄 수 있었습니다.   
 * 악성 유저의 글 도배를 방지하는 간단한 알고리즘을 적용했고 개선하는 중입니다.   
 * Amazon RDS와 S3 이미지 저장소를 서버에서 분리해내 서버 부하를 줄였습니다.   
-## 주요 API
-API 명세 : <검토 중>   
-## 프로젝트 초기 기획 노션
+## 👨‍🎨 FORK QA 시트
+https://docs.google.com/spreadsheets/d/1swGMGL0hEIzGJwoVXUWcogfXgQszD_1iiOhAsA6Lp6s/edit#gid=0 
+## 🎨 프로젝트 초기 기획 노션
 https://juniper-airbus-ec4.notion.site/3-FORK-42f7f98d28924584b813293e16706382
-## Front-End(React) 깃허브
+## 📌 Front-End(React) 깃허브
 https://github.com/hanghae99-LunchTogether/LunchTogether_Front_End
 
 
