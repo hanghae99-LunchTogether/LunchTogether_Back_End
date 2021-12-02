@@ -734,7 +734,13 @@ getdeuser = async (req, res) => {
   }
 };
 
-testusers = async (req, res) => {
+allusers = async (req, res) => {
+  const user = res.locals.user;
+  let x = 127.0276, y = 37.498;
+  if(user){
+    x = user.x;
+    y = user.y;
+  }
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
@@ -744,9 +750,12 @@ testusers = async (req, res) => {
     }
     const user = await users.findAll({
       attributes: { exclude: ["location", "password", "salt"] },
-      include: [{ model: locationdata, as: "locations" }],
+      include: [{ model: locationdata, as: "locations",
+        attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+          [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] , }],
       offset: offset,
       limit: 12,
+      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
     });
     logger.info("GET /usertest");
     return res
@@ -771,5 +780,5 @@ module.exports = {
   getotheruser: getotheruser,
   loginkakao: loginkakao,
   getdeuser: getdeuser,
-  testusers: testusers,
+  allusers: allusers,
 };
