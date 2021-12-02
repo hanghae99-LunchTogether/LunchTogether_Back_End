@@ -752,7 +752,7 @@ allusers = async (req, res) => {
       offset = 12 * (pageNum - 1);
     }
     const user = await users.findAll({
-      attributes: { exclude: ["location", "password", "salt"] },
+      attributes: { exclude: ["password", "salt"] },
       include: [{ model: locationdata, as: "locations",
         attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
           [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] , }],
