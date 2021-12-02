@@ -195,32 +195,45 @@ offerconfirmed = async (req, res) => {
 test = async (req, res) => {
   try {
     const x = 127.0276, y = 37.498;
+    let pageNum = req.query.page
+    let offset = 0;
+    if (pageNum > 1) {
+      offset = 12 * (pageNum - 1);
+    }
+    // [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']
     const lunch = await lunchs.findAll({
-      include: [
-        {
-          model: users,
-          as: "host",
-          attributes: { exclude: ["location", "password", "salt"] },
-        },
-        { model: lunchdata, as: "locations",
-          attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
-            [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
-        },
-        {
-          model: applicant,
-          include: [
-            {
-              model: users,
-              attributes: {
-                exclude: ["location", "password", "salt"],
+      attributes:
+        [[ 
+        sequelize.fn('ST_Distance',
+        sequelize.fn('POINT', sequelize.col('`locations.y`'), 
+        sequelize.col('`locations.x`')), sequelize.fn('POINT', y, x)),'distance']],order: ["distance","ASC"],
+        include: [
+          { model: lunchdata, as: "locations" },
+          {
+            model: applicant,
+            include: [
+              {
+                model: users,
+                attributes: {
+                  exclude: ["location", "password", "salt", "gender"],
+                },
               },
-            },
-          ],
-        },
-      ],
+            ],
+          },
+          {
+            model: users,
+            as: "host",
+            attributes: { exclude: ["location", "password", "salt", "gender"] },
+          },
+          
+          
+        ],
       where: { private: false, end: false },
-      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
+      offset: offset,
+      limit: 12,
+      order: [["date","ASC"]],
     });
+    //sequelize.literal("`locations.distance` ASC")
     return res.status(200).send(lunch)
   } catch (error) {
     console.log(error)
