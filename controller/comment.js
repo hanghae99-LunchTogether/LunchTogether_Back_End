@@ -43,7 +43,7 @@ commentpost = async (req, res) => {
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   try {
-    if(comment){
+    if(!comment){
       return res.status(400).send({
         result: "fail",
         msg: "댓글 작성 실패",
