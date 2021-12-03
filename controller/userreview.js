@@ -11,7 +11,7 @@ const { logger } = require("../config/logger"); //로그
 spoonpost = async (req, res) => {
   const reviews = req.body;
   const user = res.locals.user;
-  console.log( "리뷰데이터들",reviews );
+  console.log( "리뷰데이터들",reviews[0] );
   try {
     let sum = 0;
     if(reviews.length){
