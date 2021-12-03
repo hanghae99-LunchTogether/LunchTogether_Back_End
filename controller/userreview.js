@@ -9,7 +9,7 @@ const { logger } = require("../config/logger"); //로그
 
 //유저 지수 넣기
 spoonpost = async (req, res) => {
-  const { reviews } = req.body;
+  const reviews = req.body;
   const user = res.locals.user;
   console.log( "리뷰데이터들",reviews );
   try {
