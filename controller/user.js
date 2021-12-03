@@ -621,6 +621,11 @@ getdeuser = async (req, res) => {
           attributes: { exclude: ["location", "password", "salt"] },
         },
         {
+          model: users,
+          as: "reviewer",
+          attributes: { exclude: ["location", "password", "salt"] },
+        },
+        {
           model: lunchs,
           include: [
             {
