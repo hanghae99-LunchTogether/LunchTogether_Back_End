@@ -149,6 +149,12 @@ postlunchlist = async (req, res) => {
     "위치" + locations,
     "맴버수" + membernum
   );
+  if(!date){
+    return res.status(400).send({
+      result: "fail",
+      msg: "날자를 입력해주세요",
+    });
+  }
   try {
     //쿼리문 해석 .. lunchdata에 해당 객체를 넣는데 lunchdata DB안에 해당객체의 id값이 존재하는 경우 넣지 않는다.
     const query =
