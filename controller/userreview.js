@@ -11,10 +11,10 @@ const { logger } = require("../config/logger"); //로그
 spoonpost = async (req, res) => {
   const reviews = req.body;
   const user = res.locals.user;
-  console.log( "리뷰데이터들",reviews[0] );
+  console.log( "리뷰데이터들",reviews );
   try {
     let sum = 0;
-    if(reviews.length){
+    if(!reviews.length){
       logger.error("POST /book/:lunchid 리뷰 데이터를 안보냄");
       return res.status(400).send({
         result: "fail",
