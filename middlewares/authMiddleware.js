@@ -9,7 +9,11 @@ module.exports = async (req, res, next) => {
     const [tokenType, token] = authorization.split(" ");
 
     if (tokenType !== "Bearer") {
-      res.locals.user = undefined;
+      logger.error("/middleware 토큰타입 오류!");
+      res
+        .status(401)
+        .send({ result: "fail", msg: "비정상 접근 헤더확인 요망" });
+      return;
     }
     if (token) {
       const { id } = jwt.verify(token, process.env.SECRET_KEY);
