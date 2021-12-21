@@ -262,10 +262,11 @@ applicantconfirmed = async (req, res) => {
           msg: "신청자 변경 실패 거절 사유가 존재하지 않습니다.",
         });
       }
-      applicants.update({
-        confirmed: false,
-        comments: comment,
-      });
+      // applicants.update({
+      //   confirmed: false,
+      //   comments: comment,
+      // });
+      applicants.destroy({where: {userid: userid}})
       await redisClient.hget('users', userid, function (err , data) {
         if(err)console.log(err)
         console.log(data);

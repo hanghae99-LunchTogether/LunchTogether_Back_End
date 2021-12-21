@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         required: true,
       },
-      userid: {
+      reviewerId: {
         type: DataTypes.INTEGER,
         require: true,
       },
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         require: true,
       },
-      targetusers: {
+      targetUserId: {
         type: DataTypes.INTEGER,
         require: true,
       },
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         require: true,
       },
-      comments: {
+      comment: {
         type: DataTypes.STRING,
         require: false,
       },
@@ -49,8 +49,9 @@ module.exports = (sequelize, DataTypes) => {
   );
   usersReviews.associate = function (models) {
     models.usersReviews.belongsTo(models.users, {
-      as: "rater",
-      foreignKey: "userid",
+      as: "reviewer",
+      foreignKey: "reviewerId",
+      targetKey: "userid",
       onDelete: "cascade",
     });
     models.usersReviews.belongsTo(models.lunchs, {
@@ -58,8 +59,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "cascade",
     });
     models.usersReviews.belongsTo(models.users, {
-      as: "target",
-      foreignKey: "targetusers",
+      as: "targetUser",
+      foreignKey: "targetUserId",
       targetKey: "userid",
       onDelete: "cascade",
     });

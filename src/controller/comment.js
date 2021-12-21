@@ -43,6 +43,12 @@ commentpost = async (req, res) => {
   const postDate = new Date();
   const time = postDate.toFormat("YYYY-MM-DD HH24:MI:SS");
   try {
+    if(!comment){
+      return res.status(400).send({
+        result: "fail",
+        msg: "댓글 작성 실패",
+      });
+    }
     // comments table의 lunchid 조회
     await comments.create({
       comment: comment,

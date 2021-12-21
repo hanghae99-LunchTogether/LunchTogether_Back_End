@@ -15,15 +15,17 @@ getlunchlist = async (req, res) => {
   const user = res.locals.user;
   let x = 127.0276, y = 37.498;
   if(user){
-    x = user.x;
-    y = user.y;
+    if(user.x,user.y){
+      x = user.x;
+      y = user.y;
+    }
   }
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
     let offset = 0;
     if (pageNum > 1) {
-      offset = 12 * (pageNum - 1);
+      offset = 12 * (pageNum-1);
     }
     const lunch = await lunchs.findAll({
       include: [
@@ -32,10 +34,7 @@ getlunchlist = async (req, res) => {
           as: "host",
           attributes: { exclude: ["location", "password", "salt"] },
         },
-        { model: lunchdata, as: "locations",
-          attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
-            [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
-        },
+        { model: lunchdata, as: "locations"},
         {
           model: applicant,
           include: [
@@ -49,15 +48,19 @@ getlunchlist = async (req, res) => {
         },
       ],
       where: { private: false, end: false },
-      order: [sequelize.literal("`locations.distance` ASC"),["date","ASC"]],
-      // offset: offset,
-      // limit: 12,
+      order: [["date", "ASC"]],
+      offset: offset,
+      limit: 12,
     });
+    //attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+    // [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] ,
+    //[sequelize.literal("`locations.distance` ASC"),
+    // const islunch = lunch.slice(offset-12,offset)
     if (user) {
       for (i of lunch) {
         if (user.book.includes(i.dataValues.lunchid))
           i.dataValues.isbook = true;
-        console.log(i.dataValues.lunchid);
+        
       }
     }
     logger.info("GET /lunchpost/");
@@ -146,6 +149,12 @@ postlunchlist = async (req, res) => {
     "위치" + locations,
     "맴버수" + membernum
   );
+  if(!date){
+    return res.status(400).send({
+      result: "fail",
+      msg: "날자를 입력해주세요",
+    });
+  }
   try {
     //쿼리문 해석 .. lunchdata에 해당 객체를 넣는데 lunchdata DB안에 해당객체의 id값이 존재하는 경우 넣지 않는다.
     const query =
