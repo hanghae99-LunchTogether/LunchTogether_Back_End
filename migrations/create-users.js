@@ -8,9 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      kakaoid: {
+        type: Sequelize.INTEGER
       },
       email: {
         type: Sequelize.STRING,
@@ -34,9 +33,6 @@ module.exports = {
       mbti: {
         type: Sequelize.STRING,
       },
-      gender: {
-        type: Sequelize.STRING,
-      },
       introduction: {
         type: Sequelize.STRING,
       },
@@ -51,9 +47,6 @@ module.exports = {
         type: Sequelize.STRING,
       },
       dislikemenu: {
-        type: Sequelize.STRING,
-      },
-      company: {
         type: Sequelize.STRING,
       },
       mannerstatus: {

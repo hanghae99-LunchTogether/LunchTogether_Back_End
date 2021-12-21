@@ -120,10 +120,9 @@ signup = async (req, res) => {
         .digest("hex");
       console.log(nickname, email, hashpw);
       const query =
-        "insert into users (username, nickname, email, password, salt, createdAt) values(:username, :nickname, :email, :password, :salt, now());";
+        "insert into users (nickname, email, password, salt, createdAt) values(:nickname, :email, :password, :salt, now());";
       const users = await sequelize.query(query, {
         replacements: {
-          username: "로컬유저",
           nickname: nickname,
           email: email,
           password: hashpw,
@@ -205,34 +204,54 @@ login = async (req, res) => {
 loginkakao = async (req, res) => {
   const { image, nickname, id } = req.body;
   try {
-    console.log(image, nickname, id);
-    const query =
-      "insert into users (userid,username,email,password,nickname,salt,image, createdAt) select :userid,:username,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where userid = :userid);";
-    const isuser = sequelize.query(query, {
-      replacements: {
-        userid: id,
-        username: "카카오 유저",
-        email: "카카오 이메일",
-        password: "카카오 로그인 유저",
-        nickname: nickname,
-        salt: "카카오 유저",
+    const exUser = await users.findOne({
+      where: { kakaoid: id },
+    });
+    if (exUser) {
+      const isuser = {
+        id: exUser.dataValues.userid
+      };
+      const token = jwt.sign(isuser, process.env.SECRET_KEY);
+      req.session.passport = { user: exUser.dataValues.userid }
+      logger.info("POST /login");
+      return res.status(200).send({
+        result: "success",
+        msg: "로그인 완료.",
+        token: token,
+        users: exUser,
+      });
+    } else {
+      const newUser = await users.create({
         image: image,
-        userid: id,
-      },
-      type: sequelize.QueryTypes.INSERT,
-    });
-    const users = {
-      id: id
-    };
-    const token = jwt.sign(users, process.env.SECRET_KEY);
-    req.session.passport = {user: id}
-    logger.info("POST /login");
-    return res.status(200).send({
-      result: "success",
-      msg: "로그인 완료.",
-      token: token,
-      users: isuser,
-    });
+        nickname: nickname,
+        kakaoid: id
+      });
+      const isuser = {
+        id: newUser.dataValues.userid
+      };
+      const token = jwt.sign(isuser, process.env.SECRET_KEY);
+      req.session.passport = { user: newUser.dataValues.userid }
+      logger.info("POST /login");
+      return res.status(200).send({
+        result: "success",
+        msg: "로그인 완료.",
+        token: token,
+        users: newUser,
+      });
+    }
+    // const query =
+    //   "insert into users (kakaoid,email,password,nickname,salt,image, createdAt) select :kakaoid,:email,:password,:nickname,:salt,:image,now() From dual WHERE NOT exists(select * from users where kakaoid = :kakaoid);";
+    // const isuser = await sequelize.query(query, {
+    //   replacements: {
+    //     email: "카카오 유저 입니다.",
+    //     password: "카카오 유저 입니다.",
+    //     nickname: nickname,
+    //     salt: "카카오 유저 입니다.",
+    //     image: image,
+    //     kakaoid: id,
+    //   },
+    //   type: sequelize.QueryTypes.INSERT,
+    // });
   } catch (error) {
     logger.error(error);
     console.log(error);
@@ -249,7 +268,7 @@ getuser = async (req, res) => {
   const user = res.locals.user;
   try {
     const query =
-      "select userid,email,nickname,image,mbti,introduction,likemenu,dislikemenu,company,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
+      "select userid,nickname,image,mbti,introduction,likemenu,dislikemenu,mannerStatus,snsurl,job,createdAt,updatedAt from users where userid = :userid";
     const users = await sequelize.query(query, {
       replacements: {
         userid: user.userid,
@@ -271,41 +290,28 @@ getuser = async (req, res) => {
 upusers = async (req, res) => {
   const userloc = res.locals.user;
   const {
-    username,
     email,
     nickname,
     likemenu,
     dislikemenu,
     mbti,
-    gender,
     locations,
-    company,
     introduction,
     job,
     snsurl,
     image,
   } = req.body;
   console.log(
-    username,
     email,
     nickname,
     likemenu,
     dislikemenu,
     mbti,
-    gender,
-    company,
     introduction,
     job,
     snsurl,
     image
   );
-  // console.log(Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl))
-  // if(!Boolean(username&&email&&nickname&&likemenu&&dislikemenu&&mbti&&gender&&company&&introduction&&jop&&snsurl)){
-  //     logger.error("patch /myProfile 유저 정보 아무것도 없음");
-  //     return res
-  //     .status(401)
-  //     .send({ result: "fail", msg: "하나라도 변경할 유저정보를 주세요" });
-  //   }
   let locationid;
   // if (req.file) {
   //   console.log("파일은 담기고있는가?", req.file.location);
@@ -313,7 +319,6 @@ upusers = async (req, res) => {
   try {
     // let originalUrl;
     let querys = "UPDATE users SET ";
-    if (username) querys = querys + " username = :username,";
     if (nickname) querys = querys + " nickname = :nickname,";
     if (email) querys = querys + " email = :email,";
     // if (req.file) {
@@ -322,7 +327,6 @@ upusers = async (req, res) => {
     // }
     if (image) querys = querys + " image = :image,";
     if (mbti) querys = querys + " mbti = :mbti,";
-    if (gender) querys = querys + " gender = :gender,";
     if (introduction) querys = querys + " introduction = :introduction,";
     if (locations) {
       console.log(locations);
@@ -348,7 +352,6 @@ upusers = async (req, res) => {
     }
     if (likemenu) querys = querys + " likemenu = :likemenu,";
     if (dislikemenu) querys = querys + " dislikemenu = :dislikemenu,";
-    if (company) querys = querys + " company = :company,";
     if (job) querys = querys + " job = :job,";
     if (snsurl) querys = querys + " snsurl = :snsurl,";
     querys = querys.slice(0, -1);
@@ -356,17 +359,14 @@ upusers = async (req, res) => {
     console.log("마지막으로 완성된 쿼리문", querys);
     const updateuser = await sequelize.query(querys, {
       replacements: {
-        username: username,
         nickname: nickname,
         email: email,
         image: image,
         mbti: mbti,
-        gender: gender,
         introduction: introduction,
         location: locationid,
         likemenu: likemenu,
         dislikemenu: dislikemenu,
-        company: company,
         job: job,
         snsurl: snsurl,
         userid: userloc.userid,
@@ -374,7 +374,7 @@ upusers = async (req, res) => {
       type: sequelize.QueryTypes.UPDATE,
     });
     const user = await users.findOne({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
@@ -392,7 +392,7 @@ getotheruser = async (req, res) => {
   const { userid } = req.params;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userid },
     });
@@ -403,7 +403,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -411,7 +411,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -436,7 +436,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -444,7 +444,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -457,17 +457,17 @@ getotheruser = async (req, res) => {
       include: [
         {
           model: users,
-          as: "rater",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          as: "reviewer",
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: users,
-          as: "target",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          as: "targetUser",
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         { model: lunchs },
       ],
-      where: { targetusers: userid }
+      where: { targetUserId: userid }
     });
     const book = await lunchs.findAll({
       where: [{ "$bookmarks.userid$": userid }],
@@ -476,7 +476,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -484,7 +484,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -506,7 +506,7 @@ getotheruser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -514,7 +514,7 @@ getotheruser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -550,7 +550,7 @@ getdeuser = async (req, res) => {
   const userloc = res.locals.user;
   try {
     const user = await users.findOne({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
+      attributes: { exclude: ["location", "password", "salt"] },
       include: [{ model: locationdata, as: "locations" }],
       where: { userid: userloc.userid },
     });
@@ -561,7 +561,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -569,7 +569,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -595,7 +595,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -603,7 +603,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -617,8 +617,13 @@ getdeuser = async (req, res) => {
       include: [
         {
           model: users,
-          as: "rater",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          as: "targetUser",
+          attributes: { exclude: ["location", "password", "salt"] },
+        },
+        {
+          model: users,
+          as: "reviewer",
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -627,7 +632,7 @@ getdeuser = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
             { model: lunchdata, as: "locations" },
@@ -637,7 +642,7 @@ getdeuser = async (req, res) => {
                 {
                   model: users,
                   attributes: {
-                    exclude: ["location", "password", "salt", "gender"],
+                    exclude: ["location", "password", "salt"],
                   },
                 },
               ],
@@ -645,7 +650,7 @@ getdeuser = async (req, res) => {
           ],
         },
       ],
-      where: { targetusers: userloc.userid },
+      where: { targetUserId: userloc.userid },
     });
     const book = await lunchs.findAll({
       where: [{ "$bookmarks.userid$": userloc.userid }],
@@ -655,7 +660,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -663,7 +668,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -687,7 +692,7 @@ getdeuser = async (req, res) => {
         {
           model: users,
           as: "host",
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: applicant,
@@ -695,7 +700,7 @@ getdeuser = async (req, res) => {
             {
               model: users,
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],
@@ -734,7 +739,16 @@ getdeuser = async (req, res) => {
   }
 };
 
-testusers = async (req, res) => {
+allusers = async (req, res) => {
+  const user = res.locals.user;
+  let x = 127.0276, y = 37.498;
+  if(user){
+    if(user.x,user.y){
+      x = user.x;
+      y = user.y;
+    }
+  }
+  console.log(x,y)
   try {
     let pageNum = req.query.page; // 요청 페이지 넘버
     console.log(pageNum);
@@ -743,10 +757,14 @@ testusers = async (req, res) => {
       offset = 12 * (pageNum - 1);
     }
     const user = await users.findAll({
-      attributes: { exclude: ["location", "password", "salt", "gender"] },
-      include: [{ model: locationdata, as: "locations" }],
+      attributes: { exclude: ["password", "salt"] },
+      include: [{ model: locationdata, as: "locations",
+        attributes: ["id","address_name","road_address_name","category_group_name", "place_name","place_url","phone","x","y",
+          [ sequelize.fn('ST_Distance',sequelize.fn('POINT', sequelize.col('y'), sequelize.col('x')), sequelize.fn('POINT', y, x)),'distance']] , }],
       offset: offset,
       limit: 12,
+      where:{ location: {[Op.ne]: null} },
+      order: [sequelize.literal("`locations.distance` ASC")],
     });
     logger.info("GET /usertest");
     return res
@@ -771,5 +789,5 @@ module.exports = {
   getotheruser: getotheruser,
   loginkakao: loginkakao,
   getdeuser: getdeuser,
-  testusers: testusers,
+  allusers: allusers,
 };

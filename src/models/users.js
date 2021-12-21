@@ -22,11 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       kakaoid: {
         type: DataTypes.INTEGER,
-<<<<<<< HEAD
-        require: true,
-=======
         require: false,
->>>>>>> main
       },
       email: {
         type: DataTypes.STRING,
@@ -52,10 +48,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-<<<<<<< HEAD
-      
-=======
->>>>>>> main
       introduction: {
         type: DataTypes.STRING,
         require: false,
@@ -84,7 +76,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         require: false,
       },
-      
     },
 
     {

@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userid: {
+      reviewerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -24,7 +24,7 @@ module.exports = {
             key: 'lunchid',
           },
       },
-      targetusers: {
+      targetUserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      comments: {
+      comment: {
         type: Sequelize.STRING,
       },
     });

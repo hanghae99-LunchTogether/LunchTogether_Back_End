@@ -107,7 +107,7 @@ offerconfirmed = async (req, res) => {
       include: [
         {
           model: users,
-          attributes: { exclude: ["location", "password", "salt", "gender"] },
+          attributes: { exclude: ["location", "password", "salt"] },
         },
         {
           model: lunchs,
@@ -117,7 +117,7 @@ offerconfirmed = async (req, res) => {
               model: users,
               as: "host",
               attributes: {
-                exclude: ["location", "password", "salt", "gender"],
+                exclude: ["location", "password", "salt"],
               },
             },
           ],

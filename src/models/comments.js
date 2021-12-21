@@ -1,69 +1,58 @@
 "use strict";
+const { truncateSync } = require("fs");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class usersReviews extends Model {
+  class comments extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-
     static associate(models) {
       // define association here
     }
   }
-  usersReviews.init(
+  comments.init(
     {
-      reviewid: {
+      commentid: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         required: true,
       },
-      reviewerId: {
-        type: DataTypes.INTEGER,
-        require: true,
-      },
-      lunchid: {
-        type: DataTypes.INTEGER,
-        require: true,
-      },
-      targetUserId: {
-        type: DataTypes.INTEGER,
-        require: true,
-      },
-      spoon: {
-        type: DataTypes.INTEGER,
-        require: true,
-      },
       comment: {
         type: DataTypes.STRING,
-        require: false,
+        required: true,
+      },
+      lunchid: {
+        required: true,
+        type: DataTypes.INTEGER,
+      },
+      userid: {
+        required: true,
+        type: DataTypes.INTEGER,
+      },
+      time: {
+        require: true,
+        type: DataTypes.STRING,
       },
     },
     {
       sequelize,
-      modelName: "usersReviews",
+      modelName: "comments",
       logging: false
     }
   );
-  usersReviews.associate = function (models) {
-    models.usersReviews.belongsTo(models.users, {
-      as: "reviewer",
-      foreignKey: "reviewerId",
-      targetKey: "userid",
+
+  comments.associate = function (models) {
+    models.comments.belongsTo(models.users, {
+      foreignKey: "userid",
       onDelete: "cascade",
     });
-    models.usersReviews.belongsTo(models.lunchs, {
+    models.comments.belongsTo(models.lunchs, {
       foreignKey: "lunchid",
       onDelete: "cascade",
     });
-    models.usersReviews.belongsTo(models.users, {
-      as: "targetUser",
-      foreignKey: "targetUserId",
-      targetKey: "userid",
-      onDelete: "cascade",
-    });
   };
-  return usersReviews;
+  return comments;
 };
