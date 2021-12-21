@@ -17,35 +17,39 @@ export type userReviewsStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): userReviewsModel;
 };
 export function UserFactory(sequelize: Sequelize): userReviewsStatic {
-  return <userReviewsStatic>sequelize.define("userReviews", {
-    reviewid: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
+  return <userReviewsStatic>sequelize.define(
+    "userReviews",
+    {
+      reviewid: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      reviewerId: {
+        type: DataTypes.INTEGER,
+      },
+      lunchid: {
+        type: DataTypes.INTEGER,
+      },
+      targetUserId: {
+        type: DataTypes.INTEGER,
+      },
+      spoon: {
+        type: DataTypes.INTEGER,
+      },
+      comment: {
+        type: DataTypes.STRING,
+      },
     },
-    reviewerId: {
-      type: DataTypes.INTEGER,
-    },
-    lunchid: {
-      type: DataTypes.INTEGER,
-    },
-    targetUserId: {
-      type: DataTypes.INTEGER,
-    },
-    spoon: {
-      type: DataTypes.INTEGER,
-    },
-    comment: {
-      type: DataTypes.STRING,
-    },
-  });
+    {
+      modelName: "users",
+      tableName: "users",
+      paranoid: false,
+      charset: "utf8",
+      collate: "utf8_general_ci",
+    }
+  );
 }
-//     {
-//       sequelize,
-//       modelName: "usersReviews",
-//       logging: false,
-//     }
-//   );
 //   usersReviews.associate = function (models) {
 //     models.usersReviews.belongsTo(models.users, {
 //       as: "reviewer",

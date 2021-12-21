@@ -16,32 +16,36 @@ export type userofferStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): userofferModel;
 };
 export function UserFactory(sequelize: Sequelize): userofferStatic {
-  return <userofferStatic>sequelize.define("useroffer", {
-    userofferid: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
+  return <userofferStatic>sequelize.define(
+    "useroffer",
+    {
+      userofferid: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      lunchid: {
+        type: DataTypes.INTEGER,
+      },
+      userid: {
+        type: DataTypes.INTEGER,
+      },
+      confirmed: {
+        type: DataTypes.BOOLEAN,
+      },
+      comments: {
+        type: DataTypes.STRING,
+      },
     },
-    lunchid: {
-      type: DataTypes.INTEGER,
-    },
-    userid: {
-      type: DataTypes.INTEGER,
-    },
-    confirmed: {
-      type: DataTypes.BOOLEAN,
-    },
-    comments: {
-      type: DataTypes.STRING,
-    },
-  });
+    {
+      modelName: "users",
+      tableName: "users",
+      paranoid: false,
+      charset: "utf8",
+      collate: "utf8_general_ci",
+    }
+  );
 }
-//     {
-//       sequelize,
-//       modelName: "useroffer",
-//       logging: false,
-//     }
-//   );
 
 //   useroffer.associate = function (models) {
 //     models.useroffer.belongsTo(models.lunchs, {
