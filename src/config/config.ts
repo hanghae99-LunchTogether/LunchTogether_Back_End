@@ -1,12 +1,13 @@
-require("dotenv").config();
-module.exports ={
+import dotenv from "dotenv"
+dotenv.config();
+const config ={
   "development": {
-    "username": process.env.DB_USER,
+    "username": process.env.DB_USERS||'root',
     "password": process.env.DB_PASSWORD,
-    "database": process.env.DB_NAME,
-    "host": process.env.DB_END_POINT,
+    "database": process.env.DB_NAME|| 'test',
+    "host": process.env.DB_END_POINT||'localhost',
     "dialect": "mysql",
-
+    "logging": false
   },
   "test": {
     "username": "root",
@@ -23,3 +24,5 @@ module.exports ={
     "dialect": "mysql"
   }
 }
+
+export default config;
