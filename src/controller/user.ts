@@ -9,18 +9,20 @@ import {
   lunchdata,
   bookmarks,
   useroffer,
-} from "../models";
+} from '../models';
+import { UserModel } from '../models/users'
+import { userReviewsModel } from '../models/usersReviews'
 const { Op } = require("sequelize");
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
-const multer = require("multer"); //form data 처리를 할수 있는 라이브러리 multer
-const multerS3 = require("multer-s3"); // aws s3에 파일을 처리 할수 있는 라이브러리 multer-s3
-const AWS = require("aws-sdk"); //javascript 용 aws 서비스 사용 라이브러리
-const path = require("path"); //경로지정
-const fs = require("fs");
+import * as crypto from "crypto";
+import * as jwt from "jsonwebtoken";
+import * as multer from "multer"; //form data 처리를 할수 있는 라이브러리 multer
+import * as multerS3 from "multer-s3"; // aws s3에 파일을 처리 할수 있는 라이브러리 multer-s3
+import * as AWS from "aws-sdk"; //javascript 용 aws 서비스 사용 라이브러리
+import * as path from "path"; //경로지정
+import * as fs from "fs";
 require("dotenv").config({ path: __dirname + "\\" + ".env" });
 const { logger } = require("../config/logger"); //로그
-const passport = require("passport");
+import * as passport from "passport";
 
 AWS.config.update({
   //보안자격증명 액세스 키 설정해야 s3 bucket 접근이 가능하다.
@@ -41,7 +43,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-async function emailCheck(email: any) {
+async function emailCheck(email: string) {
   try {
     // const { email } = req.body;
     const isemail = await users.findOne({ where: { email: email } });
@@ -58,7 +60,7 @@ async function emailCheck(email: any) {
   }
 }
 
-async function nickNameCheck(nickname: any) {
+async function nickNameCheck(nickname: string) {
   try {
     const isemail = await users.findOne({ where: { nickname: nickname } });
     if (isemail) {
@@ -208,7 +210,7 @@ class userController {
   public loginkakao = async (req: Request, res: Response) => {
     const { image, nickname, id } = req.body;
     try {
-      const exUser = await users.findOne({
+      const exUser: UserModel = await users.findOne({
         where: { kakaoid: id },
       });
       if (exUser) {
@@ -225,7 +227,7 @@ class userController {
           users: exUser,
         });
       } else {
-        const newUser = await users.create({
+        const newUser: UserModel = await users.create({
           image: image,
           nickname: nickname,
           kakaoid: id,
@@ -396,12 +398,12 @@ class userController {
   public getotheruser = async (req: Request, res: Response) => {
     const { userid } = req.params;
     try {
-      const user = await users.findOne({
+      const user: UserModel = await users.findOne({
         attributes: { exclude: ["location", "password", "salt"] },
         include: [{ model: locationdata, as: "locations" }],
         where: { userid: userid },
       });
-      const owned = await lunchs.findAll({
+      const owned:  = await lunchs.findAll({
         attributes: { exclude: ["location", "userid"] },
         include: [
           { model: lunchdata, as: "locations" },
@@ -554,7 +556,7 @@ class userController {
   public getdeuser = async (req: Request, res: Response) => {
     const userloc = res.locals.user;
     try {
-      const user = await users.findOne({
+      const user: UserModel = await users.findOne({
         attributes: { exclude: ["location", "password", "salt"] },
         include: [{ model: locationdata, as: "locations" }],
         where: { userid: userloc.userid },
@@ -618,7 +620,7 @@ class userController {
         order: [["date", "ASC"]],
       });
 
-      const usersReview = await usersReviews.findAll({
+      const usersReview: userReviewsModel = await usersReviews.findAll({
         include: [
           {
             model: users,
@@ -747,7 +749,7 @@ class userController {
       if (pageNum > 1) {
         offset = 12 * (pageNum - 1);
       }
-      const user = await users.findAll({
+      const user: UserModel = await users.findAll({
         attributes: { exclude: ["location", "password", "salt"] },
         include: [{ model: locationdata, as: "locations" }],
         offset: offset,

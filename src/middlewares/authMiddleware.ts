@@ -1,7 +1,9 @@
+import { Request, Response, NextFunction } from 'express';
 const { users, sequelize } = require("../models");
 const jwt = require("jsonwebtoken");
 const { logger } = require("../config/logger"); //로그
-module.exports = async (req, res, next) => {
+
+exports async (req: Request, res: Response, next: NextFunction) => {
   try {
     const location = "authorization";
     const authorization = req.headers[location];
