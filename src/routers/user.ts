@@ -2,10 +2,10 @@ import * as express from "express";
 const router = express.Router();
 import userController from "../controller/user";
 // const { emailCheck, login, sigup , nickNameCheck } = require('../controller/user')
-const authmiddleware = require("../middlewares/authMiddleware");
-const signupmiddleware = require("../middlewares/signupMiddleware");
-const upload = require("../utils/s3");
-const notice = require("../controller/notice");
+import authmiddleware from "../middlewares/authMiddleware";
+import signupmiddleware from "../middlewares/signupMiddleware";
+import upload from "../utils/s3";
+import notice from "../controller/notice";
 
 router.route("/login").get(authmiddleware, userController.getuser);
 router.route("/signup").post(signupmiddleware, userController.signup);

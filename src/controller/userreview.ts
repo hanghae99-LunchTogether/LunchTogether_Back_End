@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { comments, users, sequelize, usersReviews, lunchs } from "../models";
+import {QueryTypes} from 'sequelize'
 import { UserModel } from '../models/users'
 import { userReviewsModel } from '../models/usersReviews'
 const { logger } = require("../config/logger"); //로그
@@ -74,7 +75,7 @@ class userReviewController {
         replacements: {
           userid: userid,
         },
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       });
       if (!userspoon) {
         logger.info("GET /spoon 아직 작성된 유저 리뷰가 없어요");

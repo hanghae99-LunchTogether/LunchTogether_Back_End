@@ -1,4 +1,5 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { sequelize } from "./index";
 
 export interface userofferAttributes {
   userofferid: number;
@@ -15,7 +16,7 @@ export class useroffer extends Model<userofferModel, userofferAttributes> {}
 export type userofferStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): userofferModel;
 };
-export function UserFactory(sequelize: Sequelize): userofferStatic {
+export function userofferFactory(sequelize: Sequelize): userofferStatic {
   return <userofferStatic>sequelize.define(
     "useroffer",
     {

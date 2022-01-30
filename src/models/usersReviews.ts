@@ -1,6 +1,7 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { sequelize } from "./index";
 
-export interface userReviewsAttributes {
+export interface userReviewAttributes {
   reviewid: number;
   reviewerId?: number;
   lunchid?: number;
@@ -9,14 +10,14 @@ export interface userReviewsAttributes {
   comment?: string;
 }
 export interface userReviewsModel
-  extends Model<userReviewsAttributes>,
-    userReviewsAttributes {}
-export class User extends Model<userReviewsModel, userReviewsAttributes> {}
+  extends Model<userReviewAttributes>,
+    userReviewAttributes {}
+export class User extends Model<userReviewsModel, userReviewAttributes> {}
 
 export type userReviewsStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): userReviewsModel;
 };
-export function UserFactory(sequelize: Sequelize): userReviewsStatic {
+export function userReviewFactory(sequelize: Sequelize): userReviewsStatic {
   return <userReviewsStatic>sequelize.define(
     "userReviews",
     {

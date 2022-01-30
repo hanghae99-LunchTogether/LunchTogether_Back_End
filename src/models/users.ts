@@ -1,4 +1,5 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { sequelize } from "./index";
 
 export interface UserAttributes {
   userid: number;

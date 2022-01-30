@@ -1,9 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-const { users, sequelize } = require("../models");
-const jwt = require("jsonwebtoken");
-const { logger } = require("../config/logger"); //로그
+import { Request, Response, NextFunction } from "express";
+import { users, sequelize } from "../models";
+import { QueryTypes } from "sequelize";
+import * as jwt from "jsonwebtoken";
+import { logger } from "../config/logger"; //로그
 
-exports async (req: Request, res: Response, next: NextFunction) => {
+export const authmiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const location = "authorization";
     const authorization = req.headers[location];
@@ -18,13 +23,16 @@ exports async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
     if (token) {
-      const { id } = jwt.verify(token, process.env.SECRET_KEY);
+      const { id } = jwt.verify(
+        token,
+        process.env.SECRET_KEY
+      ) as jwt.JwtPayload;
       const query = "select * from users where userid = :userid";
       const users = await sequelize.query(query, {
         replacements: {
           userid: id,
         },
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       });
       if (!users.length) {
         logger.error("/middleware 토큰 변조됨");
@@ -53,12 +61,10 @@ exports async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       logger.error("/middleware 토큰 만료시간끝");
-      res
-        .status(401)
-        .send({
-          result: "fail",
-          msg: "토큰 만료시간이 다됬습니다. 다시 로그인 부탁드립니다.",
-        });
+      res.status(401).send({
+        result: "fail",
+        msg: "토큰 만료시간이 다됬습니다. 다시 로그인 부탁드립니다.",
+      });
       return;
     } else {
       logger.error("/middleware 비정상 토큰");
